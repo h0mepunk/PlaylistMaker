@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1B22"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Настройки"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/primary_text_size" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Тёмная тема"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/primary_text_size" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Поделиться приложением"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/primary_text_size" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Написать в поддержку"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/primary_text_size" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Пользовательское соглашение"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/primary_text_size" />
+
+</LinearLayout>
