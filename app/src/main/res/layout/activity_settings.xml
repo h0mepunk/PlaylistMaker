@@ -2,42 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3772E7"
+    android:background="@color/background_color"
     android:orientation="vertical">
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="208dp"
+        android:layout_height="48dp">
         <TextView
+            android:text="@string/playlist_maker_header"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="12dp"
-            android:layout_width="match_parent"
+            android:layout_marginStart="12dp"
+            android:layout_width="wrap_content"
             android:layout_height="56dp"
-            android:text="Playlist maker"
-            android:textColor="FFFFFF"
-            android:textSize="22sp"/>
+            android:backgroundTint="@color/background_color"
+            android:textColor="@color/white"
+            android:textSize="@dimen/primary_text_size"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/button_padding"
         android:layout_weight="3">
 
             <Button
                 android:id="@+id/search_button"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:textColor="#1A1B22"
+                android:textColor="@color/dark_text"
                 android:backgroundTint="@color/white"
-                android:padding="16dp"
-                android:text="Поиск"
+                android:padding="@dimen/button_padding"
+                android:text="@string/search_title"
                 android:drawableLeft="@drawable/search"
-                android:textSize="22sp"/>
+                android:textSize="@dimen/primary_text_size"/>
 
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/button_padding"
         android:layout_weight="3">
 
         <Button
@@ -45,17 +48,18 @@
             android:backgroundTint="@color/white"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:padding="16dp"
-            android:textColor="#1A1B22"
-            android:text="Медиатека"
-            android:drawableLeft="@drawable/search"
-            android:textSize="22sp"/>
+            android:padding="@dimen/button_padding"
+            android:textColor="@color/dark_text"
+            android:text="@string/library_title"
+            android:drawableLeft="@drawable/library"
+            android:textSize="@dimen/primary_text_size"/>
 
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/button_padding"
         android:layout_weight="3">
 
         <Button
@@ -63,11 +67,11 @@
             android:backgroundTint="@color/white"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:textColor="#1A1B22"
-            android:padding="16dp"
-            android:text="Настройки"
-            android:drawableLeft="@drawable/search"
-            android:textSize="22sp"/>
+            android:textColor="@color/dark_text"
+            android:padding="@dimen/button_padding"
+            android:text="@string/settings_title"
+            android:drawableLeft="@drawable/settings"
+            android:textSize="@dimen/primary_text_size"/>
 
     </LinearLayout>
 </LinearLayout>
