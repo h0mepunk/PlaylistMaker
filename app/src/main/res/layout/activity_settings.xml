@@ -22,31 +22,16 @@
         android:layout_height="0dp"
         android:layout_weight="3">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:src="@drawable/search"
-                    android:layout_gravity="start"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
-                <TextView
-                    android:layout_marginLeft="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Поиск"
-                    android:textColor="#1A1B22"
-                    android:textSize="22sp" />
-            </LinearLayout>
-        </FrameLayout>
+            <Button
+                android:id="@+id/search_button"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textColor="#1A1B22"
+                android:backgroundTint="@color/white"
+                android:padding="16dp"
+                android:text="Поиск"
+                android:drawableLeft="@drawable/search"
+                android:textSize="22sp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -55,35 +40,16 @@
         android:layout_height="0dp"
         android:layout_weight="3">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_gravity="start"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
-                <TextView
-                    android:layout_marginLeft="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Медиатека"
-                    android:textSize="20sp" />
-            </LinearLayout>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/white"
-                android:textSize="@dimen/primary_text_size">
-            </Button>
-        </FrameLayout>
+        <Button
+            android:id="@+id/media_button"
+            android:backgroundTint="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="16dp"
+            android:textColor="#1A1B22"
+            android:text="Медиатека"
+            android:drawableLeft="@drawable/search"
+            android:textSize="22sp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -92,35 +58,16 @@
         android:layout_height="0dp"
         android:layout_weight="3">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_gravity="start"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
-                <TextView
-                    android:layout_marginLeft="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Настройки"
-                    android:textSize="20sp" />
-            </LinearLayout>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/white"
-                android:textSize="@dimen/primary_text_size">
-            </Button>
-        </FrameLayout>
+        <Button
+            android:id="@+id/settings_button"
+            android:backgroundTint="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textColor="#1A1B22"
+            android:padding="16dp"
+            android:text="Настройки"
+            android:drawableLeft="@drawable/search"
+            android:textSize="22sp"/>
 
     </LinearLayout>
 </LinearLayout>
