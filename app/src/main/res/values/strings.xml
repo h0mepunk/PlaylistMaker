@@ -4,4 +4,8 @@
     <string name="library_title">Медиатека</string>
     <string name="settings_title">Настройки</string>
     <string name="playlist_maker_header">Playlist maker</string>
+    <string name="dark_theme_menu">Тёмная тема</string>
+    <string name="share_menu">Поделиться приложением</string>
+    <string name="support_menu">Написать в поддержку</string>
+    <string name="user_agreement_menu">Пользовательское соглашение</string>
 </resources>
