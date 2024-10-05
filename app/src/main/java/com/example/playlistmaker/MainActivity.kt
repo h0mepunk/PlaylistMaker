@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -19,37 +20,21 @@ class MainActivity : AppCompatActivity() {
         val buttonSettings = findViewById<Button>(R.id.settings_button)
         val mediaButton = findViewById<Button>(R.id.media_button)
 
-        val searchButtonClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Нажали на кнопку поиска (не лямбда)!", Toast.LENGTH_SHORT).show()
-            }
-        }
+        val settingsActivity = Intent(this, SettingsActivity::class.java)
+        val searchActivity = Intent(this, SearchActivity::class.java)
+        val mediaActivity = Intent(this, MediaActivity::class.java)
 
-        val settingsButtonClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Нажали на кнопку настроек (не лямбда)!", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        val mediaButtonClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Нажали на кнопку медиа (не лямбда)!", Toast.LENGTH_SHORT).show()
-            }
-        }
 
         buttonSearch.setOnClickListener {
-            //searchButtonClickListener
-            Toast.makeText(this@MainActivity, "Нажали на кнопку поиска!", Toast.LENGTH_SHORT).show()
+            startActivity(searchActivity)
         }
 
         buttonSettings.setOnClickListener{
-            //settingsButtonClickListener
-            Toast.makeText(this@MainActivity, "Нажали на кнопку настроек!", Toast.LENGTH_SHORT).show()
+            startActivity(settingsActivity)
         }
 
         mediaButton.setOnClickListener {
-            //mediaButtonClickListener
-            Toast.makeText(this@MainActivity, "Нажали на кнопку медиа!", Toast.LENGTH_SHORT).show()
+            startActivity(mediaActivity)
         }
     }
 }
