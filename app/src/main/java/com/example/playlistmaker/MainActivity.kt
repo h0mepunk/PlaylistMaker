@@ -38,14 +38,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonSearch.setOnClickListener {
+            //searchButtonClickListener
             Toast.makeText(this@MainActivity, "Нажали на кнопку поиска!", Toast.LENGTH_SHORT).show()
         }
 
         buttonSettings.setOnClickListener{
+            //settingsButtonClickListener
             Toast.makeText(this@MainActivity, "Нажали на кнопку настроек!", Toast.LENGTH_SHORT).show()
         }
 
         mediaButton.setOnClickListener {
+            //mediaButtonClickListener
             Toast.makeText(this@MainActivity, "Нажали на кнопку медиа!", Toast.LENGTH_SHORT).show()
         }
     }
