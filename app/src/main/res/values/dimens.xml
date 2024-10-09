@@ -2,6 +2,8 @@
 <resources>
     <dimen name="primary_text_size">22sp</dimen>
     <dimen name="button_margin">16dp</dimen>
+    <dimen name="settings_menu_item_padding_horizontal">16dp</dimen>
+    <dimen name="settings_menu_item_padding_vertical">20dp</dimen>
     <dimen name="header_width">208dp</dimen>
     <dimen name="header_height">48dp</dimen>
     <dimen name="header_text_margin_top">10dp</dimen>

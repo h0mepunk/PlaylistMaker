@@ -12,98 +12,24 @@
         android:navigationIcon="@drawable/arrow_back"
         android:title="@string/settings_title"
         android:titleTextColor="@color/dark"
+        android:titleTextAppearance="@style/toolbar_title_text"
         android:titleMarginTop="@dimen/header_text_margin_top"
         android:layout_height="@dimen/header_height">
     </Toolbar>
-
-
-    <LinearLayout
-        android:layout_marginTop="24dp"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="21dp"
-            android:paddingLeft="16dp"
-            android:layout_height="@dimen/settings_menu_item_height">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="@string/dark_theme_menu"
-                android:textColor="@color/dark"
-                android:textSize="@dimen/primary_text_size" />
-            <Switch
-                android:layout_marginTop="@dimen/header_text_margin_top"
-                android:layout_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="18dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="21dp"
-            android:paddingLeft="16dp"
-            android:layout_height="@dimen/settings_menu_item_height">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="@string/share_menu"
-                android:textColor="@color/dark"
-                android:textSize="@dimen/primary_text_size" />
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_gravity="end"
-                android:src="@drawable/share"
-                android:layout_height="24dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="21dp"
-            android:paddingLeft="16dp"
-            android:layout_height="@dimen/settings_menu_item_height">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="@string/support_menu"
-                android:textColor="@color/dark"
-                android:textSize="@dimen/primary_text_size" />
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_gravity="end"
-                android:src="@drawable/support"
-                android:layout_height="24dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:paddingTop="21dp"
-            android:paddingLeft="16dp"
-            android:layout_height="@dimen/settings_menu_item_height">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="@string/user_agreement_menu"
-                android:textColor="@color/dark"
-                android:textSize="@dimen/primary_text_size" />
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_gravity="end"
-                android:src="@drawable/arrow_forward"
-                android:layout_height="24dp"/>
-
-        </LinearLayout>
-    </LinearLayout>
-
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        style="@style/settings_menu_item"
+        android:text="@string/dark_theme_menu"
+        android:thumbTintMode="screen"/>
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/share"
+        android:text="@string/share_menu" />
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/support"
+        android:text="@string/support_menu" />
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/arrow_forward"
+        android:text="@string/user_agreement_menu" />
 </LinearLayout>
