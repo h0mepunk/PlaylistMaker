@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <Toolbar
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:navigationIcon="@drawable/arrow_back"
+        android:title="@string/settings_title"
+        android:titleTextColor="@color/dark"
+        android:titleTextAppearance="@style/toolbar_title_text"
+        android:titleMarginTop="@dimen/header_text_margin_top"
+        android:layout_height="@dimen/header_height">
+    </Toolbar>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        style="@style/settings_menu_item"
+        android:text="@string/dark_theme_menu"
+        android:thumbTintMode="screen"/>
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/share"
+        android:text="@string/share_menu" />
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/support"
+        android:text="@string/support_menu" />
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/arrow_forward"
+        android:text="@string/user_agreement_menu" />
+</LinearLayout>
