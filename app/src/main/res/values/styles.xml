@@ -8,6 +8,7 @@
     </style>
     <style name="main_button_style">
         <item name="android:layout_height">0dp</item>
+        <item name="borderRound">16dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">3</item>
         <item name="android:textColor">@color/dark</item>

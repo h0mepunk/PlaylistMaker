@@ -15,6 +15,7 @@
     </Toolbar>
     <Button
                 android:id="@+id/search_button"
+        android:
                 style="@style/main_button_style"
                 android:text="@string/search_title"
                 android:drawableLeft="@drawable/search"
