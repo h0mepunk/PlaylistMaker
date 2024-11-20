@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="primary_text_size">22sp</dimen>
-    <dimen name="button_margin">16dp</dimen>
+    <dimen name="setting_item_text_size">16sp</dimen>
+    <dimen name="button_margin_top">16dp</dimen>
+    <dimen name="button_margin_horizontal">16dp</dimen>
     <dimen name="settings_menu_item_padding_horizontal">16dp</dimen>
     <dimen name="settings_menu_item_padding_vertical">20dp</dimen>
     <dimen name="header_width">208dp</dimen>
@@ -9,4 +11,5 @@
     <dimen name="header_text_margin_top">10dp</dimen>
     <dimen name="header_text_margin_start">12dp</dimen>
     <dimen name="settings_menu_item_height">61dp</dimen>
+    <dimen name="button_radius">16dp</dimen>
 </resources>
