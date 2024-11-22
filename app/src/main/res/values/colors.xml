@@ -11,8 +11,8 @@
     <color name="background_color">#3772E7</color>
     <color name="settings_icon_light">#AEAFB4</color>
 
-    <color name="switch_thumb_active_color">#1A1B22</color> <!-- инфы по темной теме и активному состоянию нету в макете -->
+    <color name="switch_thumb_active_color">#3772E7</color>
     <color name="switch_thumb_inactive_color">#AEAFB4</color>
-    <color name="switch_track_active_color">#1A1B22</color>
-    <color name="switch_track_inactive_color">#E6E8EB</color> <!-- инфы по темной теме и активному состоянию нету в макете -->
+    <color name="switch_track_active_color">#9FBBF3</color>
+    <color name="switch_track_inactive_color">#E6E8EB</color>
 </resources>

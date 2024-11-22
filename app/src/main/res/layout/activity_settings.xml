@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <Toolbar
+        app:id="@+id/toolbar"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
         android:orientation="horizontal"
         android:navigationIcon="@drawable/arrow_back"
         android:title="@string/settings_title"
         android:titleTextColor="@color/dark"
-        android:titleTextAppearance="@style/toolbar_title_text"
-        android:layout_height="@dimen/header_height">
+        android:titleTextAppearance="@style/toolbar_title_text">
     </Toolbar>
     <com.google.android.material.switchmaterial.SwitchMaterial
         style="@style/settings_menu_item"
