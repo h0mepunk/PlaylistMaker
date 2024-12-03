@@ -17,19 +17,23 @@
     </Toolbar>
     <com.google.android.material.switchmaterial.SwitchMaterial
         style="@style/settings_menu_item"
+        android:id="@+id/setting_item_dark_theme"
         android:layout_marginTop="@dimen/button_margin_top"
         android:text="@string/dark_theme_menu"
         android:thumbTintMode="screen"/>
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/setting_item_share"
         style="@style/settings_menu_item"
         android:drawableEnd="@drawable/share"
         android:text="@string/share_menu" />
     <com.google.android.material.textview.MaterialTextView
         style="@style/settings_menu_item"
+        android:id="@+id/setting_item_contact_support"
         android:drawableEnd="@drawable/support"
         android:text="@string/support_menu" />
     <com.google.android.material.textview.MaterialTextView
         style="@style/settings_menu_item"
+        android:id="@+id/setting_item_user_agreement"
         android:drawableEnd="@drawable/arrow_forward"
         android:text="@string/user_agreement_menu" />
 </LinearLayout>
