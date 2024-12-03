@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    style="@style/background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -13,15 +13,12 @@
         android:orientation="horizontal"
         android:navigationIcon="@drawable/arrow_back"
         android:title="@string/settings_title"
-        android:titleTextColor="@color/dark"
         android:titleTextAppearance="@style/toolbar_title_text">
     </Toolbar>
     <com.google.android.material.switchmaterial.SwitchMaterial
         style="@style/settings_menu_item"
         android:layout_marginTop="@dimen/button_margin_top"
         android:text="@string/dark_theme_menu"
-        android:thumbTint="@color/switch_thumb_color"
-        android:trackTint="@color/switch_track_color"
         android:thumbTintMode="screen"/>
     <com.google.android.material.textview.MaterialTextView
         style="@style/settings_menu_item"
