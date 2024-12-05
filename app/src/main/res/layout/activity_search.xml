@@ -17,17 +17,12 @@
     
     <EditText
         android:id="@+id/inputEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+       style="@style/search_text_edit"
+        android:drawableStart="@drawable/search"
         android:hint="@string/input_hint"
         android:maxLength="5"
         android:maxLines="1"
-        android:inputType="text"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="@dimen/settings_menu_item_padding_horizontal">
+        android:inputType="text">
     </EditText>
 
 </LinearLayout>
