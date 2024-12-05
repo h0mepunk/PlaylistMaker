@@ -8,4 +8,5 @@
     <string name="share_menu">Поделиться приложением</string>
     <string name="support_menu">Написать в поддержку</string>
     <string name="user_agreement_menu">Пользовательское соглашение</string>
+    <string name="input_hint">Поиск</string>
 </resources>

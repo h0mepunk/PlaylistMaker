@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_height"
         android:orientation="horizontal"
