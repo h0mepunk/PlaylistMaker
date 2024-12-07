@@ -24,5 +24,12 @@
         android:maxLines="1"
         android:inputType="text">
     </EditText>
+    <ImageView
+        android:id="@+id/clearIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:visibility="gone" />
 
 </LinearLayout>
