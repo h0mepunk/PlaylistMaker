@@ -11,13 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 class SearchActivity : AppCompatActivity() {
 
     var textDump: CharSequence? = ""
+    val inputEditText: EditText = findViewById(R.id.inputEditText)
+    val clearButton: ImageView = findViewById(R.id.clearIcon)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        val inputEditText: EditText = findViewById(R.id.inputEditText)
-        val clearButton: ImageView = findViewById(R.id.clearIcon)
 
         clearButton.setOnClickListener {
             inputEditText.setText(EMPTY_SEARCH_TEXT)
@@ -58,6 +57,7 @@ class SearchActivity : AppCompatActivity() {
             SEARCH_TEXT,
             EMPTY_SEARCH_TEXT as CharSequence
         )
+        inputEditText.setText(textDump)
     }
 
 
