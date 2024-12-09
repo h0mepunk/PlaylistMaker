@@ -12,4 +12,5 @@
     <dimen name="header_text_margin_start">12dp</dimen>
     <dimen name="settings_menu_item_height">61dp</dimen>
     <dimen name="button_radius">16dp</dimen>
+    <dimen name="text_input_height">36dp</dimen>
 </resources>

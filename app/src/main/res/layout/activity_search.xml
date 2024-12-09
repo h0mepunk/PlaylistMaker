@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:orientation="vertical"
+    style="@style/search_background">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Toolbar
+        android:id="@+id/search_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:orientation="horizontal"
+        android:navigationIcon="@drawable/arrow_back"
+        android:title="@string/search_title"
+        android:titleTextAppearance="@style/toolbar_title_text">
+    </Toolbar>
+    
+    <EditText
+        android:id="@+id/inputEditText"
+       style="@style/search_text_edit"
+        android:drawableStart="@drawable/search"
+        android:hint="@string/input_hint"
+        android:maxLength="5"
+        android:maxLines="1"
+        android:inputType="text">
+    </EditText>
+    <ImageView
+        android:id="@+id/clearIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:visibility="gone" />
+
+</LinearLayout>

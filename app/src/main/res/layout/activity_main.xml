@@ -17,16 +17,16 @@
     <Button
         android:id="@+id/search_button"
         style="@style/main_button_style"
-        app:icon="@drawable/search"
-        android:text="@string/search_title"/>
+        android:text="@string/search_title"
+        app:icon="@drawable/search" />
 
-        <com.google.android.material.button.MaterialButton
+    <Button
             android:id="@+id/media_button"
             style="@style/main_button_style"
             app:icon="@drawable/library"
             android:text="@string/library_title" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/settings_button"
             style="@style/main_button_style"
             app:icon="@drawable/settings"

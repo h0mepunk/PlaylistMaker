@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -20,20 +21,22 @@ class MainActivity : AppCompatActivity() {
         val buttonSettings = findViewById<Button>(R.id.settings_button)
         val mediaButton = findViewById<Button>(R.id.media_button)
 
-        val settingsActivity = Intent(this, SettingsActivity::class.java)
-        val searchActivity = Intent(this, SearchActivity::class.java)
-        val mediaActivity = Intent(this, MediaActivity::class.java)
-
-
         buttonSearch.setOnClickListener {
+            val searchActivity = Intent(this, SearchActivity::class.java)
+            Log.e("MainActivity", "Search button clicked")
+            Toast.makeText(this, "Search button clicked", Toast.LENGTH_SHORT).show()
             startActivity(searchActivity)
         }
 
         buttonSettings.setOnClickListener{
+            val settingsActivity = Intent(this, SettingsActivity::class.java)
+            Log.e("MainActivity", "Settings button clicked")
             startActivity(settingsActivity)
         }
 
         mediaButton.setOnClickListener {
+            val mediaActivity = Intent(this, MediaActivity::class.java)
+            Log.e("MainActivity", "Media button clicked")
             startActivity(mediaActivity)
         }
     }
