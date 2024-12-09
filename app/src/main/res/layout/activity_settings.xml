@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <Toolbar
+        android:id="@+id/settings_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:orientation="horizontal"
+        android:navigationIcon="@drawable/arrow_back"
+        android:title="@string/settings_title"
+        android:titleTextAppearance="@style/toolbar_title_text">
+    </Toolbar>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        style="@style/settings_menu_item"
+        android:id="@+id/setting_item_dark_theme"
+        android:layout_marginTop="@dimen/button_margin_top"
+        android:text="@string/dark_theme_menu"
+        android:thumbTintMode="screen"/>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/setting_item_share"
+        style="@style/settings_menu_item"
+        android:drawableEnd="@drawable/share"
+        android:text="@string/share_menu" />
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:id="@+id/setting_item_contact_support"
+        android:drawableEnd="@drawable/support"
+        android:text="@string/support_menu" />
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/settings_menu_item"
+        android:id="@+id/setting_item_user_agreement"
+        android:drawableEnd="@drawable/arrow_forward"
+        android:text="@string/user_agreement_menu" />
+</LinearLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_view"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+    <Toolbar
+        android:layout_width="@dimen/header_width"
+        android:title="@string/playlist_maker_header"
+        android:titleMarginTop="@dimen/header_text_margin_top"
+        android:titleMarginStart="@dimen/header_text_margin_start"
+        android:titleTextAppearance="@style/toolbar_title_text"
+        android:layout_height="@dimen/header_height">
+    </Toolbar>
+    <Button
+        android:id="@+id/search_button"
+        style="@style/main_button_style"
+        android:text="@string/search_title"
+        app:icon="@drawable/search" />
+
+    <Button
+            android:id="@+id/media_button"
+            style="@style/main_button_style"
+            app:icon="@drawable/library"
+            android:text="@string/library_title" />
+
+        <Button
+            android:id="@+id/settings_button"
+            style="@style/main_button_style"
+            app:icon="@drawable/settings"
+            android:text="@string/settings_title" />
+
+</LinearLayout>

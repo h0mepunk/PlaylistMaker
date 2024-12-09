@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="background">
+        <item name="android:background">@color/white</item>
+    </style>
+    <style name="toolbar_title_text">
+        <item name="android:fontFamily">"@font/ys_display_medium"</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:titleMarginTop">@dimen/header_text_margin_top</item>
+        <item name="android:titleMarginStart">@dimen/header_text_margin_start</item>
+        <item name="android:textSize">@dimen/primary_text_size</item>
+    </style>
+    <style name="main_button_style">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">3</item>
+        <item name="android:fontFamily">"@font/ys_display_medium"</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">@dimen/primary_text_size</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="textAllCaps">false</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="iconPadding">8dp</item>
+        <item name="iconTint">@color/dark</item>
+        <item name="android:layout_marginTop">@dimen/button_margin_top</item>
+        <item name="android:layout_marginHorizontal">@dimen/button_margin_horizontal</item>
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+    <style name="settings_menu_item">
+        <item name="android:fontFamily">"@font/ys_display_medium"</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/settings_menu_item_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/settings_menu_item_padding_horizontal</item>
+        <item name="android:paddingVertical">@dimen/settings_menu_item_padding_vertical</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:textSize">@dimen/setting_item_text_size</item>
+        <item name="android:thumbTint">@color/switch_thumb_color</item>
+        <item name="android:trackTint">@color/switch_track_color</item>
+        <item name="android:clickable">false</item>
+    </style>
+    <style name="search_background">
+        <item name="android:background">@color/white</item>
+    </style>
+    <style name="search_text_edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:background">#E6E8EB</item>
+        <item name="android:layout_marginStart">@dimen/settings_menu_item_padding_horizontal</item>
+    </style>
+</resources>
