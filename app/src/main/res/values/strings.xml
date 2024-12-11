@@ -9,4 +9,9 @@
     <string name="support_menu">Написать в поддержку</string>
     <string name="user_agreement_menu">Пользовательское соглашение</string>
     <string name="input_hint">Поиск</string>
+    <string name="support_email_value">patrick.delroy.yohoho@gmail.com</string>
+    <string name="share_url_value">https://practicum.yandex.kz/learn/android-developer-plus/courses/</string>
+    <string name="support_message_default_subject_value">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="support_message_default_text_value">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="user_agreement_url_value">https://yandex.ru/legal/practicum_offer/</string>
 </resources>

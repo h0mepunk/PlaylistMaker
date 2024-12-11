@@ -30,7 +30,7 @@ class SettingsActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_SEND)
             intent.putExtra(
                 Intent.EXTRA_TEXT,
-                "https://practicum.yandex.kz/learn/android-developer-plus/courses/"
+                getString(R.string.share_url_value)
             )
             startActivity(intent)
         }
@@ -39,22 +39,22 @@ class SettingsActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_SEND)
             intent.putExtra(
                 Intent.EXTRA_EMAIL,
-                "patrick.delroy.yohoho@gmail.com"
+                getString(R.string.support_email_value)
             )
             intent.putExtra(
                 Intent.EXTRA_SUBJECT,
-                "Сообщение разработчикам и разработчицам приложения Playlist Maker"
+                getString(R.string.support_message_default_subject_value)
             )
             intent.putExtra(
                 Intent.EXTRA_TEXT,
-                "Спасибо разработчикам и разработчицам за крутое приложение!"
+                getString(R.string.support_message_default_text_value)
             )
             startActivity(intent)
         }
 
         userAgreement.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.setData(Uri.parse("https://yandex.ru/legal/practicum_offer/"))
+            intent.setData(Uri.parse(getString(R.string.user_agreement_url_value)))
             startActivity(intent)
         }
 
