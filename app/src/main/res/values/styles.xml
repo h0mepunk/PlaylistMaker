@@ -47,14 +47,14 @@
     </style>
     <style name="search_text_edit">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textFontWeight">400</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:textSize">19sp</item>
-        <item name="android:drawablePadding">2dp</item>
+        <item name="android:drawablePadding">8dp</item>
         <item name="android:paddingStart">14dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textColorHint">@color/black</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textColorHint">@color/grey</item>
         <item name="android:layout_marginEnd">16dp</item>
         <item name="android:background">#E6E8EB</item>
         <item name="android:layout_marginStart">@dimen/settings_menu_item_padding_horizontal</item>

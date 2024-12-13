@@ -17,12 +17,12 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:layout_marginTop="8dp"
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/inputEditText"
             style="@style/search_text_edit"
             android:drawableStart="@drawable/search_mini"
-            android:radius="8dp"
             android:hint="@string/input_hint"
             android:maxLength="5"
             android:maxLines="1"
@@ -32,9 +32,11 @@
             android:id="@+id/clearIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:visibility="gone" />
+            android:layout_marginVertical="12dp"
+            android:layout_marginRight="28dp"
+            android:layout_gravity="end"
+            android:src="@drawable/cross_icon"
+            android:visibility="visible" />
 
     </FrameLayout>
 </LinearLayout>
