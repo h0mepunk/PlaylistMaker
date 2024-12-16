@@ -23,20 +23,16 @@ class MainActivity : AppCompatActivity() {
 
         buttonSearch.setOnClickListener {
             val searchActivity = Intent(this, SearchActivity::class.java)
-            Log.e("MainActivity", "Search button clicked")
-            Toast.makeText(this, "Search button clicked", Toast.LENGTH_SHORT).show()
             startActivity(searchActivity)
         }
 
         buttonSettings.setOnClickListener{
             val settingsActivity = Intent(this, SettingsActivity::class.java)
-            Log.e("MainActivity", "Settings button clicked")
             startActivity(settingsActivity)
         }
 
         mediaButton.setOnClickListener {
             val mediaActivity = Intent(this, MediaActivity::class.java)
-            Log.e("MainActivity", "Media button clicked")
             startActivity(mediaActivity)
         }
     }

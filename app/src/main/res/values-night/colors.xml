@@ -11,7 +11,7 @@
     <color name="search_icon_mini">@color/black</color>
     <color name="share_icon">@color/white</color>
     <color name="library_icon">@color/dark</color>
-    <color name="support_icon">#@color/white</color>
+    <color name="support_icon">@color/white</color>
     <color name="arrow_forward_icon">@color/white</color>
     <color name="arrow_back_icon">@color/white</color>
 

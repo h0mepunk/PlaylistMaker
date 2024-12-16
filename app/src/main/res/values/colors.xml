@@ -12,7 +12,7 @@
     <color name="search_icon_mini">@color/grey</color>
     <color name="share_icon">@color/grey</color>
     <color name="library_icon">@color/dark</color>
-    <color name="support_icon">#@color/grey</color>
+    <color name="support_icon">@color/grey</color>
     <color name="arrow_forward_icon">@color/grey</color>
     <color name="arrow_back_icon">@color/dark</color>
 

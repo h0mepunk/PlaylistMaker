@@ -1,25 +1,39 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
 
     var textDump: CharSequence? = ""
-    val inputEditText: EditText = findViewById(R.id.inputEditText)
-    val clearButton: ImageView = findViewById(R.id.clearIcon)
+
+    private val inputEditText: EditText by lazy { findViewById(R.id.inputEditText) }
+    private val toolbar by lazy { findViewById<Toolbar>(R.id.search_toolbar)}
+
+    val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val mainActivity = Intent(this, MainActivity::class.java)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         clearButton.setOnClickListener {
             inputEditText.setText(EMPTY_SEARCH_TEXT)
+        }
+
+        toolbar.setNavigationOnClickListener {
+            startActivity(mainActivity)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -28,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
             }
 
@@ -58,15 +72,6 @@ class SearchActivity : AppCompatActivity() {
             EMPTY_SEARCH_TEXT as CharSequence
         )
         inputEditText.setText(textDump)
-    }
-
-
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
     }
 
     companion object {
