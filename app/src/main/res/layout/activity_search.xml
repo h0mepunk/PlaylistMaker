@@ -22,6 +22,8 @@
         <EditText
             android:id="@+id/inputEditText"
             style="@style/search_text_edit"
+            android:background="@drawable/search_text_edit"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:drawableStart="@drawable/search_mini"
             android:hint="@string/input_hint"
             android:maxLength="5"
