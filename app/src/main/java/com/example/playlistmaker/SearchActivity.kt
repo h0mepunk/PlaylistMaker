@@ -1,10 +1,12 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toolbar
@@ -28,8 +30,12 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        clearButton.isVisible = false
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+
         clearButton.setOnClickListener {
             inputEditText.setText(EMPTY_SEARCH_TEXT)
+            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
 
         toolbar.setNavigationOnClickListener {
