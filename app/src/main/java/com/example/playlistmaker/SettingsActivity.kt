@@ -27,7 +27,8 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreement = findViewById<MaterialTextView>(R.id.setting_item_user_agreement)
 
         shareButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND)
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:")
             intent.putExtra(
                 Intent.EXTRA_TEXT,
                 getString(R.string.share_url_value)
@@ -36,7 +37,8 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         contactSupport.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND)
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:")
             intent.putExtra(
                 Intent.EXTRA_EMAIL,
                 getString(R.string.support_email_value)
