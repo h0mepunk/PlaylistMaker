@@ -14,4 +14,6 @@
     <dimen name="button_radius">16dp</dimen>
     <dimen name="text_input_height">36dp</dimen>
     <dimen name="search_text_edit_corner_radius">8dp</dimen>
+    <dimen name="song_item_height">61dp</dimen>
+    <dimen name="song_album_cover_size">45dp</dimen>
 </resources>

@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="61dp"
+    android:layout_height="@dimen/song_item_height"
     android:orientation="horizontal">
     <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:src=""
+        android:id="@+id/song_album_cover"
+        android:layout_width="@dimen/song_album_cover_size"
+        android:layout_height="@dimen/song_album_cover_size"
         android:contentDescription="album_cover"
+        android:src="@drawable/placeholder"
+        android:background="@color/placeholder_background_color"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="13dp"
-        android:radius="2dp"
-        ></ImageView>
+        android:radius="2dp">
+
+    </ImageView>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,6 +23,7 @@
         android:layout_marginLeft="8dp"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="13dp"
@@ -30,6 +34,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/song_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="The Beatles"
@@ -38,8 +43,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:src=""></ImageView>
+                android:src="@drawable/ellipse"></ImageView>
             <TextView
+                android:id="@+id/song_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2:55"
