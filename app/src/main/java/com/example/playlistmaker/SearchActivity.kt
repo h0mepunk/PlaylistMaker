@@ -27,17 +27,17 @@ class SearchActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_search)
 
         val mainActivity = Intent(this, MainActivity::class.java)
-        val songListRecycler: RecyclerView = findViewById(R.id.song_list_recycler)
+        val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
 
 
         adapter = TrackAdapter(TRACKS)
         songListRecycler.adapter = adapter
 
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
