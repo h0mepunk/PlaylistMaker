@@ -9,7 +9,6 @@
         android:layout_height="@dimen/song_album_cover_size"
         android:contentDescription="album_cover"
         android:src="@drawable/placeholder"
-        android:background="@color/placeholder_background_color"
         android:layout_marginTop="@dimen/song_item_margin_8"
         android:layout_marginLeft="@dimen/song_cover_margin_left"
         android:radius="@dimen/song_cover_radius">
@@ -38,6 +37,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/song_subtitle"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="The Beatles"
                 ></TextView>
             <ImageView
@@ -48,11 +49,13 @@
                 android:layout_gravity="center"
                 android:src="@drawable/ellipse"></ImageView>
             <TextView
+                android:ellipsize="end"
                 android:id="@+id/song_time"
                 style="@style/song_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2:55"
+                android:maxLines="1"
                 ></TextView>
         </LinearLayout>
 
