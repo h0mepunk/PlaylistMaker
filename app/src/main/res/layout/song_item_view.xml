@@ -10,9 +10,9 @@
         android:contentDescription="album_cover"
         android:src="@drawable/placeholder"
         android:background="@color/placeholder_background_color"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="13dp"
-        android:radius="2dp">
+        android:layout_marginTop="@dimen/song_item_margin_8"
+        android:layout_marginLeft="@dimen/song_cover_margin_left"
+        android:radius="@dimen/song_cover_radius">
 
     </ImageView>
 
@@ -20,13 +20,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="@dimen/song_item_margin_8"
         android:orientation="vertical">
         <TextView
             android:id="@+id/song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
+            style="@style/song_title"
             android:text="Yesterday (Remastered 2009)"
             ></TextView>
         <LinearLayout
@@ -37,15 +37,19 @@
                 android:id="@+id/song_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/song_subtitle"
                 android:text="The Beatles"
                 ></TextView>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginStart="@dimen/song_divider_margin"
+                android:layout_marginEnd="@dimen/song_divider_margin"
+                android:layout_gravity="center"
                 android:src="@drawable/ellipse"></ImageView>
             <TextView
                 android:id="@+id/song_time"
+                style="@style/song_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2:55"
@@ -57,8 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="@dimen/song_item_margin_8"
+        android:layout_marginStart="@dimen/song_item_margin_8"
         android:src="@drawable/arrow_forward">
     </ImageView>
 
