@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    style="@style/search_background">
+    android:backgroundTint="@color/search_background">
 
     <Toolbar
         android:id="@+id/search_toolbar"
@@ -44,6 +44,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/song_list_recycler"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/tracks_list_recycler_margin_top"
         android:layout_height="0dp"
         android:layout_weight="1">
     </androidx.recyclerview.widget.RecyclerView>

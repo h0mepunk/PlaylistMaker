@@ -11,6 +11,7 @@
         android:src="@drawable/placeholder"
         android:layout_marginTop="@dimen/song_item_margin_8"
         android:layout_marginLeft="@dimen/song_cover_margin_left"
+        android:background="@drawable/song_image"
         android:radius="@dimen/song_cover_radius">
 
     </ImageView>
@@ -64,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/song_item_margin_8"
+        android:layout_marginEnd="@dimen/song_item_margin_12"
         android:layout_marginStart="@dimen/song_item_margin_8"
         android:src="@drawable/arrow_forward">
     </ImageView>
