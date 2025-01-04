@@ -15,7 +15,11 @@ class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private val songDuration: TextView = itemView.findViewById(R.id.song_time)
 
     fun bind(item: Track) {
-        Glide.with(itemView.context).load(item.artworkUrl).into(songImage)
+        Glide.with(itemView.context)
+            .load(item.artworkUrl)
+            .placeholder(R.drawable.placeholder)
+            .into(songImage)
+
         songDuration.text = item.trackTime
         songTitle.text = item.trackName
         songSubtitle.text = item.artistName
