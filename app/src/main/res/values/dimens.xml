@@ -24,4 +24,7 @@
     <dimen name="song_divider_margin">10dp</dimen>
     <dimen name="tracks_list_recycler_margin_top">16dp</dimen>
     <dimen name="error_refresh_button_corner_radius">54dp</dimen>
+    <dimen name="error_layout_margin_top">210dp</dimen>
+    <dimen name="search_icon_margin_right">28dp</dimen>
+    <dimen name="search_icon_margin_vertical">12dp</dimen>
 </resources>
