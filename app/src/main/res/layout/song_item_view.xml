@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/song_item_height"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/song_album_cover"
+        android:layout_width="@dimen/song_album_cover_size"
+        android:layout_height="@dimen/song_album_cover_size"
+        android:contentDescription="album_cover"
+        android:src="@drawable/placeholder"
+        android:layout_marginTop="@dimen/song_item_margin_8"
+        android:layout_marginLeft="@dimen/song_cover_margin_left"
+        android:background="@drawable/song_image"
+        android:radius="@dimen/song_cover_radius">
+
+    </ImageView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/song_item_margin_8"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/song_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/song_title"
+            android:text="Yesterday (Remastered 2009)"
+            ></TextView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/song_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/song_subtitle"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="The Beatles"
+                ></TextView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/song_divider_margin"
+                android:layout_marginEnd="@dimen/song_divider_margin"
+                android:layout_gravity="center"
+                android:src="@drawable/ellipse"></ImageView>
+            <TextView
+                android:ellipsize="end"
+                android:id="@+id/song_time"
+                style="@style/song_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2:55"
+                android:maxLines="1"
+                ></TextView>
+        </LinearLayout>
+
+    </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/song_item_margin_12"
+        android:layout_marginStart="@dimen/song_item_margin_8"
+        android:src="@drawable/arrow_forward">
+    </ImageView>
+
+</LinearLayout>

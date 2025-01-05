@@ -8,14 +8,15 @@
     <color name="settings_icon">@color/white</color>
     <color name="cross_icon">@color/dark</color>
     <color name="search_icon_menu">@color/dark</color>
-    <color name="search_icon_mini">@color/black</color>
+    <color name="search_icon_mini">@color/dark</color>
     <color name="share_icon">@color/white</color>
     <color name="library_icon">@color/dark</color>
     <color name="support_icon">@color/white</color>
     <color name="arrow_forward_icon">@color/white</color>
     <color name="arrow_back_icon">@color/white</color>
     <color name="search_text_edit_color">@color/white</color>
-
+    <color name="placeholder_background_color">@color/black</color>
+    <color name="search_background">@color/dark</color>
     <color name="switch_thumb_active_color">#3772E7</color>
     <color name="switch_thumb_inactive_color">#AEAFB4</color>
     <color name="switch_track_active_color">#9FBBF3</color>
