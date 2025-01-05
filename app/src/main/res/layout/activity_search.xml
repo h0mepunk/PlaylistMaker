@@ -28,6 +28,8 @@
             android:hint="@string/input_hint"
             android:maxLength="5"
             android:maxLines="1"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:inputType="text">
         </EditText>
         <ImageView

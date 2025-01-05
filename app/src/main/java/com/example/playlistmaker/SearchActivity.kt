@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.EditText
@@ -14,6 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -30,6 +36,11 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
         val mainActivity = Intent(this, MainActivity::class.java)
         val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
@@ -37,6 +48,25 @@ class SearchActivity : AppCompatActivity() {
 
         adapter = TrackAdapter(TRACKS)
         songListRecycler.adapter = adapter
+
+        val tracksApiService = retrofit.create<TrackApiService>()
+
+        tracksApiService.getTracks(textDump.toString()).enqueue(object : Callback<List<Track>> {
+            override fun onResponse(call: Call<List<Track>>, response: Response<List<Track>>) {
+                // Получили ответ от сервера
+                if (response.isSuccessful) {
+                    // Наш запрос был удачным, получаем наши объекты
+                    val tracks = response.body().orEmpty()
+                } else {
+                    // Сервер отклонил наш запрос с ошибкой
+                    val errorJson = response.errorBody()?.string()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Track>>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
 
 
         clearButton.isVisible = false
@@ -49,6 +79,14 @@ class SearchActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener {
             startActivity(mainActivity)
+        }
+
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
+                true
+            }
+            false
         }
 
         val simpleTextWatcher = object : TextWatcher {
