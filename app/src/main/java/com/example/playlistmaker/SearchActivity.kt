@@ -146,13 +146,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(text: CharSequence) {
-        tracksApiService.getTracks(textDump.toString()).enqueue(object : Callback<TrackResponse> {
+        tracksApiService.getTracks(text.toString()).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                 if (response.isSuccessful) {
                     trackList.addAll(response.body()?.results as ArrayList<Track>)
-                    Log.e("?????? not empty", "trackList: $trackList")
                     if (trackList.isEmpty()) {
-                        Log.e("?????? empty", "trackList: $trackList")
                         placeholderMessage.visibility = View.VISIBLE
                         showMessage(
                             text = R.string.empty_song_list_error_text,
