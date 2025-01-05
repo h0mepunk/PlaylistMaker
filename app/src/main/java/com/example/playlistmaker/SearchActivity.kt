@@ -5,11 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -20,10 +21,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
 
     var textDump: CharSequence? = ""
+    var trackList = ArrayList<Track>()
 
     private val inputEditText: EditText by lazy { findViewById(R.id.inputEditText) }
     private val toolbar by lazy { findViewById<Toolbar>(R.id.search_toolbar)}
@@ -31,6 +34,7 @@ class SearchActivity : AppCompatActivity() {
     val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
     lateinit var adapter: TrackAdapter
 
+    val placeholderMessage: View by lazy { findViewById(R.id.placeholderMessage) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,29 +49,10 @@ class SearchActivity : AppCompatActivity() {
         val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
 
+        val tracksApiService = retrofit.create(TrackApiService::class.java)
 
-        adapter = TrackAdapter(TRACKS)
+        adapter = TrackAdapter(trackList)
         songListRecycler.adapter = adapter
-
-        val tracksApiService = retrofit.create<TrackApiService>()
-
-        tracksApiService.getTracks(textDump.toString()).enqueue(object : Callback<List<Track>> {
-            override fun onResponse(call: Call<List<Track>>, response: Response<List<Track>>) {
-                // Получили ответ от сервера
-                if (response.isSuccessful) {
-                    // Наш запрос был удачным, получаем наши объекты
-                    val tracks = response.body().orEmpty()
-                } else {
-                    // Сервер отклонил наш запрос с ошибкой
-                    val errorJson = response.errorBody()?.string()
-                }
-            }
-
-            override fun onFailure(call: Call<List<Track>>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
-
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -83,8 +68,29 @@ class SearchActivity : AppCompatActivity() {
 
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
-                true
+                if (inputEditText.text.isNotEmpty()) {
+                    inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+                    tracksApiService.getTracks(textDump.toString()).enqueue(object : Callback<TrackResponse> {
+                        override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                            if (response.isSuccessful) {
+                                trackList = response.body()?.results as ArrayList<Track>
+                            } else {
+                                val errorJson = response.errorBody()?.string()
+                                //show error state
+                            }
+                        }
+
+                        override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                            t.printStackTrace()
+                        }
+                    })
+                    if (trackList.isEmpty()) {
+                        placeholderMessage.visibility = View.VISIBLE
+                        // show empty state
+                    } else {
+                        adapter.notifyDataSetChanged()
+                    }
+                }
             }
             false
         }
@@ -125,6 +131,21 @@ class SearchActivity : AppCompatActivity() {
             EMPTY_SEARCH_TEXT as CharSequence
         )
         inputEditText.setText(textDump)
+    }
+
+    private fun showMessage(text: String, additionalMessage: String) {
+        if (text.isNotEmpty()) {
+            placeholderMessage.visibility = View.VISIBLE
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            placeholderMessage.text = text
+            if (additionalMessage.isNotEmpty()) {
+                Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
+                    .show()
+            }
+        } else {
+            placeholderMessage.visibility = View.GONE
+        }
     }
 
     companion object {
