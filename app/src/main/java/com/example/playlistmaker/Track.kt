@@ -3,11 +3,11 @@ package com.example.playlistmaker
 data class Track (
     val trackName: String,
     val artistName: String,
-    val trackTime: String,
-    val artworkUrl: String
+    val trackTimeMillis: String,
+    val artworkUrl100: String
 )
 
 data class TrackResponse(
-    val results: List<Track>,
-    val resultCount: Int
+    val resultCount: Int,
+    val results: List<Track>
 )
