@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
 
@@ -34,7 +34,8 @@ class SearchActivity : AppCompatActivity() {
     val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
     lateinit var adapter: TrackAdapter
 
-    val placeholderMessage: View by lazy { findViewById(R.id.placeholderMessage) }
+    val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
+    val placeholderMessageText: TextView by lazy { findViewById(R.id.placeholderMessageText) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
 
         adapter = TrackAdapter(trackList)
         songListRecycler.adapter = adapter
+        placeholderMessage.visibility = View.GONE
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -76,7 +78,7 @@ class SearchActivity : AppCompatActivity() {
                                 trackList = response.body()?.results as ArrayList<Track>
                             } else {
                                 val errorJson = response.errorBody()?.string()
-                                //show error state
+                                showMessage(text = R.string.network_error_text, additionalMessage = errorJson.toString())
                             }
                         }
 
@@ -86,7 +88,7 @@ class SearchActivity : AppCompatActivity() {
                     })
                     if (trackList.isEmpty()) {
                         placeholderMessage.visibility = View.VISIBLE
-                        // show empty state
+                        showMessage(text = R.string.network_error_text, additionalMessage = "")
                     } else {
                         adapter.notifyDataSetChanged()
                     }
@@ -133,12 +135,12 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(textDump)
     }
 
-    private fun showMessage(text: String, additionalMessage: String) {
-        if (text.isNotEmpty()) {
+    private fun showMessage(text: Int?, additionalMessage: String) {
+        if (text != null) {
             placeholderMessage.visibility = View.VISIBLE
             trackList.clear()
             adapter.notifyDataSetChanged()
-            placeholderMessage.text = text
+            placeholderMessageText.text = getString(text)
             if (additionalMessage.isNotEmpty()) {
                 Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
                     .show()

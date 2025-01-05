@@ -28,4 +28,5 @@
     <color name="switch_track_inactive_color">@color/darker_grey</color>
 
     <color name="icon_error_filling">@color/dark</color>
+    <color name="refresh_button_color">@color/dark</color>
 </resources>

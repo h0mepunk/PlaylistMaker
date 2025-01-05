@@ -51,6 +51,7 @@
         android:layout_weight="1">
     </androidx.recyclerview.widget.RecyclerView>
     <LinearLayout
+        android:id="@+id/placeholderView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -61,12 +62,14 @@
             android:src="@drawable/empty_results_error">
         </ImageView>
         <TextView
+            android:id="@+id/placeholderMessageText"
             style="@style/error_text"
-            android:text="Проблемы со связью.\n\nЗагрузка не удалась. Проверьте\nподключение к интернету"
+            android:text="@string/network_error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </TextView>
         <Button
+            style="@style/error_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>

@@ -24,4 +24,5 @@
     <color name="switch_track_active_color">#9FBBF3</color>
     <color name="switch_track_inactive_color">#E6E8EB</color>
     <color name="icon_error_filling">@color/white</color>
+    <color name="refresh_button_color">@color/white</color>
 </resources>
