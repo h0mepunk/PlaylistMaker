@@ -47,15 +47,16 @@
         android:id="@+id/song_list_recycler"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/tracks_list_recycler_margin_top"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
     <LinearLayout
         android:id="@+id/placeholderView"
+        android:layout_marginTop="210dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <ImageView
+            android:id="@+id/placeholderIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -69,6 +70,7 @@
             android:layout_height="wrap_content">
         </TextView>
         <Button
+            android:id="@+id/refreshButton"
             style="@style/error_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">

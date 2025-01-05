@@ -16,4 +16,5 @@
     <string name="user_agreement_url_value">https://yandex.ru/legal/practicum_offer/</string>
     <string name="refresh">Обновить</string>
     <string name="network_error_text">Проблемы со связью.\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="empty_song_list_error_text">Ничего не нашлось</string>
 </resources>

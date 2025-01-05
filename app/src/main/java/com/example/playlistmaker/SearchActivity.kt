@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -36,6 +37,8 @@ class SearchActivity : AppCompatActivity() {
 
     val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
     val placeholderMessageText: TextView by lazy { findViewById(R.id.placeholderMessageText) }
+    val placeholderIcon: ImageView by lazy { findViewById(R.id.placeholderIcon) }
+    val refreshButton: Button by lazy { findViewById(R.id.refreshButton) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +81,12 @@ class SearchActivity : AppCompatActivity() {
                                 trackList = response.body()?.results as ArrayList<Track>
                             } else {
                                 val errorJson = response.errorBody()?.string()
-                                showMessage(text = R.string.network_error_text, additionalMessage = errorJson.toString())
+                                showMessage(
+                                    text = R.string.network_error_text,
+                                    additionalMessage = errorJson.toString(),
+                                    buttonVisibility = View.VISIBLE,
+                                    icon = R.drawable.internet_error
+                                )
                             }
                         }
 
@@ -88,7 +96,12 @@ class SearchActivity : AppCompatActivity() {
                     })
                     if (trackList.isEmpty()) {
                         placeholderMessage.visibility = View.VISIBLE
-                        showMessage(text = R.string.network_error_text, additionalMessage = "")
+                        showMessage(
+                            text = R.string.empty_song_list_error_text,
+                            additionalMessage = "",
+                            buttonVisibility = View.GONE,
+                            icon = R.drawable.empty_results_error
+                        )
                     } else {
                         adapter.notifyDataSetChanged()
                     }
@@ -135,11 +148,20 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(textDump)
     }
 
-    private fun showMessage(text: Int?, additionalMessage: String) {
+    private fun showMessage(
+        text: Int?,
+        additionalMessage: String,
+        buttonVisibility: Int = View.VISIBLE,
+        icon: Int = R.drawable.internet_error
+    ) {
+
         if (text != null) {
             placeholderMessage.visibility = View.VISIBLE
+            placeholderIcon.setBackgroundResource(icon)
+            refreshButton.visibility = buttonVisibility
             trackList.clear()
             adapter.notifyDataSetChanged()
+
             placeholderMessageText.text = getString(text)
             if (additionalMessage.isNotEmpty()) {
                 Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
