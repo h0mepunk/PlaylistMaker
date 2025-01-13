@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -153,7 +152,7 @@ class SearchActivity : AppCompatActivity() {
     private fun searchTracks(text: CharSequence) {
         tracksApiService.getTracks(text.toString()).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                if (response.isSuccessful) {
+                if (response.code() == 200) {
                     trackList.clear()
                     trackList.addAll(response.body()?.results as ArrayList<Track>)
                     if (trackList.isEmpty()) {
