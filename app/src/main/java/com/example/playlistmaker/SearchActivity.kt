@@ -63,6 +63,10 @@ class SearchActivity : AppCompatActivity() {
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
+        refreshButton.setOnClickListener {
+            searchTracks(textDump.toString())
+        }
+
         clearButton.setOnClickListener {
             inputEditText.setText(EMPTY_SEARCH_TEXT)
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
@@ -76,9 +80,9 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputEditText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-                    searchTracks(inputEditText.text)
+                    textDump = inputEditText.text
+                    searchTracks((textDump.toString()))
                 }
-                true
             }
             false
         }
@@ -94,7 +98,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                searchTracks(inputEditText.text)
+                //empty
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
@@ -129,17 +133,18 @@ class SearchActivity : AppCompatActivity() {
     ) {
 
         if (text != null) {
+            placeholderMessageText.text = getString(text)
+            if (additionalMessage.isNotEmpty()) {
+                Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
+                    .show()
+            }
+
             placeholderMessage.visibility = View.VISIBLE
             placeholderIcon.setBackgroundResource(icon)
             refreshButton.visibility = buttonVisibility
             trackList.clear()
             adapter.notifyDataSetChanged()
 
-            placeholderMessageText.text = getString(text)
-            if (additionalMessage.isNotEmpty()) {
-                Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
-                    .show()
-            }
         } else {
             placeholderMessage.visibility = View.GONE
         }
@@ -149,6 +154,7 @@ class SearchActivity : AppCompatActivity() {
         tracksApiService.getTracks(text.toString()).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                 if (response.isSuccessful) {
+                    trackList.clear()
                     trackList.addAll(response.body()?.results as ArrayList<Track>)
                     if (trackList.isEmpty()) {
                         placeholderMessage.visibility = View.VISIBLE
