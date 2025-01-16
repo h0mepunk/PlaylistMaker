@@ -131,6 +131,8 @@ class SearchActivity : AppCompatActivity() {
         icon: Int = R.drawable.internet_error
     ) {
 
+        trackList.clear()
+        adapter.notifyDataSetChanged()
         if (text != null) {
             placeholderMessageText.text = getString(text)
             if (additionalMessage.isNotEmpty()) {
@@ -141,8 +143,6 @@ class SearchActivity : AppCompatActivity() {
             placeholderMessage.visibility = View.VISIBLE
             placeholderIcon.setBackgroundResource(icon)
             refreshButton.visibility = buttonVisibility
-            trackList.clear()
-            adapter.notifyDataSetChanged()
 
         } else {
             placeholderMessage.visibility = View.GONE
@@ -179,6 +179,12 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                 t.printStackTrace()
+                showMessage(
+                    text = R.string.network_error_text,
+                    additionalMessage = "",
+                    buttonVisibility = View.VISIBLE,
+                    icon = R.drawable.internet_error
+                )
             }
         })
 
