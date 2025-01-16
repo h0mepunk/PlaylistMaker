@@ -153,10 +153,10 @@ class SearchActivity : AppCompatActivity() {
         tracksApiService.getTracks(text.toString()).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                 if (response.code() == 200) {
+                    placeholderMessage.visibility = View.GONE
                     trackList.clear()
                     trackList.addAll(response.body()?.results as ArrayList<Track>)
                     if (trackList.isEmpty()) {
-                        placeholderMessage.visibility = View.VISIBLE
                         showMessage(
                             text = R.string.empty_song_list_error_text,
                             additionalMessage = "",
