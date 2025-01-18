@@ -3,8 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dark">#1A1B22</color>
+    <color name="yellow">#FCD452</color>
+    <color name="blue">#3772E7</color>
     <color name="settings_background_color">@color/black</color>
-    <color name="background_color">#3772E7</color>
+    <color name="background_color">@color/blue</color>
     <color name="settings_icon">@color/white</color>
     <color name="cross_icon">@color/dark</color>
     <color name="search_icon_menu">@color/dark</color>
@@ -21,4 +23,6 @@
     <color name="switch_thumb_inactive_color">#AEAFB4</color>
     <color name="switch_track_active_color">#9FBBF3</color>
     <color name="switch_track_inactive_color">#E6E8EB</color>
+    <color name="icon_error_filling">@color/white</color>
+    <color name="refresh_button_color">@color/white</color>
 </resources>
