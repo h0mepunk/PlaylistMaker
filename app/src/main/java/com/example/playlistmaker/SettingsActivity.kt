@@ -7,8 +7,10 @@ import android.widget.Button
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
+const val THEME_SWITCH_KEY = "key_for_theme_switch"
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +27,20 @@ class SettingsActivity : AppCompatActivity() {
         val shareButton = findViewById<MaterialTextView>(R.id.setting_item_share)
         val contactSupport = findViewById<MaterialTextView>(R.id.setting_item_contact_support)
         val userAgreement = findViewById<MaterialTextView>(R.id.setting_item_user_agreement)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.setting_item_dark_theme)
+
+        val sharedPrefs = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+
+        themeSwitcher.isChecked = sharedPrefs.getString(THEME_SWITCH_KEY, "false")!!.toBoolean()
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            sharedPrefs.edit()
+                .putString(THEME_SWITCH_KEY, checked.toString())
+                .apply()
+
+            (applicationContext as App)
+                .switchTheme(checked)
+        }
 
         shareButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)

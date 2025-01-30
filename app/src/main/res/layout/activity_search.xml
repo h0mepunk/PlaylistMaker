@@ -49,6 +49,27 @@
         android:layout_marginTop="@dimen/tracks_list_recycler_margin_top"
         android:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
+    <TextView
+        android:id="@+id/searchHistoryTitle"
+        style="@style/search_history_title"
+        android:text="@string/search_history_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ></TextView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/song_history_list_recycler"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/tracks_list_recycler_margin_top"
+        android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+    <Button
+        android:id="@+id/clearHistoryButton"
+        style="@style/clear_history_button"
+        android:layout_gravity="center"
+        android:text="@string/clear_history_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </Button>
     <LinearLayout
         android:id="@+id/placeholderView"
         android:layout_marginTop="@dimen/error_layout_margin_top"

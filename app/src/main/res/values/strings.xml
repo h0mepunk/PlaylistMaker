@@ -17,4 +17,6 @@
     <string name="refresh">Обновить</string>
     <string name="network_error_text">Проблемы со связью.\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
     <string name="empty_song_list_error_text">Ничего не нашлось</string>
+    <string name="search_history_title">Вы искали</string>
+    <string name="clear_history_button">Очистить историю</string>
 </resources>
