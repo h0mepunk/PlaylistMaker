@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,5 +24,6 @@ class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         songDuration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis.toLong())
         songTitle.text = item.trackName
         songSubtitle.text = item.artistName
+        // add item on click listener + add item to tracks history
     }
 }

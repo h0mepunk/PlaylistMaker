@@ -47,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
     val clearTrackHistoryButton: Button by lazy { findViewById(R.id.clearHistoryButton) }
     val trackHistoryRecycler: RecyclerView by lazy { findViewById(R.id.song_history_list_recycler) }
     val trackHistoryTitle: TextView by lazy { findViewById(R.id.searchHistoryTitle) }
+    val searchHistoryLayout: View by lazy { findViewById(R.id.searchHistoryLayout) }
 
     val retrofit = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com")
@@ -71,10 +72,6 @@ class SearchActivity : AppCompatActivity() {
         trackHistoryRecycler.adapter = historyAdapter
         placeholderMessage.visibility = View.GONE
 
-        if (trackHistory.isNotEmpty()) {
-            showTrackHistory()
-        }
-
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
@@ -97,6 +94,8 @@ class SearchActivity : AppCompatActivity() {
             sharedPreferences.edit().putString(TRACK_HISTORY_LIST_KEY, "").apply()
         }
 
+        inputEditText.setOnFocusChangeListener() { _, hasFocus -> }
+
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputEditText.text.isNotEmpty()) {
@@ -116,6 +115,9 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
+                if(inputEditText.hasFocus() && s.isNullOrEmpty()) {
+                    searchHistoryLayout.visibility = View.VISIBLE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -204,12 +206,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun tracksListToJson(tracks: Array<Track>): String {
         return Gson().toJson(tracks)
-    }
-
-    private fun showTrackHistory() {
-        trackHistoryTitle.visibility = View.VISIBLE
-        clearTrackHistoryButton.visibility = View.VISIBLE
-        trackHistoryRecycler.visibility = View.VISIBLE
     }
 
     private fun searchTracks(text: CharSequence) {
