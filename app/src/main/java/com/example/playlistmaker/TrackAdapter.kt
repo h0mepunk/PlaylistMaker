@@ -33,24 +33,20 @@ class TrackAdapter(
             if (trackHistory.size == 10) {
                 trackHistory.removeAt(9)
                 trackHistory.add(0, track)
-                Log.e("?????? TrackAdapter", "track history 10: ${ trackDataProcesser.tracksListToJson(trackHistory)}")
             }
             if (trackHistory.contains(track)) {
                 trackHistory.remove(track)
                 trackHistory.add(0, track)
-                Log.e("?????? TrackAdapter", "track history povtorka: ${ trackDataProcesser.tracksListToJson(trackHistory)}")
             }
             else {
                 trackHistory.add(0, track)
-                Log.e("?????? TrackAdapter", "track history: ${ trackDataProcesser.tracksListToJson(trackHistory)}") }
-
+            }
             sharedPreferences.edit()
                 .putString(
                     TRACK_HISTORY_LIST_KEY,
                     trackDataProcesser.tracksListToJson(trackHistory)
                 )
                 .apply()
-            Log.e("?????? TrackAdapter", "track history saved: ${ trackDataProcesser.tracksListToJson(trackHistory)}")
         }
     }
 

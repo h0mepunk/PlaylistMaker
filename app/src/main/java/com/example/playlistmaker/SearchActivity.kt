@@ -80,8 +80,6 @@ class SearchActivity : AppCompatActivity() {
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
-
-        Log.e("?????", "show history from beginning")
         showHistory()
 
         refreshButton.setOnClickListener {
@@ -119,17 +117,12 @@ class SearchActivity : AppCompatActivity() {
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
-                    Log.e("?????", "show history from stw before changed")
-                    showHistory()
-                }
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
                 if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
-                    Log.e("?????", "show history from stw on changed")
                     showHistory()
                 }
             }
@@ -161,7 +154,6 @@ class SearchActivity : AppCompatActivity() {
             EMPTY_SEARCH_TEXT as CharSequence
         )
         inputEditText.setText(textDump)
-        Log.e("?????", "show history from restore")
         showHistory()
     }
 
@@ -195,7 +187,6 @@ class SearchActivity : AppCompatActivity() {
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
         if (trackHistory.isNotEmpty()) {
-            Log.e("?????", "trackHistory: ${ sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")}")
             historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.VISIBLE
         }
