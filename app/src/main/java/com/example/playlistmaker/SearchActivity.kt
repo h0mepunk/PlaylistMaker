@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -39,6 +40,7 @@ class SearchActivity : AppCompatActivity() {
     val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
     lateinit var adapter: TrackAdapter
     lateinit var historyAdapter: TrackAdapter
+    val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
 
     val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
     val placeholderMessageText: TextView by lazy { findViewById(R.id.placeholderMessageText) }
@@ -46,7 +48,6 @@ class SearchActivity : AppCompatActivity() {
     val refreshButton: Button by lazy { findViewById(R.id.refreshButton) }
     val clearTrackHistoryButton: Button by lazy { findViewById(R.id.clearHistoryButton) }
     val trackHistoryRecycler: RecyclerView by lazy { findViewById(R.id.song_history_list_recycler) }
-    val trackHistoryTitle: TextView by lazy { findViewById(R.id.searchHistoryTitle) }
     val searchHistoryLayout: View by lazy { findViewById(R.id.searchHistoryLayout) }
 
     val retrofit = Retrofit.Builder()
@@ -65,9 +66,12 @@ class SearchActivity : AppCompatActivity() {
         val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
-        val sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-
         adapter = TrackAdapter(trackList)
+
+        val trackHistory = trackDataProcesser.tracksListFromJson(
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
+        )
+
         historyAdapter = TrackAdapter(trackHistory)
         songListRecycler.adapter = adapter
         trackHistoryRecycler.adapter = historyAdapter
@@ -75,6 +79,10 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+
+
+        Log.e("?????", "show history from beginning")
+        showHistory()
 
         refreshButton.setOnClickListener {
             searchTracks(textDump.toString())
@@ -93,6 +101,7 @@ class SearchActivity : AppCompatActivity() {
             trackHistory.clear()
             sharedPreferences.edit().putString(TRACK_HISTORY_LIST_KEY, "").apply()
             historyAdapter.notifyDataSetChanged()
+            searchHistoryLayout.visibility = View.GONE
         }
 
         inputEditText.setOnFocusChangeListener() { _, hasFocus -> }
@@ -110,17 +119,18 @@ class SearchActivity : AppCompatActivity() {
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
+                if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
+                    Log.e("?????", "show history from stw before changed")
+                    showHistory()
+                }
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
-                if(inputEditText.hasFocus() && s.isNullOrEmpty()) {
-                    trackHistory = sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
-                        ?.let { trackDataProcesser.tracksListFromJson(it) } as ArrayList<Track>? ?: ArrayList()
-                    historyAdapter.notifyDataSetChanged()
-                    searchHistoryLayout.visibility = View.VISIBLE
+                if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
+                    Log.e("?????", "show history from stw on changed")
+                    showHistory()
                 }
             }
 
@@ -141,7 +151,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putCharSequence(SEARCH_TEXT, textDump)
-        outState.putCharSequence(TRACK_HISTORY_LIST_KEY, trackDataProcesser.tracksListToJson(trackHistory as Array<Track>))
+        outState.putCharSequence(TRACK_HISTORY_LIST_KEY, trackDataProcesser.tracksListToJson(trackHistory))
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -151,13 +161,8 @@ class SearchActivity : AppCompatActivity() {
             EMPTY_SEARCH_TEXT as CharSequence
         )
         inputEditText.setText(textDump)
-
-        trackHistory = trackDataProcesser.tracksListFromJson(
-            savedInstanceState.getString(
-                TRACK_HISTORY_LIST_KEY,
-                EMPTY_SEARCH_TEXT).toString()
-        ) as ArrayList<Track>
-        historyAdapter.notifyDataSetChanged()
+        Log.e("?????", "show history from restore")
+        showHistory()
     }
 
     private fun showMessage(
@@ -182,6 +187,17 @@ class SearchActivity : AppCompatActivity() {
 
         } else {
             placeholderMessage.visibility = View.GONE
+        }
+    }
+
+    private fun showHistory() {
+        trackHistory = trackDataProcesser.tracksListFromJson(
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
+        )
+        if (trackHistory.isNotEmpty()) {
+            Log.e("?????", "trackHistory: ${ sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")}")
+            historyAdapter.notifyDataSetChanged()
+            searchHistoryLayout.visibility = View.VISIBLE
         }
     }
 

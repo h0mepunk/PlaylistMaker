@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
@@ -21,32 +22,35 @@ class TrackAdapter(
         holder.bind(items[position])
         holder.itemView.setOnClickListener {
             val sharedPreferences = holder.itemView
-                .getContext()
+                .context
                 .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
             val track = items[position]
-            var trackHistory = trackDataProcesser
+            val trackHistory = trackDataProcesser
                 .tracksListFromJson(
                     sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")!!
-                ) as ArrayList<Track>
+                )
 
             if (trackHistory.size == 10) {
-                trackHistory.removeAt(0)
+                trackHistory.removeAt(9)
                 trackHistory.add(0, track)
+                Log.e("?????? TrackAdapter", "track history 10: ${ trackDataProcesser.tracksListToJson(trackHistory)}")
             }
             if (trackHistory.contains(track)) {
-                trackHistory.add(0, track)
                 trackHistory.remove(track)
+                trackHistory.add(0, track)
+                Log.e("?????? TrackAdapter", "track history povtorka: ${ trackDataProcesser.tracksListToJson(trackHistory)}")
             }
+            else {
+                trackHistory.add(0, track)
+                Log.e("?????? TrackAdapter", "track history: ${ trackDataProcesser.tracksListToJson(trackHistory)}") }
 
             sharedPreferences.edit()
                 .putString(
                     TRACK_HISTORY_LIST_KEY,
-                    trackDataProcesser
-                        .tracksListToJson(
-                            trackHistory as Array<Track>
-                        )
+                    trackDataProcesser.tracksListToJson(trackHistory)
                 )
                 .apply()
+            Log.e("?????? TrackAdapter", "track history saved: ${ trackDataProcesser.tracksListToJson(trackHistory)}")
         }
     }
 
