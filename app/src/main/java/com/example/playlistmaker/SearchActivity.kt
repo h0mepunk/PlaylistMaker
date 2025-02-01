@@ -54,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     val tracksApiService = retrofit.create(TrackApiService::class.java)
+    val trackDataProcesser = TrackDataProcesser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
         val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
-
+        val sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
 
         adapter = TrackAdapter(trackList)
         historyAdapter = TrackAdapter(trackHistory)
@@ -90,8 +91,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
-            val sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
             sharedPreferences.edit().putString(TRACK_HISTORY_LIST_KEY, "").apply()
+            historyAdapter.notifyDataSetChanged()
         }
 
         inputEditText.setOnFocusChangeListener() { _, hasFocus -> }
@@ -116,6 +117,9 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
                 if(inputEditText.hasFocus() && s.isNullOrEmpty()) {
+                    trackHistory = sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
+                        ?.let { trackDataProcesser.tracksListFromJson(it) } as ArrayList<Track>? ?: ArrayList()
+                    historyAdapter.notifyDataSetChanged()
                     searchHistoryLayout.visibility = View.VISIBLE
                 }
             }
@@ -137,7 +141,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putCharSequence(SEARCH_TEXT, textDump)
-        outState.putCharSequence(TRACK_HISTORY_LIST_KEY, tracksListToJson(trackHistory as Array<Track>))
+        outState.putCharSequence(TRACK_HISTORY_LIST_KEY, trackDataProcesser.tracksListToJson(trackHistory as Array<Track>))
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -148,11 +152,12 @@ class SearchActivity : AppCompatActivity() {
         )
         inputEditText.setText(textDump)
 
-        trackHistory = tracksListFromJson(
+        trackHistory = trackDataProcesser.tracksListFromJson(
             savedInstanceState.getString(
                 TRACK_HISTORY_LIST_KEY,
                 EMPTY_SEARCH_TEXT).toString()
         ) as ArrayList<Track>
+        historyAdapter.notifyDataSetChanged()
     }
 
     private fun showMessage(
@@ -178,34 +183,6 @@ class SearchActivity : AppCompatActivity() {
         } else {
             placeholderMessage.visibility = View.GONE
         }
-    }
-
-    private fun addTrackToHistory(track: Track) {
-        if (trackHistory.size == 10) {
-            trackHistory.removeAt(0)
-            trackHistory.add(0, track)
-        }
-        if (trackHistory.contains(track)) {
-            trackHistory.add(0, track)
-            trackHistory.remove(track)
-        }
-
-        val sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        sharedPreferences.edit()
-            .putString(TRACK_HISTORY_LIST_KEY, tracksListToJson(trackHistory as Array<Track>))
-            .apply()
-    }
-
-    private fun tracksListFromJson(json: String): Array<Track> {
-        return if (json.isEmpty()) {
-            emptyArray()
-        } else {
-            Gson().fromJson(json, Array<Track>::class.java)
-        }
-    }
-
-    private fun tracksListToJson(tracks: Array<Track>): String {
-        return Gson().toJson(tracks)
     }
 
     private fun searchTracks(text: CharSequence) {

@@ -1,14 +1,18 @@
 package com.example.playlistmaker
 
+import android.service.autofill.FillEventHistory
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class TracksViewHolder(
+    itemView: View)
+: RecyclerView.ViewHolder(itemView) {
 
     private val songTitle: TextView = itemView.findViewById(R.id.song_name)
     private val songSubtitle: TextView = itemView.findViewById(R.id.song_author)
@@ -24,6 +28,5 @@ class TracksViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         songDuration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis.toLong())
         songTitle.text = item.trackName
         songSubtitle.text = item.artistName
-        // add item on click listener + add item to tracks history
     }
 }
