@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
         val mainActivity = Intent(this, MainActivity::class.java)
 
         toolbar.setNavigationOnClickListener {
-            startActivity(mainActivity)
+            finish()
         }
 
         val shareButton = findViewById<MaterialTextView>(R.id.setting_item_share)

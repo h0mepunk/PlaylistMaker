@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,26 +59,27 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-
-        val mainActivity = Intent(this, MainActivity::class.java)
         val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(trackList)
+        adapter = TrackAdapter(trackList, this)
 
-        val trackHistory = trackDataProcesser.tracksListFromJson(
+        trackHistory = trackDataProcesser.tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
 
-        historyAdapter = TrackAdapter(trackHistory)
+        historyAdapter = TrackAdapter(trackHistory, this)
         songListRecycler.adapter = adapter
         trackHistoryRecycler.adapter = historyAdapter
         placeholderMessage.visibility = View.GONE
+        searchHistoryLayout.visibility = View.GONE
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
-        showHistory()
+        if (trackList.isEmpty()) {
+            showHistory()
+        }
 
         refreshButton.setOnClickListener {
             searchTracks(textDump.toString())
@@ -88,11 +87,15 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             inputEditText.setText(EMPTY_SEARCH_TEXT)
+            searchHistoryLayout.visibility = View.GONE
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            showHistory()
         }
 
         toolbar.setNavigationOnClickListener {
-            startActivity(mainActivity)
+            finish()
         }
 
         clearTrackHistoryButton.setOnClickListener {
@@ -144,7 +147,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putCharSequence(SEARCH_TEXT, textDump)
-        outState.putCharSequence(TRACK_HISTORY_LIST_KEY, trackDataProcesser.tracksListToJson(trackHistory))
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -154,7 +156,6 @@ class SearchActivity : AppCompatActivity() {
             EMPTY_SEARCH_TEXT as CharSequence
         )
         inputEditText.setText(textDump)
-        showHistory()
     }
 
     private fun showMessage(
@@ -182,13 +183,15 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showHistory() {
+    fun showHistory() {
         trackHistory = trackDataProcesser.tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
         if (trackHistory.isNotEmpty()) {
-            historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.VISIBLE
+            historyAdapter.notifyDataSetChanged()
+        } else {
+            searchHistoryLayout.visibility = View.GONE
         }
     }
 

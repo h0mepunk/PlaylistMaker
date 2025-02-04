@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,9 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TrackAdapter(
     private val items: List<Track>,
+    context: Context
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
     private val trackDataProcesser = TrackDataProcesser()
+    private val sharedPreferences = context
+        .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+    var trackHistory = trackDataProcesser
+        .tracksListFromJson(
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")!!
+        )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
@@ -21,14 +29,7 @@ class TrackAdapter(
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
         holder.bind(items[position])
         holder.itemView.setOnClickListener {
-            val sharedPreferences = holder.itemView
-                .context
-                .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
             val track = items[position]
-            val trackHistory = trackDataProcesser
-                .tracksListFromJson(
-                    sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")!!
-                )
 
             if (trackHistory.size == 10) {
                 trackHistory.removeAt(9)
