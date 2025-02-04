@@ -3,16 +3,20 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.SearchActivity.Companion.EMPTY_SEARCH_TEXT
+import com.example.playlistmaker.SearchActivity.Companion.SEARCH_TEXT
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 const val THEME_SWITCH_KEY = "key_for_theme_switch"
 
 class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -30,16 +34,23 @@ class SettingsActivity : AppCompatActivity() {
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.setting_item_dark_theme)
 
         val sharedPrefs = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        val app = applicationContext as App
 
-        themeSwitcher.isChecked = sharedPrefs.getString(THEME_SWITCH_KEY, "false")!!.toBoolean()
+        themeSwitcher.isChecked = app.darkTheme
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            app.darkTheme = checked
+            Log.e("???", " setOnCheckedChangeListener1 darkTheme: ${app.darkTheme}, checked: $checked, isEnabled: ${switcher.isEnabled}, isClickable: ${switcher.isClickable}")
             sharedPrefs.edit()
-                .putString(THEME_SWITCH_KEY, checked.toString())
+                .putBoolean(THEME_SWITCH_KEY, checked)
                 .apply()
+            Log.e("???", " setOnCheckedChangeListener2 darkTheme: ${app.darkTheme}, checked: $checked, isEnabled: ${switcher.isEnabled}, isClickable: ${switcher.isClickable}")
+            (app).switchTheme(checked)
+            Log.e("???", " setOnCheckedChangeListener3 darkTheme: ${app.darkTheme}, checked: $checked, isEnabled: ${switcher.isEnabled}, isClickable: ${switcher.isClickable}")
+        }
 
-            (applicationContext as App)
-                .switchTheme(checked)
+        themeSwitcher.setOnClickListener {
+
         }
 
         shareButton.setOnClickListener {

@@ -40,7 +40,6 @@
         <item name="android:textSize">@dimen/setting_item_text_size</item>
         <item name="android:thumbTint">@color/switch_thumb_color</item>
         <item name="android:trackTint">@color/switch_track_color</item>
-        <item name="android:clickable">false</item>
     </style>
     <style name="search_text_edit">
         <item name="android:layout_width">match_parent</item>
