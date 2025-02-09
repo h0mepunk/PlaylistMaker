@@ -40,13 +40,10 @@ class SettingsActivity : AppCompatActivity() {
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             app.darkTheme = checked
-            Log.e("???", " setOnCheckedChangeListener1 darkTheme: ${app.darkTheme}, checked: $checked, isEnabled: ${switcher.isEnabled}, isClickable: ${switcher.isClickable}")
             sharedPrefs.edit()
                 .putBoolean(THEME_SWITCH_KEY, checked)
                 .apply()
-            Log.e("???", " setOnCheckedChangeListener2 darkTheme: ${app.darkTheme}, checked: $checked, isEnabled: ${switcher.isEnabled}, isClickable: ${switcher.isClickable}")
             (app).switchTheme(checked)
-            Log.e("???", " setOnCheckedChangeListener3 darkTheme: ${app.darkTheme}, checked: $checked, isEnabled: ${switcher.isEnabled}, isClickable: ${switcher.isClickable}")
         }
 
         themeSwitcher.setOnClickListener {

@@ -77,7 +77,6 @@ class SearchActivity : AppCompatActivity() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         if (trackList.isEmpty()) {
-            Log.e("????","show history empty tracklist")
             showHistory()
         }
 
@@ -91,7 +90,6 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             trackList.clear()
             adapter.notifyDataSetChanged()
-            Log.e("????","show history clear search")
         }
 
         toolbar.setNavigationOnClickListener {
@@ -101,8 +99,6 @@ class SearchActivity : AppCompatActivity() {
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
             sharedPreferences.edit().putString(TRACK_HISTORY_LIST_KEY, "").apply()
-            Log.e("????","track history cleared: ${trackDataProcesser.tracksListFromJson(
-                sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))}")
             historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
         }
@@ -128,7 +124,6 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
                 if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
-                    Log.e("????","show history no focus")
                     showHistory()
                 }
             }
@@ -187,9 +182,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun getTrachHistory(): ArrayList<Track> {
-
-        Log.e("????","get track history: ${trackDataProcesser.tracksListFromJson(
-            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))}")
         return trackDataProcesser.tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )

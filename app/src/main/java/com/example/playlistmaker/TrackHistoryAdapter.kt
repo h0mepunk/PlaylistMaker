@@ -22,27 +22,22 @@ class TrackHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        Log.e("???", "onBind history items ${items}")
         items = trackDataProcesser.getTracksList(sharedPreferences)
         holder.bind(items[position])
         var itemsList = items as ArrayList<Track>
-
 
         holder.itemView.setOnClickListener {
             val track = items[position]
             if (itemsList.size == 10) {
                 itemsList.removeAt(9)
                 itemsList.add(0, track)
-                Log.e("???", " 10 track ${track} added to trackHistory on 0 position trackHistory: $itemsList")
             }
             if (itemsList.contains(track)) {
                 itemsList.remove(track)
                 itemsList.add(0, track)
-                Log.e("???", "track ${track} added to trackHistory twice trackHistory: $itemsList")
             }
             else {
                 itemsList.add(0, track)
-                Log.e("???", "track ${track} added to trackHistory trackHistory: $itemsList")
             }
             sharedPreferences.edit()
                 .putString(
@@ -50,7 +45,6 @@ class TrackHistoryAdapter(
                     trackDataProcesser.tracksListToJson(itemsList)
                 )
                 .apply()
-            Log.e("???", "sharedPreferences written: ${sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")!!}")
             this.notifyDataSetChanged()
         }
     }
