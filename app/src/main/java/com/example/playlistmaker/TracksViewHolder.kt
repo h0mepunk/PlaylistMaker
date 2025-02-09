@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.service.autofill.FillEventHistory
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,6 +21,7 @@ class TracksViewHolder(
     private val songDuration: TextView = itemView.findViewById(R.id.song_time)
 
     fun bind(item: Track) {
+        Log.e("???", "onBindViewHolder ${item}")
         Glide.with(itemView.context)
             .load(item.artworkUrl100)
             .placeholder(R.drawable.placeholder)

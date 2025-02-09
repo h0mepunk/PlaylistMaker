@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.os.Bundle
+import android.service.autofill.FillEventHistory
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -37,7 +38,7 @@ class SearchActivity : AppCompatActivity() {
 
     val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
     lateinit var adapter: TrackAdapter
-    lateinit var historyAdapter: TrackAdapter
+    lateinit var historyAdapter: TrackHistoryAdapter
     val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
 
     val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
@@ -64,13 +65,11 @@ class SearchActivity : AppCompatActivity() {
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter(trackList, this)
 
-        trackHistory = trackDataProcesser.tracksListFromJson(
-            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
-        )
-
-        historyAdapter = TrackAdapter(trackHistory, this)
-        songListRecycler.adapter = adapter
+        trackHistory = getTrachHistory()
+        historyAdapter = TrackHistoryAdapter(trackHistory, this)
         trackHistoryRecycler.adapter = historyAdapter
+        songListRecycler.adapter = adapter
+        //trackHistoryRecycler.adapter = historyAdapter
         placeholderMessage.visibility = View.GONE
         searchHistoryLayout.visibility = View.GONE
 
@@ -78,6 +77,7 @@ class SearchActivity : AppCompatActivity() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         if (trackList.isEmpty()) {
+            Log.e("????","show history empty tracklist")
             showHistory()
         }
 
@@ -87,11 +87,11 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             inputEditText.setText(EMPTY_SEARCH_TEXT)
-            searchHistoryLayout.visibility = View.GONE
+            showHistory()
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             trackList.clear()
             adapter.notifyDataSetChanged()
-            showHistory()
+            Log.e("????","show history clear search")
         }
 
         toolbar.setNavigationOnClickListener {
@@ -101,6 +101,8 @@ class SearchActivity : AppCompatActivity() {
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
             sharedPreferences.edit().putString(TRACK_HISTORY_LIST_KEY, "").apply()
+            Log.e("????","track history cleared: ${trackDataProcesser.tracksListFromJson(
+                sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))}")
             historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
         }
@@ -126,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
                 if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
+                    Log.e("????","show history no focus")
                     showHistory()
                 }
             }
@@ -183,13 +186,20 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    fun showHistory() {
-        trackHistory = trackDataProcesser.tracksListFromJson(
+    fun getTrachHistory(): ArrayList<Track> {
+
+        Log.e("????","get track history: ${trackDataProcesser.tracksListFromJson(
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))}")
+        return trackDataProcesser.tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
+    }
+
+    fun showHistory() {
+        trackHistory = getTrachHistory()
+        historyAdapter.notifyDataSetChanged()
         if (trackHistory.isNotEmpty()) {
             searchHistoryLayout.visibility = View.VISIBLE
-            historyAdapter.notifyDataSetChanged()
         } else {
             searchHistoryLayout.visibility = View.GONE
         }
@@ -211,6 +221,7 @@ class SearchActivity : AppCompatActivity() {
                         )
                     } else {
                         adapter.notifyDataSetChanged()
+                        searchHistoryLayout.visibility = View.GONE
                     }
                 } else {
                     val errorJson = response.errorBody()?.string()

@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 
-
-class TrackAdapter(
-    private val items: List<Track>,
+class TrackHistoryAdapter(
+    private var items: List<Track>,
     context: Context
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
@@ -23,34 +22,36 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        Log.e("???", "onBindViewHolder items ${items}")
+        Log.e("???", "onBind history items ${items}")
+        items = trackDataProcesser.getTracksList(sharedPreferences)
         holder.bind(items[position])
+        var itemsList = items as ArrayList<Track>
+
 
         holder.itemView.setOnClickListener {
             val track = items[position]
-            var trackHistory = trackDataProcesser.getTracksList(sharedPreferences)
-            if (trackHistory.size == 10) {
-                trackHistory.removeAt(9)
-                trackHistory.add(0, track)
-                Log.e("???", " 10 track ${track} added to trackHistory on 0 position trackHistory: $trackHistory")
+            if (itemsList.size == 10) {
+                itemsList.removeAt(9)
+                itemsList.add(0, track)
+                Log.e("???", " 10 track ${track} added to trackHistory on 0 position trackHistory: $itemsList")
             }
-            if (trackHistory.contains(track)) {
-                trackHistory.remove(track)
-                trackHistory.add(0, track)
-                Log.e("???", "track ${track} added to trackHistory twice trackHistory: $trackHistory")
+            if (itemsList.contains(track)) {
+                itemsList.remove(track)
+                itemsList.add(0, track)
+                Log.e("???", "track ${track} added to trackHistory twice trackHistory: $itemsList")
             }
             else {
-                trackHistory.add(0, track)
-                Log.e("???", "track ${track} added to trackHistory trackHistory: $trackHistory")
+                itemsList.add(0, track)
+                Log.e("???", "track ${track} added to trackHistory trackHistory: $itemsList")
             }
             sharedPreferences.edit()
                 .putString(
                     TRACK_HISTORY_LIST_KEY,
-                    trackDataProcesser.tracksListToJson(trackHistory)
+                    trackDataProcesser.tracksListToJson(itemsList)
                 )
                 .apply()
             Log.e("???", "sharedPreferences written: ${sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")!!}")
-
+            this.notifyDataSetChanged()
         }
     }
 
