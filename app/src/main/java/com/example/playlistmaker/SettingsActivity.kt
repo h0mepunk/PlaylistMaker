@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.SearchActivity.Companion.EMPTY_SEARCH_TEXT
 import com.example.playlistmaker.SearchActivity.Companion.SEARCH_TEXT
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -22,7 +23,6 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         val toolbar = findViewById<Toolbar>(R.id.settings_toolbar)
-        val mainActivity = Intent(this, MainActivity::class.java)
 
         toolbar.setNavigationOnClickListener {
             finish()

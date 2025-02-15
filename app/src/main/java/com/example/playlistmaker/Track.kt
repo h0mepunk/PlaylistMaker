@@ -5,7 +5,11 @@ data class Track (
     val artistName: String,
     val trackTimeMillis: String,
     val artworkUrl100: String,
-    val trackId: Int
+    val trackId: Int,
+    val releaseDate: String,
+    val primaryGenreName: String,
+    val country: String,
+    val collectionName: String
 )
 
 data class TrackResponse(
