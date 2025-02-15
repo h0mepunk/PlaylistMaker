@@ -29,4 +29,8 @@
     <dimen name="search_icon_margin_vertical">12dp</dimen>
     <dimen name="player_track_dimension">312dp</dimen>
     <dimen name="media_horizontal_guideline">24dp</dimen>
+    <dimen name="media_round_button_corner_radius">51dp</dimen>
+    <dimen name="media_round_button_small_size">51dp</dimen>
+    <dimen name="media_round_button_big_size">84dp</dimen>
+    <dimen name="media_round_button_big_button_size">100dp</dimen>
 </resources>

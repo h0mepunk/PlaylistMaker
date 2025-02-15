@@ -13,4 +13,11 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="media_small_round_button">
+        <item name="background">@drawable/media_round_button</item>
+        <item name="android:layout_width">@dimen/media_round_button_small_size</item>
+        <item name="android:layout_height">@dimen/media_round_button_small_size</item>
+        <item name="android:layout_marginTop">25dp</item>
+    </style>
 </resources>
