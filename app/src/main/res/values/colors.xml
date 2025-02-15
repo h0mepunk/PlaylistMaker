@@ -31,6 +31,9 @@
     <color name="switch_track_active_color">#9FBBF3</color>
     <color name="switch_track_inactive_color">@color/darker_grey</color>
     <color name="media_cover_preview_icon">@color/grey</color>
+    <color name="media_info_element">@color/grey</color>
+    <color name="media_info_value">@color/dark</color>
+    <color name="media_song_name">@color/dark</color>
 
     <color name="icon_error_filling">@color/dark</color>
     <color name="refresh_button_color">@color/dark</color>

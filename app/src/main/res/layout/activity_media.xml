@@ -46,11 +46,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
+        style="@style/media_song_title"
         app:layout_constraintStart_toStartOf="@id/left_border"
         app:layout_constraintTop_toBottomOf="@id/media_track_cover"></TextView>
 
     <TextView
         android:id="@+id/media_track_artist"
+        style="@style/media_song_subtitle"
         android:text = "Govno govna"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -104,40 +106,101 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></TextView>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_border_16"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/media_horizontal_guideline_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_border_16"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/media_horizontal_guideline_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/media_info_length"
         android:text="@string/media_info_length"
         style="@style/media_info_element"
         android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@id/media_track_length">
+        app:layout_constraintTop_toBottomOf="@id/media_track_length"
+        app:layout_constraintStart_toStartOf="@id/left_border_16">
+    </com.google.android.material.textview.MaterialTextView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/media_info_length_value"
+        android:text="5:35"
+        style="@style/media_info_value"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/media_track_length"
+        app:layout_constraintStart_toEndOf="media_info_length"
+        app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/media_info_album"
         android:text="@string/media_info_album"
         style="@style/media_info_element"
+        app:layout_constraintStart_toStartOf="@id/left_border_16"
         app:layout_constraintTop_toBottomOf="@id/media_info_length">
+    </com.google.android.material.textview.MaterialTextView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/media_info_album_value"
+        android:text="elkfnlke"
+        style="@style/media_info_value"
+        app:layout_constraintTop_toBottomOf="@id/media_info_length_value"
+        app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/media_info_year"
         style="@style/media_info_element"
         android:text="@string/media_info_year"
+        app:layout_constraintStart_toStartOf="@id/left_border_16"
         app:layout_constraintTop_toBottomOf="@id/media_info_album">
+    </com.google.android.material.textview.MaterialTextView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/media_info_year_value"
+        android:text="elkfnlke"
+        style="@style/media_info_value"
+        app:layout_constraintTop_toBottomOf="@id/media_info_album_value"
+        app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/media_info_genre"
         android:text="@string/media_info_genre"
         style="@style/media_info_element"
+        app:layout_constraintStart_toStartOf="@id/left_border_16"
         app:layout_constraintTop_toBottomOf="@id/media_info_year">
+    </com.google.android.material.textview.MaterialTextView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/media_info_genre_value"
+        android:text="elkfnlke"
+        style="@style/media_info_value"
+        app:layout_constraintTop_toBottomOf="@id/media_info_year_value"
+        app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/media_info_country"
         android:text="@string/media_info_country"
         style="@style/media_info_element"
+        app:layout_constraintStart_toStartOf="@id/left_border_16"
         app:layout_constraintTop_toBottomOf="@id/media_info_genre">
+    </com.google.android.material.textview.MaterialTextView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/media_info_country_value"
+        android:text="elkfnlke"
+        style="@style/media_info_value"
+        app:layout_constraintTop_toBottomOf="@id/media_info_genre_value"
+        app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
