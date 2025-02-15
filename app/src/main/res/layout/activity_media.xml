@@ -33,6 +33,7 @@
         android:id="@+id/media_track_cover"
         android:layout_width="@dimen/player_track_dimension"
         android:layout_height="@dimen/player_track_dimension"
+        android:background="@drawable/media_cover_preview"
         android:layout_marginTop="26dp"
         app:layout_constraintBottom_toTopOf="@id/media_track_title"
         app:layout_constraintEnd_toEndOf="@id/right_border"
