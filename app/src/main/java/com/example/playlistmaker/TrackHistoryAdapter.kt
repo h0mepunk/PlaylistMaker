@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 
-
-class TrackAdapter(
-    private val items: List<Track>,
+class TrackHistoryAdapter(
+    private var items: List<Track>,
     context: Context
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
@@ -23,28 +22,30 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
+        items = trackDataProcesser.getTracksList(sharedPreferences)
         holder.bind(items[position])
+        var itemsList = items as ArrayList<Track>
 
         holder.itemView.setOnClickListener {
             val track = items[position]
-            var trackHistory = trackDataProcesser.getTracksList(sharedPreferences)
-            if (trackHistory.size == 10) {
-                trackHistory.removeAt(9)
-                trackHistory.add(0, track)
+            if (itemsList.size == 10) {
+                itemsList.removeAt(9)
+                itemsList.add(0, track)
             }
-            if (trackHistory.contains(track)) {
-                trackHistory.remove(track)
-                trackHistory.add(0, track)
+            if (itemsList.contains(track)) {
+                itemsList.remove(track)
+                itemsList.add(0, track)
             }
             else {
-                trackHistory.add(0, track)
+                itemsList.add(0, track)
             }
             sharedPreferences.edit()
                 .putString(
                     TRACK_HISTORY_LIST_KEY,
-                    trackDataProcesser.tracksListToJson(trackHistory)
+                    trackDataProcesser.tracksListToJson(itemsList)
                 )
                 .apply()
+            this.notifyDataSetChanged()
         }
     }
 

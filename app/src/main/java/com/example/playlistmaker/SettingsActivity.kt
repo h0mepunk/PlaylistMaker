@@ -3,14 +3,20 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.SearchActivity.Companion.EMPTY_SEARCH_TEXT
+import com.example.playlistmaker.SearchActivity.Companion.SEARCH_TEXT
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
+const val THEME_SWITCH_KEY = "key_for_theme_switch"
 
 class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -19,12 +25,30 @@ class SettingsActivity : AppCompatActivity() {
         val mainActivity = Intent(this, MainActivity::class.java)
 
         toolbar.setNavigationOnClickListener {
-            startActivity(mainActivity)
+            finish()
         }
 
         val shareButton = findViewById<MaterialTextView>(R.id.setting_item_share)
         val contactSupport = findViewById<MaterialTextView>(R.id.setting_item_contact_support)
         val userAgreement = findViewById<MaterialTextView>(R.id.setting_item_user_agreement)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.setting_item_dark_theme)
+
+        val sharedPrefs = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        val app = applicationContext as App
+
+        themeSwitcher.isChecked = app.darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            app.darkTheme = checked
+            sharedPrefs.edit()
+                .putBoolean(THEME_SWITCH_KEY, checked)
+                .apply()
+            (app).switchTheme(checked)
+        }
+
+        themeSwitcher.setOnClickListener {
+
+        }
 
         shareButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
