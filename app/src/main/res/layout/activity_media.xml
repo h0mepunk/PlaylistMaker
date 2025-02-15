@@ -135,7 +135,6 @@
         style="@style/media_info_value"
         android:layout_marginTop="30dp"
         app:layout_constraintTop_toBottomOf="@id/media_track_length"
-        app:layout_constraintStart_toEndOf="media_info_length"
         app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 

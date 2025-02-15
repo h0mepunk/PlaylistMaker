@@ -17,7 +17,7 @@ import java.util.Locale
 
 class MediaActivity : AppCompatActivity() {
 
-    private val toolbar by lazy { findViewById<Toolbar>(R.id.search_toolbar)}
+    private val toolbar by lazy { findViewById<Toolbar>(R.id.media_toolbar)}
     val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
     val trackDataProcessor = TrackDataProcessor()
 
@@ -33,7 +33,7 @@ class MediaActivity : AppCompatActivity() {
         val trackAlbum = findViewById<TextView>(R.id.media_info_album_value)
         val trackGenre = findViewById<TextView>(R.id.media_info_genre_value)
         val trackReleaseDate = findViewById<TextView>(R.id.media_info_year_value)
-        val trackDuration = findViewById<TextView>(R.id.media_info_length)
+        val trackDuration = findViewById<TextView>(R.id.media_info_length_value)
         val trackCountry = findViewById<TextView>(R.id.media_info_country_value)
 
         Glide.with(this)

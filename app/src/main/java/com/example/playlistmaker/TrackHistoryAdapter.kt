@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 
 class TrackHistoryAdapter(
     private var items: List<Track>,
