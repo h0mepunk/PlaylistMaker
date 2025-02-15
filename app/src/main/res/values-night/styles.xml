@@ -114,4 +114,14 @@
         <item name="android:layout_marginTop">24dp</item>
         <item name="backgroundColor">@color/white</item>
     </style>
+    <style name="media_info_element">
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/ys_text_regular</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
 </resources>
