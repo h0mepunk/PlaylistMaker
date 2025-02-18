@@ -1,16 +1,18 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 
 class TrackHistoryAdapter(
     private var items: List<Track>,
-    context: Context
+    private val context: Context
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
     private val trackDataProcessor = TrackDataProcessor()
@@ -45,8 +47,13 @@ class TrackHistoryAdapter(
                     TRACK_HISTORY_LIST_KEY,
                     trackDataProcessor.tracksListToJson(itemsList)
                 )
+                .putString(CURRENT_TRACK_KEY, trackDataProcessor.trackToJson(track))
                 .apply()
             this.notifyDataSetChanged()
+
+
+            val mediaActivity = Intent(context, MediaActivity::class.java)
+            context.startActivity(mediaActivity)
         }
     }
 
