@@ -34,4 +34,5 @@
     <dimen name="media_round_button_big_size">84dp</dimen>
     <dimen name="media_round_button_big_button_size">100dp</dimen>
     <dimen name="media_horizontal_guideline_16">16dp</dimen>
+    <dimen name="media_cover_corner_radius">8dp</dimen>
 </resources>

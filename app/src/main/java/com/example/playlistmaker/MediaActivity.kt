@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
@@ -39,6 +41,13 @@ class MediaActivity : AppCompatActivity() {
         Glide.with(this)
             .load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg"))
             .placeholder(R.drawable.media_cover_preview)
+            .apply(
+                RequestOptions().transform(
+                    RoundedCorners(
+                        this.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()
+                    )
+                )
+            )
             .into(placeholderImage)
 
         trackTitle.text = currentTrack.trackName

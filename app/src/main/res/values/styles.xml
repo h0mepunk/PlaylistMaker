@@ -118,8 +118,6 @@
         <item name="android:fontWeight">400</item>
         <item name="android:textSize">13sp</item>
         <item name="android:fontFamily">@font/ys_text_regular</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">32dp</item>
     </style>
@@ -128,8 +126,6 @@
         <item name="android:fontWeight">400</item>
         <item name="android:textSize">13sp</item>
         <item name="android:fontFamily">@font/ys_text_regular</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">32dp</item>
     </style>
@@ -146,6 +142,14 @@
         <item name="android:maxLength">50</item>
         <item name="android:textColor">@color/media_song_name</item>
         <item name="android:fontWeight">400</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/ys_text_medium</item>
+    </style>
+    <style name="media_time_text">
+        <item name="maxLines">1</item>
+        <item name="android:maxLength">10</item>
+        <item name="android:textColor">@color/media_song_name</item>
+        <item name="android:fontWeight">500</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/ys_text_medium</item>
     </style>
