@@ -4,16 +4,12 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import java.text.SimpleDateFormat
 import java.util.Locale
 
