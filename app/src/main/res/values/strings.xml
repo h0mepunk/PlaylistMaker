@@ -19,4 +19,9 @@
     <string name="empty_song_list_error_text">Ничего не нашлось</string>
     <string name="search_history_title">Вы искали</string>
     <string name="clear_history_button">Очистить историю</string>
+    <string name="media_info_country">Страна</string>
+    <string name="media_info_genre">Жанр</string>
+    <string name="media_info_year">Год</string>
+    <string name="media_info_album">Альбом</string>
+    <string name="media_info_length">Длительность</string>
 </resources>

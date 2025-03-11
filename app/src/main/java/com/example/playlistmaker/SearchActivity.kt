@@ -2,10 +2,8 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.os.Bundle
-import android.service.autofill.FillEventHistory
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -19,13 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-const val TRACK_HISTORY_LIST_KEY = "key_for_history_list"
 
 class SearchActivity : AppCompatActivity() {
 
@@ -54,7 +52,7 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     val tracksApiService = retrofit.create(TrackApiService::class.java)
-    val trackDataProcesser = TrackDataProcesser()
+    val trackDataProcessor = TrackDataProcessor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -182,7 +180,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun getTrachHistory(): ArrayList<Track> {
-        return trackDataProcesser.tracksListFromJson(
+        return trackDataProcessor.tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
     }

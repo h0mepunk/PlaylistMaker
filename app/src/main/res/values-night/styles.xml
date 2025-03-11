@@ -114,4 +114,44 @@
         <item name="android:layout_marginTop">24dp</item>
         <item name="backgroundColor">@color/white</item>
     </style>
+    <style name="media_info_element">
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/ys_text_regular</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+    <style name="media_info_value">
+        <item name="android:textColor">@color/media_info_value</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/ys_text_regular</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+    <style name="media_song_title">
+        <item name="maxLines">1</item>
+        <item name="android:maxLength">50</item>
+        <item name="android:textColor">@color/media_song_name</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">@font/ys_text_medium</item>
+    </style>
+    <style name="media_song_subtitle">
+        <item name="maxLines">1</item>
+        <item name="android:maxLength">50</item>
+        <item name="android:textColor">@color/media_song_name</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/ys_text_medium</item>
+    </style>
+    <style name="media_time_text">
+        <item name="maxLines">1</item>
+        <item name="android:maxLength">10</item>
+        <item name="android:textColor">@color/media_song_name</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/ys_text_medium</item>
+    </style>
 </resources>

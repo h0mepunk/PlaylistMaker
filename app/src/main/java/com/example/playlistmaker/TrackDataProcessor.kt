@@ -1,11 +1,11 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
-import android.util.Log
+import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class TrackDataProcesser {
+class TrackDataProcessor {
 
     fun getTracksList(sharedPreferences: SharedPreferences): ArrayList<Track> {
         return tracksListFromJson(
@@ -28,5 +28,14 @@ class TrackDataProcesser {
 
     fun tracksListToJson(tracks: ArrayList<Track>): String {
         return Gson().toJson(tracks)
+    }
+
+    fun trackFromJson(json: String?): Track {
+        val type = object : TypeToken<Track>() {}.type
+        return Gson().fromJson(json, type)
+    }
+
+    fun trackToJson(track:Track): String {
+        return Gson().toJson(track)
     }
 }

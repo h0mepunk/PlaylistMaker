@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 
 class App : Application() {
 

@@ -1,18 +1,21 @@
 package com.example.playlistmaker
 
 import android.content.Context
-import android.util.Log
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
+import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 
 class TrackHistoryAdapter(
     private var items: List<Track>,
-    context: Context
+    private val context: Context
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
-    private val trackDataProcesser = TrackDataProcesser()
+    private val trackDataProcessor = TrackDataProcessor()
     private val sharedPreferences = context
         .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
 
@@ -22,7 +25,7 @@ class TrackHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        items = trackDataProcesser.getTracksList(sharedPreferences)
+        items = trackDataProcessor.getTracksList(sharedPreferences)
         holder.bind(items[position])
         var itemsList = items as ArrayList<Track>
 
@@ -42,10 +45,15 @@ class TrackHistoryAdapter(
             sharedPreferences.edit()
                 .putString(
                     TRACK_HISTORY_LIST_KEY,
-                    trackDataProcesser.tracksListToJson(itemsList)
+                    trackDataProcessor.tracksListToJson(itemsList)
                 )
+                .putString(CURRENT_TRACK_KEY, trackDataProcessor.trackToJson(track))
                 .apply()
             this.notifyDataSetChanged()
+
+
+            val mediaActivity = Intent(context, MediaActivity::class.java)
+            context.startActivity(mediaActivity)
         }
     }
 
