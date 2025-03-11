@@ -32,10 +32,6 @@
             android:singleLine="true"
             android:inputType="text">
         </EditText>
-        <ProgressBar
-            android:layout_width="44dp"
-            android:layout_height="44dp">
-        </ProgressBar>
         <ImageView
             android:id="@+id/clearIcon"
             android:layout_width="wrap_content"
@@ -47,6 +43,15 @@
             android:visibility="visible" />
 
     </FrameLayout>
+    <ProgressBar
+        android:id="@+id/searchProgressBar"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/searchPreloaderMarginTop"
+        android:indeterminateTint="@color/blue"
+        android:layout_width="@dimen/progressBarSize"
+        android:layout_height="@dimen/progressBarSize"
+        android:visibility="gone">
+    </ProgressBar>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/song_list_recycler"
         android:layout_width="match_parent"

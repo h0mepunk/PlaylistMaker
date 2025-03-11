@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -44,10 +45,12 @@ class SearchActivity : AppCompatActivity() {
     val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
     val placeholderMessageText: TextView by lazy { findViewById(R.id.placeholderMessageText) }
     val placeholderIcon: ImageView by lazy { findViewById(R.id.placeholderIcon) }
+    val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
     val refreshButton: Button by lazy { findViewById(R.id.refreshButton) }
     val clearTrackHistoryButton: Button by lazy { findViewById(R.id.clearHistoryButton) }
     val trackHistoryRecycler: RecyclerView by lazy { findViewById(R.id.song_history_list_recycler) }
     val searchHistoryLayout: View by lazy { findViewById(R.id.searchHistoryLayout) }
+    val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
 
     val retrofit = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com")
@@ -56,18 +59,11 @@ class SearchActivity : AppCompatActivity() {
     val tracksApiService = retrofit.create(TrackApiService::class.java)
     val trackDataProcessor = TrackDataProcessor()
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { searchTracks() }
-    
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
         songListRecycler.layoutManager = LinearLayoutManager(this)
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter(trackList, this)
@@ -88,7 +84,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            searchTracks()
+            searchTracks(textDump.toString())
         }
 
         clearButton.setOnClickListener {
@@ -117,13 +113,21 @@ class SearchActivity : AppCompatActivity() {
                 if (inputEditText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
                     textDump = inputEditText.text
-                    searchTracks()
+                    searchTracks(textDump.toString())
                 }
             }
             false
         }
 
         val simpleTextWatcher = object : TextWatcher {
+
+            private fun searchRunnable(text: String) = Runnable { searchTracks(text) }
+
+            private fun searchDebounce(text: String) {
+                handler.removeCallbacks(searchRunnable(text))
+                handler.postDelayed(searchRunnable(text), SEARCH_DEBOUNCE_DELAY)
+            }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -133,7 +137,7 @@ class SearchActivity : AppCompatActivity() {
                 if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
                     showHistory()
                 }
-                searchDebounce()
+                searchDebounce(textDump.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -173,6 +177,7 @@ class SearchActivity : AppCompatActivity() {
 
         trackList.clear()
         adapter.notifyDataSetChanged()
+        searchHistoryLayout.visibility = View.GONE
         if (text != null) {
             placeholderMessageText.text = getString(text)
             if (additionalMessage.isNotEmpty()) {
@@ -205,12 +210,16 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchTracks() {
-        val text = textDump.toString()
+    private fun searchTracks(text: String) {
         if (text.isNotEmpty()) {
+            progressBar.visibility = View.VISIBLE
+            searchHistoryLayout.visibility = View.GONE
+            songListRecycler.visibility = View.GONE
+
             tracksApiService.getTracks(text).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                     if (response.code() == 200) {
+                        progressBar.visibility = View.GONE
                         placeholderMessage.visibility = View.GONE
                         trackList.clear()
                         trackList.addAll(response.body()?.results as ArrayList<Track>)
@@ -223,9 +232,11 @@ class SearchActivity : AppCompatActivity() {
                             )
                         } else {
                             adapter.notifyDataSetChanged()
+                            songListRecycler.visibility = View.VISIBLE
                             searchHistoryLayout.visibility = View.GONE
                         }
                     } else {
+                        progressBar.visibility = View.GONE
                         val errorJson = response.errorBody()?.string()
                         showMessage(
                             text = R.string.network_error_text,
@@ -237,6 +248,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    progressBar.visibility = View.GONE
                     t.printStackTrace()
                     showMessage(
                         text = R.string.network_error_text,
