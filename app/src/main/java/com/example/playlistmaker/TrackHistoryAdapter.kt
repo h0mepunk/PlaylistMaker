@@ -8,16 +8,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 
 class TrackHistoryAdapter(
     private var items: List<Track>,
     private val context: Context
 ) : RecyclerView.Adapter<TracksViewHolder> () {
 
-    private val trackDataProcessor = TrackDataProcessor()
+    private val trackManager = TrackManager(context)
     private val sharedPreferences = context
         .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
 
@@ -27,7 +25,7 @@ class TrackHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        items = trackDataProcessor.getTracksList(sharedPreferences)
+        items = trackManager.getTracksList(sharedPreferences)
         holder.bind(items[position])
         var itemsList = items as ArrayList<Track>
 
@@ -45,13 +43,8 @@ class TrackHistoryAdapter(
                 else {
                     itemsList.add(0, track)
                 }
-                sharedPreferences.edit()
-                    .putString(
-                        TRACK_HISTORY_LIST_KEY,
-                        trackDataProcessor.tracksListToJson(itemsList)
-                    )
-                    .putString(CURRENT_TRACK_KEY, trackDataProcessor.trackToJson(track))
-                    .apply()
+                trackManager.saveTracksList(itemsList)
+                trackManager.saveCurrentTrack(track)
                 this.notifyDataSetChanged()
 
 

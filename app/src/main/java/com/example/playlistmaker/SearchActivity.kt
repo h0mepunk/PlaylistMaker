@@ -25,8 +25,6 @@ import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -52,12 +50,8 @@ class SearchActivity : AppCompatActivity() {
     val searchHistoryLayout: View by lazy { findViewById(R.id.searchHistoryLayout) }
     val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
 
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    val tracksApiService = retrofit.create(TrackApiService::class.java)
-    val trackDataProcessor = TrackDataProcessor()
+    private val trackNetworkClient = TrackNetworkClient()
+    val trackManager = TrackManager(context = this)
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +62,7 @@ class SearchActivity : AppCompatActivity() {
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter(trackList, this)
 
-        trackHistory = getTrachHistory()
+        trackHistory = trackManager.getTracksList(sharedPreferences)
         historyAdapter = TrackHistoryAdapter(trackHistory, this)
         trackHistoryRecycler.adapter = historyAdapter
         songListRecycler.adapter = adapter
@@ -194,14 +188,8 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    fun getTrachHistory(): ArrayList<Track> {
-        return trackDataProcessor.tracksListFromJson(
-            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
-        )
-    }
-
     fun showHistory() {
-        trackHistory = getTrachHistory()
+        trackHistory = trackManager.getTracksList(sharedPreferences)
         historyAdapter.notifyDataSetChanged()
         if (trackHistory.isNotEmpty()) {
             searchHistoryLayout.visibility = View.VISIBLE
@@ -216,48 +204,7 @@ class SearchActivity : AppCompatActivity() {
             searchHistoryLayout.visibility = View.GONE
             songListRecycler.visibility = View.GONE
 
-            tracksApiService.getTracks(text).enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                    if (response.code() == 200) {
-                        progressBar.visibility = View.GONE
-                        placeholderMessage.visibility = View.GONE
-                        trackList.clear()
-                        trackList.addAll(response.body()?.results as ArrayList<Track>)
-                        if (trackList.isEmpty()) {
-                            showMessage(
-                                text = R.string.empty_song_list_error_text,
-                                additionalMessage = "",
-                                buttonVisibility = View.GONE,
-                                icon = R.drawable.empty_results_error
-                            )
-                        } else {
-                            adapter.notifyDataSetChanged()
-                            songListRecycler.visibility = View.VISIBLE
-                            searchHistoryLayout.visibility = View.GONE
-                        }
-                    } else {
-                        progressBar.visibility = View.GONE
-                        val errorJson = response.errorBody()?.string()
-                        showMessage(
-                            text = R.string.network_error_text,
-                            additionalMessage = errorJson.toString(),
-                            buttonVisibility = View.VISIBLE,
-                            icon = R.drawable.internet_error
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                    t.printStackTrace()
-                    showMessage(
-                        text = R.string.network_error_text,
-                        additionalMessage = "",
-                        buttonVisibility = View.VISIBLE,
-                        icon = R.drawable.internet_error
-                    )
-                }
-            })
+            trackNetworkClient.loadTracks(text, object: Callback<TrackResponse>)
         }
     }
 
