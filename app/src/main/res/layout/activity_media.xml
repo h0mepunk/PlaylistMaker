@@ -105,7 +105,7 @@
 
     <TextView
         android:id="@+id/media_track_length"
-        android:text="0:30"
+        android:text="0:00"
         style="@style/media_time_text"
         app:layout_constraintTop_toBottomOf="@id/media_button_play"
         app:layout_constraintStart_toStartOf="@id/left_border"

@@ -2,6 +2,8 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
@@ -30,35 +32,54 @@ class TrackHistoryAdapter(
         var itemsList = items as ArrayList<Track>
 
         holder.itemView.setOnClickListener {
-            val track = items[position]
-            if (itemsList.size == 10) {
-                itemsList.removeAt(9)
-                itemsList.add(0, track)
-            }
-            if (itemsList.contains(track)) {
-                itemsList.remove(track)
-                itemsList.add(0, track)
-            }
-            else {
-                itemsList.add(0, track)
-            }
-            sharedPreferences.edit()
-                .putString(
-                    TRACK_HISTORY_LIST_KEY,
-                    trackDataProcessor.tracksListToJson(itemsList)
-                )
-                .putString(CURRENT_TRACK_KEY, trackDataProcessor.trackToJson(track))
-                .apply()
-            this.notifyDataSetChanged()
+            if (clickDebounce()) {
+                val track = items[position]
+                if (itemsList.size == 10) {
+                    itemsList.removeAt(9)
+                    itemsList.add(0, track)
+                }
+                if (itemsList.contains(track)) {
+                    itemsList.remove(track)
+                    itemsList.add(0, track)
+                }
+                else {
+                    itemsList.add(0, track)
+                }
+                sharedPreferences.edit()
+                    .putString(
+                        TRACK_HISTORY_LIST_KEY,
+                        trackDataProcessor.tracksListToJson(itemsList)
+                    )
+                    .putString(CURRENT_TRACK_KEY, trackDataProcessor.trackToJson(track))
+                    .apply()
+                this.notifyDataSetChanged()
 
 
-            val mediaActivity = Intent(context, MediaActivity::class.java)
-            context.startActivity(mediaActivity)
+                val mediaActivity = Intent(context, MediaActivity::class.java)
+                context.startActivity(mediaActivity)
+            }
         }
     }
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    private var isClickAllowed = true
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    companion object {
+        const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
 }
