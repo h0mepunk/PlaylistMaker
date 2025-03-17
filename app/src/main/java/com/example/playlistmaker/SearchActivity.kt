@@ -21,10 +21,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
@@ -52,11 +48,17 @@ class SearchActivity : AppCompatActivity() {
 
     private val trackNetworkClient = TrackNetworkClient()
     val trackManager = TrackManager(context = this)
+    private lateinit var loadTracksUseCase: LoadTracksUseCase
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        loadTracksUseCase = LoadTracksUseCase(
+            trackNetworkClient,
+            textDump.toString()
+        )
 
         songListRecycler.layoutManager = LinearLayoutManager(this)
         trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
@@ -78,7 +80,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            searchTracks(textDump.toString())
+            loadTracks(textDump.toString())
         }
 
         clearButton.setOnClickListener {
@@ -95,7 +97,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
-            sharedPreferences.edit().putString(TRACK_HISTORY_LIST_KEY, "").apply()
+            trackManager.saveTracksList(trackHistory)
             historyAdapter.notifyDataSetChanged()
             searchHistoryLayout.visibility = View.GONE
         }
@@ -107,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
                 if (inputEditText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
                     textDump = inputEditText.text
-                    searchTracks(textDump.toString())
+                    loadTracks(textDump.toString())
                 }
             }
             false
@@ -115,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
 
         val simpleTextWatcher = object : TextWatcher {
 
-            private fun searchRunnable(text: String) = Runnable { searchTracks(text) }
+            private fun searchRunnable(text: String) = Runnable { loadTracks(text) }
 
             private fun searchDebounce(text: String) {
                 handler.removeCallbacks(searchRunnable(text))
@@ -198,13 +200,54 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchTracks(text: String) {
+    private fun loadTracks(text: String) {
         if (text.isNotEmpty()) {
             progressBar.visibility = View.VISIBLE
             searchHistoryLayout.visibility = View.GONE
             songListRecycler.visibility = View.GONE
 
-            trackNetworkClient.loadTracks(text, object: Callback<TrackResponse>)
+            loadTracksUseCase.execute(
+                onSuccess = { trackList ->
+                    progressBar.visibility = View.GONE
+                    placeholderMessage.visibility = View.GONE
+                    trackList.clear()
+                    trackList.addAll(trackList)
+                    if (trackList.isEmpty()) {
+                        showMessage(
+                            text = R.string.empty_song_list_error_text,
+                            additionalMessage = "",
+                            buttonVisibility = View.GONE,
+                            icon = R.drawable.empty_results_error
+                        )
+                    } else {
+                        adapter.notifyDataSetChanged()
+                        songListRecycler.visibility = View.VISIBLE
+                        searchHistoryLayout.visibility = View.GONE
+                    }
+                },
+                onErrorResponse = {
+                    errorText ->
+                    progressBar.visibility = View.GONE
+                    showMessage(
+                        text = R.string.network_error_text,
+                        additionalMessage = errorText,
+                        buttonVisibility = View.VISIBLE,
+                        icon = R.drawable.internet_error
+                    )
+                },
+                onError = { t ->
+                    progressBar.visibility = View.GONE
+                    t.printStackTrace()
+                showMessage(
+                    text = R.string.network_error_text,
+                    additionalMessage = "",
+                    buttonVisibility = View.VISIBLE,
+                    icon = R.drawable.internet_error
+                )
+                }
+            )
+
+            //trackNetworkClient.loadTracks(text, object: Callback<TrackResponse>)
         }
     }
 
