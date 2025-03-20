@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.track
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -25,13 +26,14 @@ class TrackAdapter(
     private val context: Context
 ) : RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
 
-    private val sharedPreferences = context
-        .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-    private val trackManager = TrackManager(context)
+    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var trackManager : TrackManager
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
+        trackManager = TrackManager(parent.context)
+        sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         return TracksViewHolder(view)
     }
 
@@ -39,7 +41,7 @@ class TrackAdapter(
         Log.e("????", "onBindViewHolder")
         holder.bind(items[position])
 
-        Log.e("????", "onBindViewHolder items ${items.toString()}")
+        Log.e("????", "onBindViewHolder items ${items}")
 
         holder.itemView.setOnClickListener {
             if(clickDebounce()) {

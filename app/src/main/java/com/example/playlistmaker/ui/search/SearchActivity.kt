@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,11 +66,9 @@ class SearchActivity : AppCompatActivity() {
         )
 
         songListRecycler.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(trackList, this)
+        adapter = TrackAdapter(trackManager.getTracksList(sharedPreferences), this)
         songListRecycler.adapter = adapter
         placeholderMessage.visibility = View.GONE
-        historyTitle.visibility = View.GONE
-        clearTrackHistoryButton.visibility = View.GONE
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -193,10 +192,10 @@ class SearchActivity : AppCompatActivity() {
         if (trackHistory.isNotEmpty()) {
             historyTitle.visibility = View.VISIBLE
             clearTrackHistoryButton.visibility = View.VISIBLE
-            songListRecycler.visibility = View.VISIBLE
             placeholderMessage.visibility = View.GONE
             trackList = trackHistory
             adapter.notifyDataSetChanged()
+            songListRecycler.visibility = View.VISIBLE
         } else {
             hideHistory()
         }
