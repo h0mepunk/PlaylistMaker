@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.track
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -14,6 +14,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.R
+import com.example.playlistmaker.TrackManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -23,7 +25,6 @@ class MediaActivity : AppCompatActivity() {
     private val playButton by lazy { findViewById<Button>(R.id.media_button_play)}
     private val trackTime by lazy { findViewById<TextView>(R.id.media_track_length)}
     val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
-    val trackDataProcessor = TrackDataProcessor()
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private val handler = Handler(Looper.getMainLooper())
@@ -88,8 +89,8 @@ class MediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
-
-        val currentTrack = trackDataProcessor.trackFromJson(sharedPreferences.getString(
+        val trackManager = TrackManager(this)
+        val currentTrack = trackManager.trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, ""))
         val placeholderImage: ImageView = findViewById(R.id.media_track_cover)
         val trackTitle = findViewById<TextView>(R.id.media_track_title)

@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain.models
 
 data class Track (
     val trackName: String,
@@ -6,14 +6,9 @@ data class Track (
     val trackTimeMillis: String,
     val artworkUrl100: String,
     val trackId: Int,
-    val releaseDate: String,
+    val releaseDate: String?,
     val primaryGenreName: String,
     val country: String,
     val collectionName: String,
     val previewUrl: String
-)
-
-data class TrackResponse(
-    val resultCount: Int,
-    val results: List<TrackDto>
 )

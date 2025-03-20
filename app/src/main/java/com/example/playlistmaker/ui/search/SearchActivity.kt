@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.content.Context
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -21,6 +22,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.LoadTracksUseCase
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.track.TrackAdapter
+import com.example.playlistmaker.ui.track.TrackHistoryAdapter
+import com.example.playlistmaker.TrackManager
+import com.example.playlistmaker.data.network.NetworkClient
 
 class SearchActivity : AppCompatActivity() {
 
@@ -45,9 +53,8 @@ class SearchActivity : AppCompatActivity() {
     val trackHistoryRecycler: RecyclerView by lazy { findViewById(R.id.song_history_list_recycler) }
     val searchHistoryLayout: View by lazy { findViewById(R.id.searchHistoryLayout) }
     val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
-
-    private val trackNetworkClient = TrackNetworkClient()
-    val trackManager = TrackManager(context = this)
+    val trackManager by lazy { TrackManager(this) }
+    private val networkClient = NetworkClient()
     private lateinit var loadTracksUseCase: LoadTracksUseCase
     private val handler = Handler(Looper.getMainLooper())
 
@@ -56,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         loadTracksUseCase = LoadTracksUseCase(
-            trackNetworkClient,
+            networkClient,
             textDump.toString()
         )
 
@@ -133,11 +140,10 @@ class SearchActivity : AppCompatActivity() {
                 if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
                     showHistory()
                 }
-                searchDebounce(textDump.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //empty
+                searchDebounce(textDump.toString())
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
@@ -195,6 +201,7 @@ class SearchActivity : AppCompatActivity() {
         historyAdapter.notifyDataSetChanged()
         if (trackHistory.isNotEmpty()) {
             searchHistoryLayout.visibility = View.VISIBLE
+            placeholderMessage.visibility = View.GONE
         } else {
             searchHistoryLayout.visibility = View.GONE
         }
@@ -207,11 +214,12 @@ class SearchActivity : AppCompatActivity() {
             songListRecycler.visibility = View.GONE
 
             loadTracksUseCase.execute(
-                onSuccess = { trackList ->
+                searchText = text,
+                onSuccess = { tracks ->
                     progressBar.visibility = View.GONE
                     placeholderMessage.visibility = View.GONE
                     trackList.clear()
-                    trackList.addAll(trackList)
+                    trackList.addAll(tracks)
                     if (trackList.isEmpty()) {
                         showMessage(
                             text = R.string.empty_song_list_error_text,

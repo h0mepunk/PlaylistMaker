@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.track
 
 import android.content.Context
 import android.content.Intent
@@ -13,18 +13,20 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.TrackManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackAdapter(
-    private val items: List<Track>,
+class TrackHistoryAdapter(
+    private var items: List<Track>,
     private val context: Context
-) : RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
+) : RecyclerView.Adapter<TrackHistoryAdapter.TracksViewHolder> () {
 
+    private val trackManager = TrackManager(context)
     private val sharedPreferences = context
         .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-    private val trackManager = TrackManager(context)
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
@@ -32,25 +34,28 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
+        items = trackManager.getTracksList(sharedPreferences)
         holder.bind(items[position])
+        val itemsList = items as ArrayList<Track>
 
         holder.itemView.setOnClickListener {
-            if(clickDebounce()) {
+            if (clickDebounce()) {
                 val track = items[position]
-                var trackHistory = trackManager.getTracksList(sharedPreferences)
-                if (trackHistory.size == 10) {
-                    trackHistory.removeAt(9)
-                    trackHistory.add(0, track)
+                if (itemsList.size == 10) {
+                    itemsList.removeAt(9)
+                    itemsList.add(0, track)
                 }
-                if (trackHistory.contains(track)) {
-                    trackHistory.remove(track)
-                    trackHistory.add(0, track)
+                if (itemsList.contains(track)) {
+                    itemsList.remove(track)
+                    itemsList.add(0, track)
                 }
                 else {
-                    trackHistory.add(0, track)
+                    itemsList.add(0, track)
                 }
-                trackManager.saveTracksList(trackHistory)
+                trackManager.saveTracksList(itemsList)
                 trackManager.saveCurrentTrack(track)
+                this.notifyDataSetChanged()
+
 
                 val mediaActivity = Intent(context, MediaActivity::class.java)
                 context.startActivity(mediaActivity)
@@ -100,4 +105,5 @@ class TrackAdapter(
             songSubtitle.text = item.artistName
         }
     }
+
 }

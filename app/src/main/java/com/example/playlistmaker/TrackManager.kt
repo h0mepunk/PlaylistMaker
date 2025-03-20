@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -54,7 +55,7 @@ class TrackManager(private val context: Context) {
         return gson.fromJson(json, type)
     }
 
-    fun trackToJson(track:Track): String {
+    fun trackToJson(track: Track): String {
         return gson.toJson(track)
     }
 }

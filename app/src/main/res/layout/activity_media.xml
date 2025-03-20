@@ -10,7 +10,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".MediaActivity">
+    tools:context=".ui.track.MediaActivity">
     <Toolbar
         android:id="@+id/media_toolbar"
         android:layout_width="match_parent"
