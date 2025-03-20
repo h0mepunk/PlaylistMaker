@@ -90,8 +90,7 @@ class MediaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
         val trackManager = TrackManager(this)
-        val currentTrack = trackManager.trackFromJson(sharedPreferences.getString(
-            CURRENT_TRACK_KEY, ""))
+        val currentTrack = trackManager.getCurrentTrack()
         val placeholderImage: ImageView = findViewById(R.id.media_track_cover)
         val trackTitle = findViewById<TextView>(R.id.media_track_title)
         val trackArtist = findViewById<TextView>(R.id.media_track_artist)

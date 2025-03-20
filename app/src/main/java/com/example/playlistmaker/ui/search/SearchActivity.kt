@@ -26,7 +26,6 @@ import com.example.playlistmaker.LoadTracksUseCase
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
-import com.example.playlistmaker.ui.track.TrackHistoryAdapter
 import com.example.playlistmaker.TrackManager
 import com.example.playlistmaker.data.network.NetworkClient
 
@@ -41,7 +40,6 @@ class SearchActivity : AppCompatActivity() {
 
     val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
     lateinit var adapter: TrackAdapter
-    lateinit var historyAdapter: TrackHistoryAdapter
     val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
 
     val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
@@ -50,8 +48,7 @@ class SearchActivity : AppCompatActivity() {
     val songListRecycler: RecyclerView by lazy { findViewById(R.id.song_list_recycler) }
     val refreshButton: Button by lazy { findViewById(R.id.refreshButton) }
     val clearTrackHistoryButton: Button by lazy { findViewById(R.id.clearHistoryButton) }
-    val trackHistoryRecycler: RecyclerView by lazy { findViewById(R.id.song_history_list_recycler) }
-    val searchHistoryLayout: View by lazy { findViewById(R.id.searchHistoryLayout) }
+    val historyTitle: TextView by lazy { findViewById(R.id.searchHistoryTitle) }
     val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
     val trackManager by lazy { TrackManager(this) }
     private val networkClient = NetworkClient()
@@ -68,16 +65,11 @@ class SearchActivity : AppCompatActivity() {
         )
 
         songListRecycler.layoutManager = LinearLayoutManager(this)
-        trackHistoryRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter(trackList, this)
-
-        trackHistory = trackManager.getTracksList(sharedPreferences)
-        historyAdapter = TrackHistoryAdapter(trackHistory, this)
-        trackHistoryRecycler.adapter = historyAdapter
         songListRecycler.adapter = adapter
-        //trackHistoryRecycler.adapter = historyAdapter
         placeholderMessage.visibility = View.GONE
-        searchHistoryLayout.visibility = View.GONE
+        historyTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -105,8 +97,7 @@ class SearchActivity : AppCompatActivity() {
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
             trackManager.saveTracksList(trackHistory)
-            historyAdapter.notifyDataSetChanged()
-            searchHistoryLayout.visibility = View.GONE
+            hideHistory()
         }
 
         inputEditText.setOnFocusChangeListener() { _, hasFocus -> }
@@ -179,7 +170,7 @@ class SearchActivity : AppCompatActivity() {
 
         trackList.clear()
         adapter.notifyDataSetChanged()
-        searchHistoryLayout.visibility = View.GONE
+        hideHistory()
         if (text != null) {
             placeholderMessageText.text = getString(text)
             if (additionalMessage.isNotEmpty()) {
@@ -198,19 +189,28 @@ class SearchActivity : AppCompatActivity() {
 
     fun showHistory() {
         trackHistory = trackManager.getTracksList(sharedPreferences)
-        historyAdapter.notifyDataSetChanged()
+        Log.e("????", trackHistory.toString())
         if (trackHistory.isNotEmpty()) {
-            searchHistoryLayout.visibility = View.VISIBLE
+            historyTitle.visibility = View.VISIBLE
+            clearTrackHistoryButton.visibility = View.VISIBLE
+            songListRecycler.visibility = View.VISIBLE
             placeholderMessage.visibility = View.GONE
+            trackList = trackHistory
+            adapter.notifyDataSetChanged()
         } else {
-            searchHistoryLayout.visibility = View.GONE
+            hideHistory()
         }
+    }
+
+    private fun hideHistory() {
+        historyTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
     }
 
     private fun loadTracks(text: String) {
         if (text.isNotEmpty()) {
             progressBar.visibility = View.VISIBLE
-            searchHistoryLayout.visibility = View.GONE
+            hideHistory()
             songListRecycler.visibility = View.GONE
 
             loadTracksUseCase.execute(
@@ -230,7 +230,7 @@ class SearchActivity : AppCompatActivity() {
                     } else {
                         adapter.notifyDataSetChanged()
                         songListRecycler.visibility = View.VISIBLE
-                        searchHistoryLayout.visibility = View.GONE
+                        hideHistory()
                     }
                 },
                 onErrorResponse = {
@@ -254,8 +254,6 @@ class SearchActivity : AppCompatActivity() {
                 )
                 }
             )
-
-            //trackNetworkClient.loadTracks(text, object: Callback<TrackResponse>)
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import com.example.playlistmaker.domain.models.Track
@@ -13,12 +14,16 @@ class TrackManager(private val context: Context) {
     private val gson = Gson()
 
     fun getTracksList(sharedPreferences: SharedPreferences): ArrayList<Track> {
+        val tracks = tracksListFromJson(
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))
+        Log.e("???? track list got ${tracks.size}", tracks.toString())
         return tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
     }
 
     fun saveTracksList(tracks: ArrayList<Track>) {
+        Log.e("???? track list saved ${tracks.size}", tracks.toString())
         sharedPreferences.edit()
             .putString(
                 TRACK_HISTORY_LIST_KEY,
@@ -28,12 +33,20 @@ class TrackManager(private val context: Context) {
     }
 
     fun saveCurrentTrack(track: Track) {
+        Log.e("???? track saved", track.toString())
         sharedPreferences.edit()
             .putString(CURRENT_TRACK_KEY, trackToJson(track))
             .apply()
     }
 
-    fun tracksListFromJson(json: String?): ArrayList<Track> {
+    fun getCurrentTrack(): Track {
+        Log.e("???? track got", trackFromJson(sharedPreferences.getString(
+            CURRENT_TRACK_KEY, "")).toString())
+        return trackFromJson(sharedPreferences.getString(
+            CURRENT_TRACK_KEY, ""))
+    }
+
+    private fun tracksListFromJson(json: String?): ArrayList<Track> {
         return if (json != null) {
             if (json.isEmpty()) {
                 ArrayList()
@@ -46,16 +59,16 @@ class TrackManager(private val context: Context) {
         }
     }
 
-    fun tracksListToJson(tracks: ArrayList<Track>): String {
+    private fun tracksListToJson(tracks: ArrayList<Track>): String {
         return gson.toJson(tracks)
     }
 
-    fun trackFromJson(json: String?): Track {
+    private fun trackFromJson(json: String?): Track {
         val type = object : TypeToken<Track>() {}.type
         return gson.fromJson(json, type)
     }
 
-    fun trackToJson(track: Track): String {
+    private fun trackToJson(track: Track): String {
         return gson.toJson(track)
     }
 }
