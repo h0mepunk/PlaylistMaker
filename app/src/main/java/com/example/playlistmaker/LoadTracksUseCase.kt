@@ -12,16 +12,26 @@ import retrofit2.Response
 
 class LoadTracksUseCase(
     private val tracksRepository: TracksInteractor,
-    private val tracksNetworkClient: RetrofitNetworkClient,
-    private val searchText: String
 ) {
 
     fun execute(
         searchText: String, // searchText?
+        onSuccess: (ArrayList<Track>) -> Unit,
+        onErrorResponse: (errorText: String) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
-        tracksRepository.searchTracks(searchText, object : TracksInteractor.TracksConsumer {
-
+        tracksRepository.searchTracks(searchText, object:  TracksInteractor.TracksConsumer {
+            override fun consume(foundMovies: List<Track>) {
+                Log.e("????? foundMovies", foundMovies.toString())
+                if (foundMovies.isNotEmpty()) {
+                    onSuccess(foundMovies as ArrayList<Track>)
+                } else {
+                    onError(Throwable("No tracks found"))
+                    // Later add error handling for error response
+                }
+            }
         })
+
 
 //        tracksNetworkClient.loadTracks(searchText, object: Callback<TrackResponse> {
 //            override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {

@@ -1,5 +1,6 @@
-package com.example.playlistmaker.data.network
+package com.example.playlistmaker.data
 
+import android.util.Log
 import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.models.Track
@@ -14,6 +15,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRep
     ): List<Track> {
         val response = networkClient.doRequest(TracksSearchRequest(text))
         if (response.resultCode == 200) {
+            Log.e("????? tracks list", response.toString())
             return (response as TrackResponse).results.map {
                 Track(
                     it.trackName,

@@ -29,6 +29,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.data.TrackManager
+import com.example.playlistmaker.domain.api.TracksInteractor
 
 class SearchActivity : AppCompatActivity() {
 
@@ -57,11 +58,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        loadTracksUseCase = LoadTracksUseCase(
-            Creator().provideTracksInteractor(),
-            networkClient,
-            textDump.toString()
-        )
+        loadTracksUseCase = LoadTracksUseCase(Creator().provideTracksInteractor())
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         trackManager = TrackManager(this)
         songListRecycler.layoutManager = LinearLayoutManager(this)
