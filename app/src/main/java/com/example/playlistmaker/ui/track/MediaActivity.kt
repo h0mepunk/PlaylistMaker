@@ -12,9 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.TrackManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -23,7 +22,6 @@ class MediaActivity : AppCompatActivity() {
     private val toolbar by lazy { findViewById<Toolbar>(R.id.media_toolbar)}
     private val playButton by lazy { findViewById<Button>(R.id.media_button_play)}
     private val trackTime by lazy { findViewById<TextView>(R.id.media_track_length)}
-    val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private val handler = Handler(Looper.getMainLooper())
@@ -88,8 +86,8 @@ class MediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
-        val trackManager = TrackManager(this)
-        val currentTrack = trackManager.getCurrentTrack()
+        val tracksHistoryInteractor = Creator(this).provideTracksHistoryInteractor()
+        val currentTrack = tracksHistoryInteractor.getCurrentTrack()
         val placeholderImage: ImageView = findViewById(R.id.media_track_cover)
         val trackTitle = findViewById<TextView>(R.id.media_track_title)
         val trackArtist = findViewById<TextView>(R.id.media_track_artist)
@@ -116,7 +114,7 @@ class MediaActivity : AppCompatActivity() {
         trackAlbum.text = currentTrack.collectionName
         trackGenre.text = currentTrack.primaryGenreName
         trackReleaseDate.text = currentTrack.releaseDate
-        trackDuration.text = currentTrack.trackTimeMillis
+        trackDuration.text = currentTrack.trackTime
         trackCountry.text = currentTrack.country
 
         toolbar.setNavigationOnClickListener {
@@ -150,5 +148,4 @@ class MediaActivity : AppCompatActivity() {
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
     }
-
 }

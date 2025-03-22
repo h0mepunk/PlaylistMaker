@@ -1,19 +1,19 @@
 package com.example.playlistmaker.data
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
+import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class TrackManager(private val context: Context) {
+class TracksHistoryRepositoryImpl(context: Context): TracksHistoryRepository {
     private val sharedPreferences = context.getSharedPreferences("task_preferences", Context.MODE_PRIVATE)
     private val gson = Gson()
 
-    fun getTracksList(sharedPreferences: SharedPreferences): ArrayList<Track> {
+    override fun getTracksHistory(): ArrayList<Track> {
         val tracks = tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))
         Log.e("???? track list got ${tracks.size}", tracks.toString())
@@ -22,7 +22,7 @@ class TrackManager(private val context: Context) {
         )
     }
 
-    fun saveTracksList(tracks: ArrayList<Track>) {
+    override fun saveTracksHistory(tracks: ArrayList<Track>) {
         Log.e("???? track list saved ${tracks.size}", tracks.toString())
         sharedPreferences.edit()
             .putString(
@@ -32,14 +32,14 @@ class TrackManager(private val context: Context) {
             .apply()
     }
 
-    fun saveCurrentTrack(track: Track) {
+    override fun saveCurrentTrack(track: Track) {
         Log.e("???? track saved", track.toString())
         sharedPreferences.edit()
             .putString(CURRENT_TRACK_KEY, trackToJson(track))
             .apply()
     }
 
-    fun getCurrentTrack(): Track {
+    override fun getCurrentTrack(): Track {
         Log.e("???? track got", trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, "")).toString())
         return trackFromJson(sharedPreferences.getString(

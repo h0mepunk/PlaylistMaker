@@ -15,23 +15,22 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.data.TrackManager
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
 
     private lateinit var sharedPreferences : SharedPreferences
-    private lateinit var trackManager : TrackManager
+    private lateinit var tracksHistoryInteractor: TracksHistoryInteractor
     private lateinit var context: Context
     var items: List<Track> = emptyList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
-        trackManager = TrackManager(parent.context)
+        tracksHistoryInteractor = Creator(parent.context).provideTracksHistoryInteractor()
         sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         context = parent.context
         return TracksViewHolder(view)
@@ -46,7 +45,7 @@ class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
         holder.itemView.setOnClickListener {
             if(clickDebounce()) {
                 val track = items[position]
-                var trackHistory = trackManager.getTracksList(sharedPreferences)
+                var trackHistory = tracksHistoryInteractor.getTracksHistory()
                 if (trackHistory.size == 10) {
                     trackHistory.removeAt(9)
                     trackHistory.add(0, track)
@@ -58,8 +57,8 @@ class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
                 else {
                     trackHistory.add(0, track)
                 }
-                trackManager.saveTracksList(trackHistory)
-                trackManager.saveCurrentTrack(track)
+                tracksHistoryInteractor.saveTracksHistory(trackHistory)
+                tracksHistoryInteractor.saveCurrentTrack(track)
 
                 val mediaActivity = Intent(context, MediaActivity::class.java)
                 context.startActivity(mediaActivity)
@@ -104,7 +103,7 @@ class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
                 .placeholder(R.drawable.placeholder)
                 .into(songImage)
 
-            songDuration.text = item.trackTimeMillis
+            songDuration.text = item.trackTime
             songTitle.text = item.trackName
             songSubtitle.text = item.artistName
         }

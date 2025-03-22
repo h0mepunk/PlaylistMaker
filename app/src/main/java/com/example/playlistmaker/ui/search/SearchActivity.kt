@@ -25,9 +25,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
-import com.example.playlistmaker.data.TrackManager
 import com.example.playlistmaker.domain.api.TracksInteractor
 
 class SearchActivity : AppCompatActivity() {
@@ -49,17 +49,17 @@ class SearchActivity : AppCompatActivity() {
     val clearTrackHistoryButton: Button by lazy { findViewById(R.id.clearHistoryButton) }
     val historyTitle: TextView by lazy { findViewById(R.id.searchHistoryTitle) }
     val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
-    private lateinit var trackManager : TrackManager
+    private lateinit var trackHistoryInteractor : TracksHistoryInteractor
     private lateinit var tracksInteractor: TracksInteractor
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        tracksInteractor = Creator().provideTracksInteractor()
+        val creator = Creator(this)
+        tracksInteractor = creator.provideTracksInteractor()
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        trackManager = TrackManager(this)
+        trackHistoryInteractor = creator.provideTracksHistoryInteractor()
         songListRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter()
         showHistory()
@@ -89,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
-            trackManager.saveTracksList(trackHistory)
+            trackHistoryInteractor.saveTracksHistory(trackHistory)
             hideHistory()
         }
 
@@ -182,7 +182,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun showHistory() {
-        trackHistory = trackManager.getTracksList(sharedPreferences)
+        trackHistory = trackHistoryInteractor.getTracksHistory()
         Log.e("????", trackHistory.toString())
         if (trackHistory.isNotEmpty()) {
             historyTitle.visibility = View.VISIBLE
