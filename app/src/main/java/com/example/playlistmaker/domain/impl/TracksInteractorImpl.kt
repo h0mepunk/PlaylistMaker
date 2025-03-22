@@ -6,12 +6,17 @@ import java.util.concurrent.Executors
 
 class TracksInteractorImpl (private val repository: TracksRepository) : TracksInteractor {
 
-    private val executor = Executors.newCachedThreadPool()
+   // private val executor = Executors.newCachedThreadPool()
 
     override fun searchTracks(text: String, consumer: TracksInteractor.TracksConsumer) {
 
-        executor.execute {
+//        executor.execute {
+//            consumer.consume(repository.searchTracks(text))
+//        }
+
+        val t = Thread {
             consumer.consume(repository.searchTracks(text))
         }
+        t.start()
     }
 }

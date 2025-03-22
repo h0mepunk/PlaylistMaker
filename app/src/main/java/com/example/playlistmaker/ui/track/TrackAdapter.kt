@@ -104,7 +104,7 @@ class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
                 .placeholder(R.drawable.placeholder)
                 .into(songImage)
 
-            songDuration.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis.toLong())
+            songDuration.text = item.trackTimeMillis
             songTitle.text = item.trackName
             songSubtitle.text = item.artistName
         }

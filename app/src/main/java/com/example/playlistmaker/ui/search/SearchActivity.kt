@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.LoadTracksUseCase
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
@@ -51,14 +50,14 @@ class SearchActivity : AppCompatActivity() {
     val historyTitle: TextView by lazy { findViewById(R.id.searchHistoryTitle) }
     val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
     private lateinit var trackManager : TrackManager
-    private lateinit var loadTracksUseCase: LoadTracksUseCase
+    private lateinit var tracksInteractor: TracksInteractor
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        loadTracksUseCase = LoadTracksUseCase(Creator().provideTracksInteractor())
+        tracksInteractor = Creator().provideTracksInteractor()
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         trackManager = TrackManager(this)
         songListRecycler.layoutManager = LinearLayoutManager(this)
@@ -208,48 +207,53 @@ class SearchActivity : AppCompatActivity() {
             hideHistory()
             songListRecycler.visibility = View.GONE
 
-            loadTracksUseCase.execute(
-                searchText = text,
-                onSuccess = { tracks ->
-                    progressBar.visibility = View.GONE
-                    placeholderMessage.visibility = View.GONE
-                    trackList.clear()
-                    trackList.addAll(tracks)
-                    if (trackList.isEmpty()) {
-                        showMessage(
-                            text = R.string.empty_song_list_error_text,
-                            additionalMessage = "",
-                            buttonVisibility = View.GONE,
-                            icon = R.drawable.empty_results_error
-                        )
-                    } else {
-                        adapter.items = trackList
-                        adapter.notifyDataSetChanged()
-                        songListRecycler.visibility = View.VISIBLE
-                        hideHistory()
+            tracksInteractor.searchTracks(text, object: TracksInteractor.TracksConsumer {
+                override fun consume(foundTracks: List<Track>) {
+                    runOnUiThread {
+                        Log.e("????? foundTracks", foundTracks.toString())
+                        if (foundTracks.isNotEmpty()) {
+                            progressBar.visibility = View.GONE
+                            placeholderMessage.visibility = View.GONE
+                            trackList.clear()
+                            trackList.addAll(foundTracks)
+                            adapter.items = trackList
+                            adapter.notifyDataSetChanged()
+                            songListRecycler.visibility = View.VISIBLE
+                            hideHistory()
+                        } else {
+                            showMessage(
+                                text = R.string.empty_song_list_error_text,
+                                additionalMessage = "",
+                                buttonVisibility = View.GONE,
+                                icon = R.drawable.empty_results_error
+                            )
+                        }
                     }
-                },
-                onErrorResponse = {
-                    errorText ->
-                    progressBar.visibility = View.GONE
-                    showMessage(
-                        text = R.string.network_error_text,
-                        additionalMessage = errorText,
-                        buttonVisibility = View.VISIBLE,
-                        icon = R.drawable.internet_error
-                    )
-                },
-                onError = { t ->
-                    progressBar.visibility = View.GONE
-                    t.printStackTrace()
-                showMessage(
-                    text = R.string.network_error_text,
-                    additionalMessage = "",
-                    buttonVisibility = View.VISIBLE,
-                    icon = R.drawable.internet_error
-                )
+                    // Add error response handling later
                 }
-            )
+            })
+
+//                onErrorResponse = {
+//                    errorText ->
+//                    progressBar.visibility = View.GONE
+//                    showMessage(
+//                        text = R.string.network_error_text,
+//                        additionalMessage = errorText,
+//                        buttonVisibility = View.VISIBLE,
+//                        icon = R.drawable.internet_error
+//                    )
+//                },
+//                onError = { t ->
+//                    progressBar.visibility = View.GONE
+//                    t.printStackTrace()
+//                showMessage(
+//                    text = R.string.network_error_text,
+//                    additionalMessage = "",
+//                    buttonVisibility = View.VISIBLE,
+//                    icon = R.drawable.internet_error
+//                )
+//                }
+//            )
         }
     }
 
