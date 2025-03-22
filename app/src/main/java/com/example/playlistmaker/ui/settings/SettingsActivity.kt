@@ -1,11 +1,11 @@
-package com.example.playlistmaker.ui
+package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.App
+import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial

@@ -17,23 +17,23 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.TrackManager
+import com.example.playlistmaker.data.TrackManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackAdapter(
-    private val items: List<Track>,
-    private val context: Context
-) : RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
+class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
 
     private lateinit var sharedPreferences : SharedPreferences
     private lateinit var trackManager : TrackManager
+    private lateinit var context: Context
+    var items: List<Track> = emptyList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
         trackManager = TrackManager(parent.context)
         sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        context = parent.context
         return TracksViewHolder(view)
     }
 

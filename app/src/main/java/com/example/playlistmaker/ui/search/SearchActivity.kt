@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.search
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,17 +19,16 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.LoadTracksUseCase
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
-import com.example.playlistmaker.TrackManager
-import com.example.playlistmaker.data.network.NetworkClient
+import com.example.playlistmaker.data.TrackManager
 
 class SearchActivity : AppCompatActivity() {
 
@@ -38,11 +38,9 @@ class SearchActivity : AppCompatActivity() {
 
     private val inputEditText: EditText by lazy { findViewById(R.id.inputEditText) }
     private val toolbar by lazy { findViewById<Toolbar>(R.id.search_toolbar)}
-
     val clearButton: ImageView by lazy { findViewById(R.id.clearIcon)}
-    lateinit var adapter: TrackAdapter
-    val sharedPreferences by lazy { getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
-
+    private lateinit var adapter: TrackAdapter
+    private lateinit var sharedPreferences : SharedPreferences
     val placeholderMessage: View by lazy { findViewById(R.id.placeholderView) }
     val placeholderMessageText: TextView by lazy { findViewById(R.id.placeholderMessageText) }
     val placeholderIcon: ImageView by lazy { findViewById(R.id.placeholderIcon) }
@@ -51,8 +49,7 @@ class SearchActivity : AppCompatActivity() {
     val clearTrackHistoryButton: Button by lazy { findViewById(R.id.clearHistoryButton) }
     val historyTitle: TextView by lazy { findViewById(R.id.searchHistoryTitle) }
     val progressBar: ProgressBar by lazy { findViewById(R.id.searchProgressBar) }
-    val trackManager by lazy { TrackManager(this) }
-    private val networkClient = NetworkClient()
+    private lateinit var trackManager : TrackManager
     private lateinit var loadTracksUseCase: LoadTracksUseCase
     private val handler = Handler(Looper.getMainLooper())
 
@@ -61,21 +58,21 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         loadTracksUseCase = LoadTracksUseCase(
+            Creator().provideTracksInteractor(),
             networkClient,
             textDump.toString()
         )
-
+        sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        trackManager = TrackManager(this)
         songListRecycler.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(trackManager.getTracksList(sharedPreferences), this)
+        adapter = TrackAdapter()
+        showHistory()
+
         songListRecycler.adapter = adapter
         placeholderMessage.visibility = View.GONE
 
         clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-
-        if (trackList.isEmpty()) {
-            showHistory()
-        }
 
         refreshButton.setOnClickListener {
             loadTracks(textDump.toString())
@@ -86,6 +83,7 @@ class SearchActivity : AppCompatActivity() {
             showHistory()
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             trackList.clear()
+            adapter.items = trackList
             adapter.notifyDataSetChanged()
         }
 
@@ -168,6 +166,7 @@ class SearchActivity : AppCompatActivity() {
     ) {
 
         trackList.clear()
+        adapter.items = trackList
         adapter.notifyDataSetChanged()
         hideHistory()
         if (text != null) {
@@ -193,7 +192,7 @@ class SearchActivity : AppCompatActivity() {
             historyTitle.visibility = View.VISIBLE
             clearTrackHistoryButton.visibility = View.VISIBLE
             placeholderMessage.visibility = View.GONE
-            trackList = trackHistory
+            adapter.items = trackHistory
             adapter.notifyDataSetChanged()
             songListRecycler.visibility = View.VISIBLE
         } else {
@@ -227,6 +226,7 @@ class SearchActivity : AppCompatActivity() {
                             icon = R.drawable.empty_results_error
                         )
                     } else {
+                        adapter.items = trackList
                         adapter.notifyDataSetChanged()
                         songListRecycler.visibility = View.VISIBLE
                         hideHistory()

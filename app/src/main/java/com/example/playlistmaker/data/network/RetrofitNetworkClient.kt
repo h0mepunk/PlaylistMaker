@@ -1,0 +1,36 @@
+package com.example.playlistmaker.data.network
+
+import com.example.playlistmaker.data.dto.Response
+import com.example.playlistmaker.data.dto.TracksSearchRequest
+import com.example.playlistmaker.domain.api.TrackApiService
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+class RetrofitNetworkClient : NetworkClient {
+
+    private val baseUrl = "https://itunes.apple.com"
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val tracksApiService = retrofit.create(TrackApiService::class.java)
+
+    override fun doRequest(dto: Any): Response {
+        if (dto is TracksSearchRequest) {
+            val resp = tracksApiService.getTracks(dto.searchText).execute()
+
+            var body = resp.body() ?: Response()
+
+            return body.apply { resultCode = resp.code() }
+        } else {
+            return Response().apply { resultCode = 400 }
+        }
+    }
+
+//    //??????
+//    fun loadTracks(text:String, callback: Callback<TrackResponse>) {
+//        tracksApiService.getTracks(text).enqueue(callback)
+//    }
+}
