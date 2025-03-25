@@ -17,11 +17,14 @@ import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.ui.main.App
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class Creator(private val context: Context) {
+object Creator {
+    lateinit var context: Context
+
     private fun getTracksRepository(): TracksRepository {
         return TracksRepositoryImpl(RetrofitNetworkClient(this))
     }

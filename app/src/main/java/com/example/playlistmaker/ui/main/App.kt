@@ -1,17 +1,16 @@
 package com.example.playlistmaker.ui.main
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.ui.settings.THEME_SWITCH_KEY
 
 class App : Application() {
 
-    private val themeInteractor = Creator(this).provideThemeInteractor()
+    private val creator = Creator
+    private val themeInteractor = creator.provideThemeInteractor()
 
     override fun onCreate() {
         super.onCreate()
+        creator.context = this
         val theme = themeInteractor.getTheme()
         switchTheme(theme)
     }
