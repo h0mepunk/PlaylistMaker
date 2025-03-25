@@ -127,7 +127,11 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                searchDebounce(textDump.toString())
+                if (s.isNullOrEmpty()) {
+                    showHistory()
+                } else {
+                    searchDebounce(textDump.toString())
+                }
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
