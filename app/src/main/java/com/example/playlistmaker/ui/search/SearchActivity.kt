@@ -29,6 +29,7 @@ import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.ui.main.App
 
 class SearchActivity : AppCompatActivity() {
 
@@ -56,10 +57,9 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        val creator = Creator(this)
-        tracksInteractor = creator.provideTracksInteractor()
+        tracksInteractor = Creator.provideTracksInteractor()
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        trackHistoryInteractor = creator.provideTracksHistoryInteractor()
+        trackHistoryInteractor = Creator.provideTracksHistoryInteractor()
         songListRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter()
         showHistory()
@@ -209,9 +209,9 @@ class SearchActivity : AppCompatActivity() {
 
             tracksInteractor.searchTracks(text, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>) {
-                    runOnUiThread {
                         Log.e("????? foundTracks", foundTracks.toString())
                         if (foundTracks.isNotEmpty()) {
+                            runOnUiThread {
                             progressBar.visibility = View.GONE
                             placeholderMessage.visibility = View.GONE
                             trackList.clear()
@@ -219,18 +219,19 @@ class SearchActivity : AppCompatActivity() {
                             adapter.items = trackList
                             adapter.notifyDataSetChanged()
                             songListRecycler.visibility = View.VISIBLE
-                            hideHistory()
+                            hideHistory()}
                         } else {
-                            showMessage(
-                                text = R.string.empty_song_list_error_text,
-                                additionalMessage = "",
-                                buttonVisibility = View.GONE,
-                                icon = R.drawable.empty_results_error
-                            )
+                            runOnUiThread {
+                                showMessage(
+                                    text = R.string.empty_song_list_error_text,
+                                    additionalMessage = "",
+                                    buttonVisibility = View.GONE,
+                                    icon = R.drawable.empty_results_error
+                                )
+                            }
                         }
                     }
                     // Add error response handling later
-                }
             })
 
 //                onErrorResponse = {

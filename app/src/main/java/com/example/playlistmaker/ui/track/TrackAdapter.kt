@@ -30,7 +30,7 @@ class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
-        tracksHistoryInteractor = Creator(parent.context).provideTracksHistoryInteractor()
+        tracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
         sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         context = parent.context
         return TracksViewHolder(view)

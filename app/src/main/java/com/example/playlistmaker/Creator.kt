@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.data.ThemeRepositoryImpl
@@ -23,7 +24,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
-    lateinit var context: Context
 
     private fun getTracksRepository(): TracksRepository {
         return TracksRepositoryImpl(RetrofitNetworkClient(this))
@@ -37,7 +37,8 @@ object Creator {
         return ThemeRepositoryImpl(this)
     }
 
-    val sharedPreferences = context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+    lateinit var context: Context
+    val sharedPreferences: SharedPreferences by lazy { context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
 
     val gson = Gson()
 

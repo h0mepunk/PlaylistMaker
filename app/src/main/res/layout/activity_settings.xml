@@ -18,6 +18,8 @@
     <com.google.android.material.switchmaterial.SwitchMaterial
         style="@style/settings_menu_item"
         android:id="@+id/setting_item_dark_theme"
+        app:thumbTint="@color/switch_thumb_color"
+        app:trackTint="@color/switch_track_color"
         android:layout_marginTop="@dimen/button_margin_top"
         android:text="@string/dark_theme_menu"
         android:thumbTintMode="screen"/>

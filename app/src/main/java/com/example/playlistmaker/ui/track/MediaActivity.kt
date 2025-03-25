@@ -86,7 +86,7 @@ class MediaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
-        val tracksHistoryInteractor = Creator(this).provideTracksHistoryInteractor()
+        val tracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
         val currentTrack = tracksHistoryInteractor.getCurrentTrack()
         val placeholderImage: ImageView = findViewById(R.id.media_track_cover)
         val trackTitle = findViewById<TextView>(R.id.media_track_title)

@@ -3,9 +3,10 @@ package com.example.playlistmaker.data
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.api.ThemeRepository
-import com.example.playlistmaker.ui.settings.THEME_SWITCH_KEY
 
 class ThemeRepositoryImpl(private val creator: Creator): ThemeRepository {
+
+    private val THEME_SWITCH_KEY = "key_for_theme_switch"
 
     private val darkThemeDefault = false
 
