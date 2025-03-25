@@ -1,20 +1,16 @@
 package com.example.playlistmaker.data
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.api.ThemeRepository
 import com.example.playlistmaker.ui.settings.THEME_SWITCH_KEY
 
-class ThemeRepositoryImpl(private val context: Context): ThemeRepository {
+class ThemeRepositoryImpl(private val creator: Creator): ThemeRepository {
 
-    private val sharedPreferences = context.getSharedPreferences(
-        PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
     private val darkThemeDefault = false
 
     override fun getTheme(): Boolean {
-        return sharedPreferences.getBoolean(THEME_SWITCH_KEY, darkThemeDefault)
+        return creator.sharedPreferences.getBoolean(THEME_SWITCH_KEY, darkThemeDefault)
     }
 
     override fun setTheme(darkTheme: Boolean) {
@@ -26,7 +22,7 @@ class ThemeRepositoryImpl(private val context: Context): ThemeRepository {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        sharedPreferences.edit()
+        creator.sharedPreferences.edit()
             .putBoolean(THEME_SWITCH_KEY, darkTheme)
             .apply()
     }
