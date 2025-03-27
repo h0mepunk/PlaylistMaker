@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.track
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -22,64 +21,83 @@ class MediaActivity : AppCompatActivity() {
     private val toolbar by lazy { findViewById<Toolbar>(R.id.media_toolbar)}
     private val playButton by lazy { findViewById<Button>(R.id.media_button_play)}
     private val trackTime by lazy { findViewById<TextView>(R.id.media_track_length)}
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
+    private val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
+    private var mediaPlayer = Creator.provideMediaPlayerInteractor().getMediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
     private var timerRunnable = Runnable { updateTimer() }
 
     private fun updateTimer() {
-        if(playerState == STATE_PLAYING) {
-            trackTime.text = SimpleDateFormat(
-                "mm:ss",
-                Locale.getDefault()
-            ).format(mediaPlayer.currentPosition)
-            handler.postDelayed(timerRunnable, 250)
-        }
+        mediaPlayerInteractor.updateTimer (
+            onUpdate = {
+                runOnUiThread {
+                    trackTime.text = SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(mediaPlayer.currentPosition)
+                    handler.postDelayed(timerRunnable, 250)
+                }
+            }
+        )
     }
 
     private fun preparePlayer(url: String) {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playButton.background = getDrawable(R.drawable.media_play)
-            playerState = STATE_PREPARED
-        }
+        mediaPlayerInteractor.preparePlayer(
+            url,
+            onPrepared = {
+                runOnUiThread {
+                    playButton.isEnabled = true
+                }
+            },
+            onCompletion = {
+                runOnUiThread {
+                    playButton.background = getDrawable(R.drawable.media_play)
+                }
+            }
+        )
     }
 
     private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.background = getDrawable(R.drawable.media_stop)
-        handler.post(timerRunnable)
-        playerState = STATE_PLAYING
+        mediaPlayerInteractor.startPlayer(
+            onPlaying = {
+                runOnUiThread {
+                    playButton.background = getDrawable(R.drawable.media_stop)
+                    handler.post(timerRunnable)
+                }
+            }
+        )
     }
 
     private fun pausePlayer() {
-        mediaPlayer.pause()
-        playButton.background = getDrawable(R.drawable.media_play)
-        handler.removeCallbacks(timerRunnable)
-        playerState = STATE_PAUSED
+        mediaPlayerInteractor.pausePlayer(
+            onPause = {
+                runOnUiThread {
+                    playButton.background = getDrawable(R.drawable.media_play)
+                    handler.removeCallbacks(timerRunnable)
+                }
+            }
+        )
     }
 
     private fun stopPlayer() {
-        mediaPlayer.stop()
-        playButton.background = getDrawable(R.drawable.media_play)
-        trackTime.text = "0:00"
-        playerState = STATE_PREPARED
+        mediaPlayerInteractor.stopPlayer (
+            onStop = {
+                runOnUiThread {
+                    playButton.background = getDrawable(R.drawable.media_play)
+                    trackTime.text = "0:00"
+                }
+            }
+        )
     }
 
     private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
+        mediaPlayerInteractor.playbackControl(
+            start = {
+                startPlayer()
+            },
+            pause = {
                 pausePlayer()
             }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
+        )
     }
 
 
@@ -140,12 +158,5 @@ class MediaActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-    }
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
     }
 }
