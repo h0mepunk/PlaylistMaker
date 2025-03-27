@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
@@ -38,6 +39,8 @@ object Creator {
 
     private val baseUrl = "https://itunes.apple.com"
 
+    private var mediaPlayer = MediaPlayer()
+
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
@@ -58,7 +61,7 @@ object Creator {
     }
 
     private fun getMediaPlayerRepository(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl()
+        return MediaPlayerRepositoryImpl(mediaPlayer)
     }
 
     fun provideTracksHistoryInteractor(): TracksHistoryInteractor {

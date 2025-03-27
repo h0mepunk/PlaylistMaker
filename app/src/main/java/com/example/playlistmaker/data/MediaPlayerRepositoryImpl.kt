@@ -1,13 +1,13 @@
 package com.example.playlistmaker.data
 
 import android.media.MediaPlayer
+import android.util.Log
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl: MediaPlayerRepository {
+class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlayerRepository {
 
     private var playerState = STATE_DEFAULT
 
-    private var mediaPlayer = MediaPlayer()
 
     override fun getMediaPlayer(): MediaPlayer {
         return mediaPlayer
@@ -21,12 +21,18 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-           onPrepared()
             playerState = STATE_PREPARED
+           onPrepared()
+            Log.e("?????","player prepared, url $url")
         }
         mediaPlayer.setOnCompletionListener {
-            onCompletion()
             playerState = STATE_PREPARED
+            onCompletion()
+            Log.e("?????","player completed")
+        }
+        mediaPlayer.setOnErrorListener { _, what, extra ->
+            Log.e("?????", "MediaPlayer error: what=$what, extra=$extra")
+            true
         }
     }
 
@@ -36,6 +42,7 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
         mediaPlayer.start()
         onPlaying()
         playerState = STATE_PLAYING
+        Log.e("?????","player started")
     }
 
     override fun pausePlayer(
@@ -44,6 +51,7 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
         mediaPlayer.pause()
         onPause()
         playerState = STATE_PAUSED
+        Log.e("?????","player paused")
     }
 
     override fun stopPlayer(
@@ -52,9 +60,11 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
         mediaPlayer.stop()
         onStop()
         playerState = STATE_PREPARED
+        Log.e("?????","player stopped")
     }
 
     override fun getPlayerState(): Int {
+        Log.e("?????","player state: $playerState")
         return playerState
     }
 
@@ -62,6 +72,7 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
         onUpdate: () -> Unit
     ) {
         if(playerState == STATE_PLAYING) {
+            Log.e("?????","update timer")
             onUpdate()
         }
     }
@@ -72,9 +83,11 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
     ) {
         when(playerState) {
             STATE_PLAYING -> {
+                Log.e("?????","player paused playback")
                 pause()
             }
             STATE_PREPARED, STATE_PAUSED -> {
+                Log.e("?????","player started playback")
                 start()
             }
         }

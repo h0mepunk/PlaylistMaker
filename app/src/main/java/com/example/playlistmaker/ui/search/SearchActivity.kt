@@ -110,8 +110,10 @@ class SearchActivity : AppCompatActivity() {
 
             private fun searchRunnable(text: String) = Runnable { loadTracks(text) }
 
-            private fun searchDebounce(text: String) {
-                handler.removeCallbacks(searchRunnable(text))
+            private fun searchDebounce(text: String,) {
+                Log.e("????", "all callbacks removed")
+                handler.removeCallbacksAndMessages(null)
+                Log.e("????", "callback added $text")
                 handler.postDelayed(searchRunnable(text), SEARCH_DEBOUNCE_DELAY)
             }
 
@@ -121,16 +123,17 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 textDump = s
-                if(!(inputEditText.hasFocus()) && s.isNullOrEmpty()) {
-                    showHistory()
-                }
+                searchDebounce(textDump.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
+                    Log.e("????", "all callbacks removed")
+                    handler.removeCallbacksAndMessages(null)
                     showHistory()
-                } else {
-                    searchDebounce(textDump.toString())
+                }
+                if((inputEditText.hasFocus()) && s.isNullOrEmpty()) {
+                    showHistory()
                 }
             }
         }

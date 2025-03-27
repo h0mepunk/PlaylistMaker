@@ -3,6 +3,7 @@ package com.example.playlistmaker.ui.track
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,13 +30,11 @@ class MediaActivity : AppCompatActivity() {
     private fun updateTimer() {
         mediaPlayerInteractor.updateTimer (
             onUpdate = {
-                runOnUiThread {
                     trackTime.text = SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
                     ).format(mediaPlayer.currentPosition)
-                    handler.postDelayed(timerRunnable, 250)
-                }
+                handler.postDelayed(timerRunnable, 250)
             }
         )
     }
@@ -44,14 +43,10 @@ class MediaActivity : AppCompatActivity() {
         mediaPlayerInteractor.preparePlayer(
             url,
             onPrepared = {
-                runOnUiThread {
                     playButton.isEnabled = true
-                }
             },
             onCompletion = {
-                runOnUiThread {
                     playButton.background = getDrawable(R.drawable.media_play)
-                }
             }
         )
     }
@@ -59,10 +54,8 @@ class MediaActivity : AppCompatActivity() {
     private fun startPlayer() {
         mediaPlayerInteractor.startPlayer(
             onPlaying = {
-                runOnUiThread {
                     playButton.background = getDrawable(R.drawable.media_stop)
-                    handler.post(timerRunnable)
-                }
+                handler.post(timerRunnable)
             }
         )
     }
@@ -70,10 +63,8 @@ class MediaActivity : AppCompatActivity() {
     private fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer(
             onPause = {
-                runOnUiThread {
                     playButton.background = getDrawable(R.drawable.media_play)
-                    handler.removeCallbacks(timerRunnable)
-                }
+                handler.removeCallbacks(timerRunnable)
             }
         )
     }
@@ -81,10 +72,8 @@ class MediaActivity : AppCompatActivity() {
     private fun stopPlayer() {
         mediaPlayerInteractor.stopPlayer (
             onStop = {
-                runOnUiThread {
                     playButton.background = getDrawable(R.drawable.media_play)
                     trackTime.text = "0:00"
-                }
             }
         )
     }
@@ -142,16 +131,19 @@ class MediaActivity : AppCompatActivity() {
         preparePlayer(currentTrack.previewUrl)
 
         playButton.setOnClickListener {
+            Log.e("?????","play/stop button clicked")
             playbackControl()
         }
 
         mediaPlayer.setOnCompletionListener {
+            Log.e("?????","player completed")
             stopPlayer()
         }
     }
 
     override fun onPause() {
         super.onPause()
+        Log.e("?????","onPause")
         pausePlayer()
     }
 
