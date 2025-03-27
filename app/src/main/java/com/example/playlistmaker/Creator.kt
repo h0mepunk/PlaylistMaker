@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.ThemeRepositoryImpl
+import com.example.playlistmaker.data.TrackMapper
 import com.example.playlistmaker.data.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.domain.api.TracksRepository
@@ -28,21 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
 
-    private fun getTracksRepository(): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient(this))
-    }
-
-    private fun getTrackHistory(): TracksHistoryRepository {
-        return TracksHistoryRepositoryImpl(this)
-    }
-
-    private fun getThemeRepository(): ThemeRepository {
-        return ThemeRepositoryImpl(this)
-    }
-
-    private fun getMediaPlayerRepository(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl()
-    }
+    private val tracksMapper = TrackMapper()
 
     lateinit var context: Context
     val sharedPreferences: SharedPreferences by lazy { context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
@@ -55,6 +42,24 @@ object Creator {
         .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
+
+    val tracksApiService = retrofit.create(TrackApiService::class.java)
+
+    private fun getTracksRepository(): TracksRepository {
+        return TracksRepositoryImpl(RetrofitNetworkClient(tracksApiService), tracksMapper)
+    }
+
+    private fun getTrackHistory(): TracksHistoryRepository {
+        return TracksHistoryRepositoryImpl(sharedPreferences, gson)
+    }
+
+    private fun getThemeRepository(): ThemeRepository {
+        return ThemeRepositoryImpl(sharedPreferences)
+    }
+
+    private fun getMediaPlayerRepository(): MediaPlayerRepository {
+        return MediaPlayerRepositoryImpl()
+    }
 
     fun provideTracksHistoryInteractor(): TracksHistoryInteractor {
         return TracksHistoryInteractorImpl(getTrackHistory())
@@ -71,7 +76,4 @@ object Creator {
     fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
         return MediaPlayerInteractorImpl(getMediaPlayerRepository())
     }
-
-    val tracksApiService = retrofit.create(TrackApiService::class.java)
-
 }

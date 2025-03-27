@@ -1,27 +1,31 @@
 package com.example.playlistmaker.data
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.models.Track
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class TracksHistoryRepositoryImpl(private val creator: Creator): TracksHistoryRepository {
+class TracksHistoryRepositoryImpl(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+): TracksHistoryRepository {
 
     override fun getTracksHistory(): ArrayList<Track> {
         val tracks = tracksListFromJson(
-            creator.sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))
         Log.e("???? track list got ${tracks.size}", tracks.toString())
         return tracksListFromJson(
-            creator.sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
+            sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
     }
 
     override fun saveTracksHistory(tracks: ArrayList<Track>) {
         Log.e("???? track list saved ${tracks.size}", tracks.toString())
-        creator.sharedPreferences.edit()
+        sharedPreferences.edit()
             .putString(
                 TRACK_HISTORY_LIST_KEY,
                 tracksListToJson(tracks)
@@ -31,15 +35,15 @@ class TracksHistoryRepositoryImpl(private val creator: Creator): TracksHistoryRe
 
     override fun saveCurrentTrack(track: Track) {
         Log.e("???? track saved", track.toString())
-        creator.sharedPreferences.edit()
+        sharedPreferences.edit()
             .putString(CURRENT_TRACK_KEY, trackToJson(track))
             .apply()
     }
 
     override fun getCurrentTrack(): Track {
-        Log.e("???? track got", trackFromJson(creator.sharedPreferences.getString(
+        Log.e("???? track got", trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, "")).toString())
-        return trackFromJson(creator.sharedPreferences.getString(
+        return trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, ""))
     }
 
@@ -49,7 +53,7 @@ class TracksHistoryRepositoryImpl(private val creator: Creator): TracksHistoryRe
                 ArrayList()
             } else {
                 val type = object : TypeToken<ArrayList<Track>>() {}.type
-                creator.gson.fromJson(json, type)
+                gson.fromJson(json, type)
             }
         } else {
             ArrayList()
@@ -57,15 +61,15 @@ class TracksHistoryRepositoryImpl(private val creator: Creator): TracksHistoryRe
     }
 
     private fun tracksListToJson(tracks: ArrayList<Track>): String {
-        return creator.gson.toJson(tracks)
+        return gson.toJson(tracks)
     }
 
     private fun trackFromJson(json: String?): Track {
         val type = object : TypeToken<Track>() {}.type
-        return creator.gson.fromJson(json, type)
+        return gson.fromJson(json, type)
     }
 
     private fun trackToJson(track: Track): String {
-        return creator.gson.toJson(track)
+        return gson.toJson(track)
     }
 }

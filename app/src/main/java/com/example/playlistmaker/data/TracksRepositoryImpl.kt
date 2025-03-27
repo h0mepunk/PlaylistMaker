@@ -6,9 +6,10 @@ import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.dto.TracksSearchRequest
 
-class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRepository {
-
-    private val tracksMapper = TrackMapper()
+class TracksRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val tracksMapper: TrackMapper
+    ) : TracksRepository {
 
     override fun searchTracks(
         text: String,

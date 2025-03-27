@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -27,12 +26,11 @@ class SettingsActivity : AppCompatActivity() {
         val contactSupport = findViewById<MaterialTextView>(R.id.setting_item_contact_support)
         val userAgreement = findViewById<MaterialTextView>(R.id.setting_item_user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.setting_item_dark_theme)
-        val app = applicationContext as App
 
         themeSwitcher.isChecked = Creator.provideThemeInteractor().getTheme()
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (app).switchTheme(checked)
+            Creator.provideThemeInteractor().setTheme(checked)
         }
 
         themeSwitcher.setOnClickListener {
