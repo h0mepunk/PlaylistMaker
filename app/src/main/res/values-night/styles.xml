@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="background">
-        <item name="android:background">@color/black</item>
+        <item name="android:background">@color/dark</item>
     </style>
     <style name="toolbar_title_text">
         <item name="android:fontFamily">"@font/ys_display_medium"</item>
