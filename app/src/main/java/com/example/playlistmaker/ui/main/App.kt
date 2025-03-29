@@ -1,0 +1,21 @@
+package com.example.playlistmaker.ui.main
+
+import android.app.Application
+import com.example.playlistmaker.Creator
+
+class App : Application() {
+
+    private val themeInteractor by lazy { Creator.provideThemeInteractor() }
+
+    override fun onCreate() {
+        super.onCreate()
+        Creator.context = applicationContext
+        val theme = themeInteractor.getTheme()
+        switchTheme(theme)
+    }
+
+    fun switchTheme(darkThemeEnabled: Boolean) {
+        Creator.provideThemeInteractor().setTheme(darkThemeEnabled)
+    }
+}
+

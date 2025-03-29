@@ -1,15 +1,14 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
-
-const val THEME_SWITCH_KEY = "key_for_theme_switch"
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -28,17 +27,10 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreement = findViewById<MaterialTextView>(R.id.setting_item_user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.setting_item_dark_theme)
 
-        val sharedPrefs = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-        val app = applicationContext as App
-
-        themeSwitcher.isChecked = app.darkTheme
+        themeSwitcher.isChecked = Creator.provideThemeInteractor().getTheme()
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            app.darkTheme = checked
-            sharedPrefs.edit()
-                .putBoolean(THEME_SWITCH_KEY, checked)
-                .apply()
-            (app).switchTheme(checked)
+            Creator.provideThemeInteractor().setTheme(checked)
         }
 
         themeSwitcher.setOnClickListener {
