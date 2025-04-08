@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.search
 
+import TracksSearchViewModel
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -18,8 +19,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
@@ -29,13 +31,15 @@ import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.ui.main.App
+import com.example.playlistmaker.domain.models.TracksState
+import com.example.playlistmaker.ui.track.TrackAdapter.Companion.CLICK_DEBOUNCE_DELAY
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : ComponentActivity() {
 
     var textDump: CharSequence? = ""
     var trackList = ArrayList<Track>()
     var trackHistory = ArrayList<Track>()
+    private var isClickAllowed = true
 
     private val inputEditText: EditText by lazy { findViewById(R.id.inputEditText) }
     private val toolbar by lazy { findViewById<Toolbar>(R.id.search_toolbar)}
@@ -53,21 +57,33 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackHistoryInteractor : TracksHistoryInteractor
     private lateinit var tracksInteractor: TracksInteractor
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var viewModel: TracksSearchViewModel
+    private lateinit var textWatcher: TextWatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, TracksSearchViewModel.getViewModelFactory())[TracksSearchViewModel::class.java]
+
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
+
+        viewModel.observeShowToast().observe(this) {
+            showToast(it)
+        }
+
         setContentView(R.layout.activity_search)
-        tracksInteractor = Creator.provideTracksInteractor()
+        tracksInteractor = Creator.provideTracksInteractor(applicationContext)
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         trackHistoryInteractor = Creator.provideTracksHistoryInteractor()
         songListRecycler.layoutManager = LinearLayoutManager(this)
         adapter = TrackAdapter()
-        showHistory()
 
-        songListRecycler.adapter = adapter
-        placeholderMessage.visibility = View.GONE
+//        showHistory()
+//        songListRecycler.adapter = adapter
+//        placeholderMessage.visibility = View.GONE
 
-        clearButton.isVisible = false
+//        clearButton.isVisible = false
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         refreshButton.setOnClickListener {
@@ -90,7 +106,8 @@ class SearchActivity : AppCompatActivity() {
         clearTrackHistoryButton.setOnClickListener {
             trackHistory.clear()
             trackHistoryInteractor.saveTracksHistory(trackHistory)
-            hideHistory()
+            historyTitle.visibility = View.GONE
+            clearTrackHistoryButton.visibility = View.GONE
         }
 
         inputEditText.setOnFocusChangeListener() { _, hasFocus -> }
@@ -106,7 +123,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-        val simpleTextWatcher = object : TextWatcher {
+        val textWatcher = object : TextWatcher {
 
             private fun searchRunnable(text: String) = Runnable { loadTracks(text) }
 
@@ -137,7 +154,8 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-        inputEditText.addTextChangedListener(simpleTextWatcher)
+        textWatcher?.let { inputEditText.addTextChangedListener(it) }
+        //inputEditText.addTextChangedListener(simpleTextWatcher)
 
         if (savedInstanceState != null) {
             textDump = savedInstanceState.getCharSequence(
@@ -145,6 +163,11 @@ class SearchActivity : AppCompatActivity() {
                 EMPTY_SEARCH_TEXT as CharSequence
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        textWatcher?.let { inputEditText.removeTextChangedListener(it) }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -171,7 +194,8 @@ class SearchActivity : AppCompatActivity() {
         trackList.clear()
         adapter.items = trackList
         adapter.notifyDataSetChanged()
-        hideHistory()
+        historyTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
         if (text != null) {
             placeholderMessageText.text = getString(text)
             if (additionalMessage.isNotEmpty()) {
@@ -199,19 +223,16 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
             songListRecycler.visibility = View.VISIBLE
         } else {
-            hideHistory()
+            historyTitle.visibility = View.GONE
+            clearTrackHistoryButton.visibility = View.GONE
         }
-    }
-
-    private fun hideHistory() {
-        historyTitle.visibility = View.GONE
-        clearTrackHistoryButton.visibility = View.GONE
     }
 
     private fun loadTracks(text: String) {
         if (text.isNotEmpty()) {
             progressBar.visibility = View.VISIBLE
-            hideHistory()
+            historyTitle.visibility = View.GONE
+            clearTrackHistoryButton.visibility = View.GONE
             songListRecycler.visibility = View.GONE
 
             tracksInteractor.searchTracks(text, object: TracksInteractor.TracksConsumer {
@@ -226,7 +247,9 @@ class SearchActivity : AppCompatActivity() {
                             adapter.items = trackList
                             adapter.notifyDataSetChanged()
                             songListRecycler.visibility = View.VISIBLE
-                            hideHistory()}
+                                historyTitle.visibility = View.GONE
+                                clearTrackHistoryButton.visibility = View.GONE
+                            }
                         } else {
                             runOnUiThread {
                                 showMessage(
@@ -263,6 +286,56 @@ class SearchActivity : AppCompatActivity() {
 //                }
 //            )
         }
+    }
+
+    private fun showToast(additionalMessage: String) {
+        Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG).show()
+    }
+
+    private fun render(state: TracksState) {
+        when (state) {
+            is TracksState.Content -> showContent(state.trackModel)
+            is TracksState.Empty -> showEmpty(state.errorMessage)
+            is TracksState.Error -> showError(state.message)
+            is TracksState.Loading -> showLoading()
+        }
+    }
+
+    private fun showLoading() {
+//        songListRecycler.visibility = View.GONE
+//        placeholderMessage.visibility = View.GONE
+//        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showError(errorMessage: String) {
+//        songListRecycler.visibility = View.GONE
+//        placeholderMessage.visibility = View.VISIBLE
+//        progressBar.visibility = View.GONE
+//
+//        placeholderMessageText.text = errorMessage
+    }
+
+    private fun showEmpty(emptyMessage: String) {
+        //showError(emptyMessage)
+    }
+
+    private fun showContent(tracks: List<Track>) {
+//        songListRecycler.visibility = View.VISIBLE
+//        placeholderMessage.visibility = View.GONE
+//        progressBar.visibility = View.GONE
+//
+//        trackList.clear()
+//        trackList.addAll(tracks)
+//        adapter.notifyDataSetChanged()
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 
     companion object {

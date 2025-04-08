@@ -24,6 +24,7 @@ import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.ui.main.App
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -68,7 +69,7 @@ object Creator {
         return TracksHistoryInteractorImpl(getTrackHistory())
     }
 
-    fun provideTracksInteractor(): TracksInteractor {
+    fun provideTracksInteractor(context: Context): TracksInteractor {
         return TracksInteractorImpl(getTracksRepository())
     }
 
