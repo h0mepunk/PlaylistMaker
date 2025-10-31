@@ -1,7 +1,7 @@
 package com.example.playlistmaker.ui.main
 
 import android.app.Application
-import com.example.playlistmaker.Creator
+import com.example.playlistmaker.util.Creator
 
 class App : Application() {
 

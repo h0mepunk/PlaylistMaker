@@ -1,18 +1,15 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.util
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
+import com.example.playlistmaker.Const
 import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.ThemeRepositoryImpl
 import com.example.playlistmaker.data.TrackMapper
 import com.example.playlistmaker.data.TracksHistoryRepositoryImpl
-import com.example.playlistmaker.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.domain.api.TracksRepository
-import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 import com.example.playlistmaker.data.TracksRepositoryImpl
+import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.ThemeInteractor
@@ -21,9 +18,11 @@ import com.example.playlistmaker.domain.api.TrackApiService
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -33,7 +32,10 @@ object Creator {
     private val tracksMapper = TrackMapper()
 
     lateinit var context: Context
-    val sharedPreferences: SharedPreferences by lazy { context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)}
+    val sharedPreferences: SharedPreferences by lazy { context.getSharedPreferences(
+        Const.PLAYLIST_MAKER_PREFERENCES,
+        Context.MODE_PRIVATE
+    )}
 
     val gson = Gson()
 
@@ -48,8 +50,11 @@ object Creator {
 
     val tracksApiService = retrofit.create(TrackApiService::class.java)
 
-    private fun getTracksRepository(): TracksRepository {
-        return TracksRepositoryImpl(RetrofitNetworkClient(tracksApiService), tracksMapper)
+    private fun getTracksRepository(context: Context): TracksRepository {
+        return TracksRepositoryImpl(
+            RetrofitNetworkClient(tracksApiService, context),
+            tracksMapper
+        )
     }
 
     private fun getTrackHistory(): TracksHistoryRepository {
@@ -68,8 +73,8 @@ object Creator {
         return TracksHistoryInteractorImpl(getTrackHistory())
     }
 
-    fun provideTracksInteractor(): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository())
+    fun provideTracksInteractor(context: Context): TracksInteractor {
+        return TracksInteractorImpl(getTracksRepository(context))
     }
 
     fun provideThemeInteractor(): ThemeInteractor {

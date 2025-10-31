@@ -23,7 +23,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.Creator
+import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
@@ -57,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        tracksInteractor = Creator.provideTracksInteractor()
+        tracksInteractor = Creator.provideTracksInteractor(this)
         sharedPreferences = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         trackHistoryInteractor = Creator.provideTracksHistoryInteractor()
         songListRecycler.layoutManager = LinearLayoutManager(this)
