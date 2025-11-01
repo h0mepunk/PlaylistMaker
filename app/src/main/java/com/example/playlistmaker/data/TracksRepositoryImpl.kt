@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data
 
-import android.util.Log
 import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.models.Track
@@ -20,17 +19,14 @@ class TracksRepositoryImpl(
             -1 -> {
                 Resource.Error("Проверьте подключение к интернету")
             }
+
             200 -> {
-                tracksMapper.mapTrackDtoListToTrackList((response as TrackResponse).results)
+                Resource.Success(tracksMapper.mapTrackDtoListToTrackList((response as TrackResponse).results))
             }
+
             else -> {
                 Resource.Error("Ошибка сервера")
             }
-//                (response.resultCode == 200) {
-//            Log.e("????? tracks list", response.toString())
-//            return tracksMapper.mapTrackDtoListToTrackList((response as TrackResponse).results)
-//        } else {
-//            return emptyList()
         }
     }
 }
