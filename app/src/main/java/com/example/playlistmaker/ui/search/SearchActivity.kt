@@ -30,6 +30,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.ui.main.App
+import java.util.concurrent.Executors
 
 class SearchActivity : AppCompatActivity() {
 
@@ -184,8 +185,12 @@ class SearchActivity : AppCompatActivity() {
             refreshButton.visibility = buttonVisibility
 
         } else {
-            placeholderMessage.visibility = View.GONE
+            hideMessage()
         }
+    }
+
+    fun hideMessage() {
+        placeholderMessage.visibility = View.GONE
     }
 
     fun showHistory() {
@@ -194,7 +199,7 @@ class SearchActivity : AppCompatActivity() {
         if (trackHistory.isNotEmpty()) {
             historyTitle.visibility = View.VISIBLE
             clearTrackHistoryButton.visibility = View.VISIBLE
-            placeholderMessage.visibility = View.GONE
+            hideMessage()
             adapter.items = trackHistory
             adapter.notifyDataSetChanged()
             songListRecycler.visibility = View.VISIBLE
@@ -207,7 +212,6 @@ class SearchActivity : AppCompatActivity() {
         historyTitle.visibility = View.GONE
         clearTrackHistoryButton.visibility = View.GONE
     }
-
     private fun loadTracks(text: String) {
         if (text.isNotEmpty()) {
             progressBar.visibility = View.VISIBLE
@@ -215,20 +219,30 @@ class SearchActivity : AppCompatActivity() {
             songListRecycler.visibility = View.GONE
 
             tracksInteractor.searchTracks(text, object: TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>) {
+                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                         Log.e("????? foundTracks", foundTracks.toString())
-                        if (foundTracks.isNotEmpty()) {
+                        if (foundTracks != null) {
                             runOnUiThread {
                             progressBar.visibility = View.GONE
-                            placeholderMessage.visibility = View.GONE
+                            hideMessage()
                             trackList.clear()
                             trackList.addAll(foundTracks)
                             adapter.items = trackList
                             adapter.notifyDataSetChanged()
                             songListRecycler.visibility = View.VISIBLE
                             hideHistory()}
-                        } else {
-                            runOnUiThread {
+                        }
+                    if (errorMessage != null) {
+                        runOnUiThread {
+                                showMessage(
+                                    text = R.string.network_error_text,
+                                    additionalMessage = errorMessage,
+                                    buttonVisibility = View.GONE,
+                                    icon = R.drawable.internet_error
+                                )
+                            }
+                    } else if (foundTracks == null) {
+                        runOnUiThread {
                                 showMessage(
                                     text = R.string.empty_song_list_error_text,
                                     additionalMessage = "",
@@ -236,8 +250,10 @@ class SearchActivity : AppCompatActivity() {
                                     icon = R.drawable.empty_results_error
                                 )
                             }
-                        }
+                    } else {
+                        hideMessage()
                     }
+                }
                     // Add error response handling later
             })
 
