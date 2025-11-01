@@ -1,5 +1,6 @@
 package com.example.playlistmaker.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
@@ -23,6 +24,8 @@ import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.presentation.TracksSearchController
+import com.example.playlistmaker.ui.track.TrackAdapter
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -50,6 +53,10 @@ object Creator {
 
     val tracksApiService = retrofit.create(TrackApiService::class.java)
 
+
+    fun provideTracksSearchController(activity: Activity, adapter: TrackAdapter): TracksSearchController {
+        return TracksSearchController(activity, adapter)
+    }
     private fun getTracksRepository(context: Context): TracksRepository {
         return TracksRepositoryImpl(
             RetrofitNetworkClient(tracksApiService, context),
