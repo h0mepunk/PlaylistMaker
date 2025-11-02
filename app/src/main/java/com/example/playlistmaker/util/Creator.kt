@@ -1,6 +1,5 @@
 package com.example.playlistmaker.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
@@ -27,10 +26,11 @@ import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 import com.example.playlistmaker.presentation.track.TrackView
 import com.example.playlistmaker.presentation.main.MainPresenter
 import com.example.playlistmaker.presentation.main.MainView
-import com.example.playlistmaker.presentation.settings.SettingsController
+import com.example.playlistmaker.presentation.settings.SettingsPresenter
 import com.example.playlistmaker.presentation.track.TrackPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchView
+import com.example.playlistmaker.presentation.settings.SettingsView
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -67,8 +67,8 @@ object Creator {
         return TrackPresenter(trackView, context)
     }
 
-    fun provideSettingsController(activity: Activity): SettingsController {
-        return SettingsController(activity)
+    fun provideSettingsPresenter(settingsView: SettingsView, context: Context): SettingsPresenter {
+        return SettingsPresenter(settingsView, context)
     }
 
     fun provideMainPresenter(view: MainView, context: Context): MainPresenter {
