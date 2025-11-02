@@ -24,12 +24,12 @@ import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.domain.models.TrackView
 import com.example.playlistmaker.presentation.main.MainController
 import com.example.playlistmaker.presentation.settings.SettingsController
-import com.example.playlistmaker.presentation.track.TrackController
+import com.example.playlistmaker.presentation.track.TrackPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchView
-import com.example.playlistmaker.ui.track.TrackAdapter
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -62,8 +62,8 @@ object Creator {
         return TracksSearchPresenter(tracksView, context)
     }
 
-    fun provideTrackController(activity: Activity): TrackController {
-        return TrackController(activity)
+    fun provideTrackController(trackView: TrackView, context: Context): TrackPresenter {
+        return TrackPresenter(trackView, context)
     }
 
     fun provideSettingsController(activity: Activity): SettingsController {
@@ -89,7 +89,7 @@ object Creator {
     }
 
     private fun getMediaPlayerRepository(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl(MediaPlayer()) // если юзать один медиаплеер то при повторном открытии ему ПИЗДЕЦ
+        return MediaPlayerRepositoryImpl(mediaPlayer) // если юзать один медиаплеер то при повторном открытии ему ПИЗДЕЦ
     }
 
     fun provideTracksHistoryInteractor(): TracksHistoryInteractor {

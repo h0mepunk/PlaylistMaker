@@ -179,7 +179,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
     }
 
     override fun showToast(message: String) {
-        Log.e("TracksSearchController", "showToast: $message")
+        Log.e("SearchActivity", "showToast: $message")
         runOnUiThread {
             Toast.makeText(this, message, Toast.LENGTH_LONG)
                 .show()
