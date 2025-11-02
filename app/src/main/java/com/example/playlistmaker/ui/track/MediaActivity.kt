@@ -4,14 +4,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.TrackController
 
 class MediaActivity : AppCompatActivity() {
-    private var mediaPlayer = Creator.provideMediaPlayerInteractor().getMediaPlayer()
 
-    private val trackController = Creator.provideTrackController(this)
+    private lateinit var trackController : TrackController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        trackController = Creator.provideTrackController(this)
         setContentView(R.layout.activity_media)
         trackController.onCreate()
     }
@@ -23,6 +24,6 @@ class MediaActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        trackController.onDestroy()
     }
 }

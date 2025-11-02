@@ -1,8 +1,10 @@
 package com.example.playlistmaker.presentation
 
 import android.app.Activity
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -13,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -22,8 +25,8 @@ class TrackController(private val activity: Activity) {
     private lateinit var toolbar :Toolbar
     private lateinit var playButton : Button
     private lateinit var trackTime : TextView
-    private val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
-    private var mediaPlayer = Creator.provideMediaPlayerInteractor().getMediaPlayer()
+    private lateinit var mediaPlayerInteractor: MediaPlayerInteractor
+    private lateinit var mediaPlayer:  MediaPlayer
     private val handler = Handler(Looper.getMainLooper())
     private var timerRunnable = Runnable { updateTimer() }
 
@@ -46,10 +49,7 @@ class TrackController(private val activity: Activity) {
                 playButton.isEnabled = true
             },
             onCompletion = {
-                playButton.background = AppCompatResources.getDrawable(
-                    activity,
-                    R.drawable.media_play
-                )
+                playButton.background = activity.getDrawable(R.drawable.media_play)
             }
         )
     }
@@ -116,6 +116,9 @@ class TrackController(private val activity: Activity) {
     val trackDuration = activity.findViewById<TextView>(R.id.media_info_length_value)
     val trackCountry = activity.findViewById<TextView>(R.id.media_info_country_value)
 
+        mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
+        mediaPlayer = Creator.provideMediaPlayerInteractor().getMediaPlayer()
+
         Glide.with(activity)
             .load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg"))
             .placeholder(R.drawable.media_cover_preview)
@@ -151,5 +154,9 @@ class TrackController(private val activity: Activity) {
             Log.e("TrackController","player completed")
             stopPlayer()
         }
+    }
+
+    fun onDestroy() {
+        mediaPlayer.release()
     }
 }
