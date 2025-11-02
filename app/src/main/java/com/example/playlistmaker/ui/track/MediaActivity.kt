@@ -14,7 +14,7 @@ class MediaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         trackController = Creator.provideTrackController(this)
         setContentView(R.layout.activity_media)
-        trackController.onCreate()
+        trackController.onCreate(savedInstanceState)
     }
 
     override fun onPause() {
@@ -26,4 +26,5 @@ class MediaActivity : AppCompatActivity() {
         super.onDestroy()
         trackController.onDestroy()
     }
+
 }

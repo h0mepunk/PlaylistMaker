@@ -88,7 +88,7 @@ object Creator {
     }
 
     private fun getMediaPlayerRepository(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl(mediaPlayer)
+        return MediaPlayerRepositoryImpl(MediaPlayer()) // если юзать один медиаплеер то при повторном открытии ему ПИЗДЕЦ
     }
 
     fun provideTracksHistoryInteractor(): TracksHistoryInteractor {
