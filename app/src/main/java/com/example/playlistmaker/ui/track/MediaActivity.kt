@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.models.TrackView
+import com.example.playlistmaker.presentation.track.TrackView
 import com.example.playlistmaker.presentation.track.TrackPresenter
 
 class MediaActivity : AppCompatActivity(), TrackView {

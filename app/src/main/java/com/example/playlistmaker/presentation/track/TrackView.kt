@@ -1,7 +1,6 @@
-package com.example.playlistmaker.domain.models
+package com.example.playlistmaker.presentation.track
 
 import android.widget.ImageView
-
 
 interface TrackView {
 

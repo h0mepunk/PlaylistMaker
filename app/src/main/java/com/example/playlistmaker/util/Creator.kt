@@ -24,8 +24,9 @@ import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
-import com.example.playlistmaker.domain.models.TrackView
-import com.example.playlistmaker.presentation.main.MainController
+import com.example.playlistmaker.presentation.track.TrackView
+import com.example.playlistmaker.presentation.main.MainPresenter
+import com.example.playlistmaker.presentation.main.MainView
 import com.example.playlistmaker.presentation.settings.SettingsController
 import com.example.playlistmaker.presentation.track.TrackPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
@@ -70,8 +71,8 @@ object Creator {
         return SettingsController(activity)
     }
 
-    fun provideMainController(activity: Activity): MainController {
-        return MainController(activity)
+    fun provideMainPresenter(view: MainView, context: Context): MainPresenter {
+        return MainPresenter(view,context)
     }
     private fun getTracksRepository(context: Context): TracksRepository {
         return TracksRepositoryImpl(
