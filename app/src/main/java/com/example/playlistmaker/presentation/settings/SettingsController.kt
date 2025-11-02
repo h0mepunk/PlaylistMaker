@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation
+package com.example.playlistmaker.presentation.settings
 
 import android.app.Activity
 import android.content.Intent

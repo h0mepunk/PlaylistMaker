@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.presentation.TrackController
+import com.example.playlistmaker.presentation.track.TrackController
 
 class MediaActivity : AppCompatActivity() {
 

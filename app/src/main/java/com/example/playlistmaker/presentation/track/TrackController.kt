@@ -1,11 +1,9 @@
-package com.example.playlistmaker.presentation
+package com.example.playlistmaker.presentation.track
 
 import android.app.Activity
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -22,7 +20,7 @@ import java.util.Locale
 
 class TrackController(private val activity: Activity) {
 
-    private lateinit var toolbar :Toolbar
+    private lateinit var toolbar : Toolbar
     private lateinit var playButton : Button
     private lateinit var trackTime : TextView
     private val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
