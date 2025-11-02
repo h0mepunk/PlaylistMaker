@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.playlistmaker.Const
 import com.example.playlistmaker.R
@@ -43,13 +42,6 @@ class TracksSearchPresenter(
         )
         trackHistoryInteractor = Creator.provideTracksHistoryInteractor()
         showHistory()
-
-        if (savedInstanceState != null) {
-            lastSearchText = savedInstanceState.getCharSequence(
-                SEARCH_TEXT,
-                EMPTY_SEARCH_TEXT as CharSequence
-            ).toString()
-        }
 
     }
 
@@ -160,10 +152,7 @@ class TracksSearchPresenter(
             view.changePlaceholderMessage(ContextCompat.getString(context, text))
             if (additionalMessage.isNotEmpty()) {
                 Log.e("TracksSearchController", "showToast: $additionalMessage")
-                handler.post {
-                    Toast.makeText(context, additionalMessage, Toast.LENGTH_LONG)
-                        .show()
-                }
+                view.showToast(additionalMessage)
             }
 
             view.showPlaceholderMessage(true)

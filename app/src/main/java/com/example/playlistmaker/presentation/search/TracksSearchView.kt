@@ -19,4 +19,6 @@ interface TracksSearchView {
     fun setPlaceholderIcon(resId: Int)
 
     fun updateTracksList(newTracksList: List<Track>)
+
+    fun showToast(message: String)
 }

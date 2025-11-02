@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -22,7 +23,6 @@ import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
-import com.example.playlistmaker.presentation.search.TracksSearchPresenter.Companion.EMPTY_SEARCH_TEXT
 import com.example.playlistmaker.presentation.search.TracksSearchView
 import com.example.playlistmaker.ui.track.TrackAdapter
 
@@ -63,7 +63,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         tracksListRecycler.adapter = adapter
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
-        tracksSearchPresenter= Creator.provideTracksSearchPresenter(view = this, context = this)
+        tracksSearchPresenter= Creator.provideTracksSearchPresenter(this, this)
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         refreshButton.setOnClickListener {
@@ -75,8 +75,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             tracksSearchPresenter.showHistory()
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
             tracksSearchPresenter.trackList.clear()
-            adapter.items = tracksSearchPresenter.trackList
-            adapter.notifyDataSetChanged()
+            updateTracksList(tracksSearchPresenter.trackList)
         }
         toolbar.setNavigationOnClickListener {
             finish()
@@ -122,8 +121,6 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
         }
         textWatcher?.let { searchText.addTextChangedListener(it) }
-
-        tracksSearchPresenter= Creator.provideTracksSearchPresenter(this, adapter)
         tracksSearchPresenter.onCreate(savedInstanceState)
     }
 
@@ -179,6 +176,18 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         Log.e("SearchActivity", "trackList = $newTracksList")
         adapter.items = newTracksList
         adapter.notifyDataSetChanged()
+    }
+
+    override fun showToast(message: String) {
+        Log.e("TracksSearchController", "showToast: $message")
+        runOnUiThread {
+            Toast.makeText(this, message, Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    companion object {
+        const val EMPTY_SEARCH_TEXT = ""
     }
 
 }
