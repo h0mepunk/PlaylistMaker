@@ -18,9 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter.Companion.EMPTY_SEARCH_TEXT
 import com.example.playlistmaker.presentation.search.TracksSearchView
@@ -29,8 +29,7 @@ import com.example.playlistmaker.ui.track.TrackAdapter
 class SearchActivity : AppCompatActivity(), TracksSearchView {
     private lateinit var adapter: TrackAdapter
     private lateinit var tracksSearchPresenter: TracksSearchPresenter
-
-    private lateinit var inputEditText: EditText
+    private lateinit var searchText: EditText
     private lateinit var placeholderMessageText: TextView
     private lateinit var placeholderIcon: ImageView
     private lateinit var placeholderMessage: View
@@ -51,7 +50,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         placeholderMessage = findViewById(R.id.placeholderView)
         placeholderMessageText = findViewById(R.id.placeholderMessageText)
         placeholderIcon = findViewById(R.id.placeholderIcon)
-        inputEditText = findViewById(R.id.inputEditText)
+        searchText = findViewById(R.id.searchText)
         tracksListRecycler = findViewById(R.id.song_list_recycler)
         progressBar = findViewById(R.id.searchProgressBar)
         clearButton =  findViewById(R.id.clearIcon)
@@ -64,6 +63,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         tracksListRecycler.adapter = adapter
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
+        tracksSearchPresenter= Creator.provideTracksSearchPresenter(view = this, context = this)
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         refreshButton.setOnClickListener {
@@ -71,9 +71,9 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
         }
         clearButton.setOnClickListener {
-            inputEditText.setText(EMPTY_SEARCH_TEXT)
+            searchText.setText(EMPTY_SEARCH_TEXT)
             tracksSearchPresenter.showHistory()
-            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
             tracksSearchPresenter.trackList.clear()
             adapter.items = tracksSearchPresenter.trackList
             adapter.notifyDataSetChanged()
@@ -87,18 +87,18 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             tracksSearchPresenter.hideHistory()
         }
 
-        inputEditText.setOnFocusChangeListener() { _, hasFocus -> }
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
+        searchText.setOnFocusChangeListener() { _, hasFocus -> }
+        searchText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (inputEditText.text.isNotEmpty()) {
-                    inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-                    tracksSearchPresenter.lastSearchText = inputEditText.text.toString()
+                if (searchText.text.isNotEmpty()) {
+                    inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
+                    tracksSearchPresenter.lastSearchText = searchText.text.toString()
                     tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
                 }
             }
             false
         }
-       // inputEditText.addTextChangedListener(
+
          textWatcher =    object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -115,13 +115,13 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
                     tracksSearchPresenter.handler.removeCallbacksAndMessages(null)
                     tracksSearchPresenter.showHistory()
                 }
-                if((inputEditText.hasFocus()) && s.isNullOrEmpty()) {
+                if((searchText.hasFocus()) && s.isNullOrEmpty()) {
                     tracksSearchPresenter.showHistory()
                 }
             }
 
         }
-        textWatcher?.let { inputEditText.addTextChangedListener(it) }
+        textWatcher?.let { searchText.addTextChangedListener(it) }
 
         tracksSearchPresenter= Creator.provideTracksSearchPresenter(this, adapter)
         tracksSearchPresenter.onCreate(savedInstanceState)
@@ -168,11 +168,17 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
     }
 
     override fun setEditText(text: String?) {
-        inputEditText.setText(text?:"")
+        searchText.setText(text?:"")
     }
 
     override fun setPlaceholderIcon(resId: Int) {
         placeholderIcon.setBackgroundResource(resId)
+    }
+
+    override fun updateTracksList(newTracksList: List<Track>) {
+        Log.e("SearchActivity", "trackList = $newTracksList")
+        adapter.items = newTracksList
+        adapter.notifyDataSetChanged()
     }
 
 }

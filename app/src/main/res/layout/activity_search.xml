@@ -21,7 +21,7 @@
         android:layout_marginTop="8dp"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/inputEditText"
+            android:id="@+id/searchText"
             style="@style/search_text_edit"
             android:background="@drawable/search_text_edit"
             android:textCursorDrawable="@drawable/color_cursor"

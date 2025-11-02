@@ -1,7 +1,6 @@
 package com.example.playlistmaker.presentation.search
 
-import androidx.transition.Visibility
-
+import com.example.playlistmaker.domain.models.Track
 interface TracksSearchView {
     fun showPlaceholderMessage(isVisible: Boolean)
 
@@ -19,4 +18,5 @@ interface TracksSearchView {
 
     fun setPlaceholderIcon(resId: Int)
 
+    fun updateTracksList(newTracksList: List<Track>)
 }
