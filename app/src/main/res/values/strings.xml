@@ -24,4 +24,5 @@
     <string name="media_info_year">Год</string>
     <string name="media_info_album">Альбом</string>
     <string name="media_info_length">Длительность</string>
+    <string name="start_time_zero">0:00</string>
 </resources>

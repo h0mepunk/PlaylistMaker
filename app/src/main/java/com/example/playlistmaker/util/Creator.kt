@@ -24,6 +24,9 @@ import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.presentation.MainController
+import com.example.playlistmaker.presentation.SettingsController
+import com.example.playlistmaker.presentation.TrackController
 import com.example.playlistmaker.presentation.TracksSearchController
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.google.gson.Gson
@@ -56,6 +59,18 @@ object Creator {
 
     fun provideTracksSearchController(activity: Activity, adapter: TrackAdapter): TracksSearchController {
         return TracksSearchController(activity, adapter)
+    }
+
+    fun provideTrackController(activity: Activity): TrackController {
+        return TrackController(activity)
+    }
+
+    fun provideSettingsController(activity: Activity): SettingsController {
+        return SettingsController(activity)
+    }
+
+    fun provideMainController(activity: Activity): MainController {
+        return MainController(activity)
     }
     private fun getTracksRepository(context: Context): TracksRepository {
         return TracksRepositoryImpl(
