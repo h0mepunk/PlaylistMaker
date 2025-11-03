@@ -4,21 +4,19 @@ import com.example.playlistmaker.domain.models.Track
 interface TracksSearchView {
     fun showPlaceholderMessage(isVisible: Boolean)
 
-    fun showTracksList(isVisible: Boolean)
-
-    fun showProgressBar(isVisible: Boolean)
-
-    fun showHistory(isVisible: Boolean)
-
-    fun showRefreshButton(isVisible: Boolean)
-
-    fun changePlaceholderMessage(text: String)
-
     fun setEditText(text: String?)
-
-    fun setPlaceholderIcon(resId: Int)
 
     fun updateTracksList(newTracksList: List<Track>)
 
     fun showToast(message: String)
+
+    fun showLoading()
+
+    fun showContent(tracks: List<Track>)
+
+    fun showError(message: String?)
+
+    fun showEmpty(message: String?)
+
+    fun showHistory(tracks: List<Track>)
 }

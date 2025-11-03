@@ -25,14 +25,13 @@ class TracksSearchPresenter(
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
     var trackList = ArrayList<Track>()
-    var trackHistory = ArrayList<Track>()
     val handler = Handler(Looper.getMainLooper())
     var lastSearchText: String? = ""
     private lateinit var sharedPreferences : SharedPreferences
 
     var trackHistoryInteractor : TracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
 
-    fun onCreate(savedInstanceState: Bundle?) {
+    fun onCreate() {
         view.updateTracksList(trackList)
 
         tracksInteractor = Creator.provideTracksInteractor(context)
@@ -41,7 +40,6 @@ class TracksSearchPresenter(
             Context.MODE_PRIVATE
         )
         trackHistoryInteractor = Creator.provideTracksHistoryInteractor()
-        showHistory()
 
     }
 
@@ -75,39 +73,22 @@ class TracksSearchPresenter(
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view.showProgressBar(true)
-            view.showHistory(false)
-            view.showTracksList(false)
-
+            view.showLoading()
             tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     Log.e("TracksSearchController", "foundTracks: $foundTracks")
                     handler.post {
                         if (foundTracks != null) {
-                            view.showProgressBar(false)
-                            hideMessage()
                             trackList.clear()
                             trackList.addAll(foundTracks)
-                            view.updateTracksList(trackList)
-                            view.showTracksList(true)
-                            hideHistory()
+                            view.showContent(trackList)
                         }
                         if (errorMessage != null) {
-                            showMessage(
-                                text = R.string.network_error_text,
-                                additionalMessage = errorMessage,
-                                isButtonVisible = false,
-                                icon = R.drawable.internet_error
-                            )
+                            view.showError(errorMessage)
                         } else if (foundTracks.isNullOrEmpty()) {
-                            showMessage(
-                                text = R.string.empty_song_list_error_text,
-                                additionalMessage = "",
-                                isButtonVisible = false,
-                                icon = R.drawable.empty_results_error
-                            )
+                            view.showEmpty(errorMessage)
                         } else {
-                            hideMessage()
+                            view.showPlaceholderMessage(false)
                         }
                     }
                 }
@@ -138,50 +119,7 @@ class TracksSearchPresenter(
         }
     }
 
-    private fun showMessage(
-        text: Int?,
-        additionalMessage: String,
-        isButtonVisible: Boolean = true,
-        icon: Int = R.drawable.internet_error
-    ) {
-        trackList.clear()
-        view.updateTracksList(trackList)
-        hideHistory()
-        if (text != null) {
-            Log.e("TracksSearchController", "showMessage: $text")
-            view.changePlaceholderMessage(ContextCompat.getString(context, text))
-            if (additionalMessage.isNotEmpty()) {
-                Log.e("TracksSearchController", "showToast: $additionalMessage")
-                view.showToast(additionalMessage)
-            }
-
-            view.showPlaceholderMessage(true)
-            view.setPlaceholderIcon(icon)
-            view.showRefreshButton(isButtonVisible)
-
-        } else {
-            hideMessage()
-        }
-    }
-
-    fun hideMessage() {
-        view.showPlaceholderMessage(false)
-    }
-
-    fun hideHistory() {
-        view.showHistory(false)
-    }
-
-    fun showHistory() {
-        trackHistory = trackHistoryInteractor.getTracksHistory()
-        Log.e("TracksSearchController", trackHistory.toString())
-        if (trackHistory.isNotEmpty()) {
-            view.showHistory(true)
-            hideMessage()
-            view.updateTracksList(trackHistory)
-            view.showTracksList(true)
-        } else {
-            hideHistory()
-        }
+    fun getHistory(): List<Track> {
+        return trackHistoryInteractor.getTracksHistory()
     }
 }

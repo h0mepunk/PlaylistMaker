@@ -58,11 +58,14 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         searchHistoryTitle = findViewById(R.id.searchHistoryTitle)
         refreshButton = findViewById(R.id.refreshButton)
         toolbar = findViewById(R.id.search_toolbar)
+
         adapter = TrackAdapter()
         tracksListRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         tracksListRecycler.adapter = adapter
+
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
+
         tracksSearchPresenter= Creator.provideTracksSearchPresenter(this, this)
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
@@ -70,20 +73,23 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             progressBar.visibility = View.VISIBLE
             tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
         }
+
         clearButton.setOnClickListener {
             searchText.setText(EMPTY_SEARCH_TEXT)
-            tracksSearchPresenter.showHistory()
+            showHistory(tracksSearchPresenter.getHistory())
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
             tracksSearchPresenter.trackList.clear()
             updateTracksList(tracksSearchPresenter.trackList)
         }
+
         toolbar.setNavigationOnClickListener {
             finish()
         }
+
         clearTrackHistoryButton.setOnClickListener {
-            tracksSearchPresenter.trackHistory.clear()
-            tracksSearchPresenter.trackHistoryInteractor.saveTracksHistory(tracksSearchPresenter.trackHistory)
-            tracksSearchPresenter.hideHistory()
+            tracksSearchPresenter.trackHistoryInteractor.saveTracksHistory(ArrayList()) // clear history
+            searchHistoryTitle.visibility = View.GONE
+            clearTrackHistoryButton.visibility = View.GONE
         }
 
         searchText.setOnFocusChangeListener() { _, hasFocus -> }
@@ -112,16 +118,17 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
                 if (s.isNullOrEmpty()) {
                     Log.e("TracksSearchController", "all callbacks removed")
                     tracksSearchPresenter.handler.removeCallbacksAndMessages(null)
-                    tracksSearchPresenter.showHistory()
+                    showHistory(tracksSearchPresenter.getHistory())
                 }
                 if((searchText.hasFocus()) && s.isNullOrEmpty()) {
-                    tracksSearchPresenter.showHistory()
+                    showHistory(tracksSearchPresenter.getHistory())
                 }
             }
 
         }
         textWatcher?.let { searchText.addTextChangedListener(it) }
-        tracksSearchPresenter.onCreate(savedInstanceState)
+        tracksSearchPresenter.onCreate()
+        showHistory(tracksSearchPresenter.getHistory())
     }
 
     override fun onDestroy() {
@@ -143,39 +150,85 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         placeholderMessage.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    override fun showTracksList(isVisible: Boolean) {
-        tracksListRecycler.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    override fun showProgressBar(isVisible: Boolean) {
-        progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    override fun  showHistory(isVisible: Boolean) {
-        searchHistoryTitle.visibility = if (isVisible)View.VISIBLE else View.GONE
-        clearTrackHistoryButton.visibility = if (isVisible)View.VISIBLE else View.GONE
-    }
-
-    override fun changePlaceholderMessage(text: String) {
-        placeholderMessageText.text = text
-    }
-
-    override fun showRefreshButton(isVisible: Boolean) {
-        refreshButton.visibility = if (isVisible)View.VISIBLE else View.GONE
-    }
-
     override fun setEditText(text: String?) {
         searchText.setText(text?:"")
-    }
-
-    override fun setPlaceholderIcon(resId: Int) {
-        placeholderIcon.setBackgroundResource(resId)
     }
 
     override fun updateTracksList(newTracksList: List<Track>) {
         Log.e("SearchActivity", "trackList = $newTracksList")
         adapter.items = newTracksList
         adapter.notifyDataSetChanged()
+    }
+
+    override fun showContent(tracks: List<Track>) {
+        progressBar.visibility = View.GONE
+        placeholderMessage.visibility = View.GONE
+
+        Log.e("SearchActivity", "trackList = $tracks")
+        adapter.items = tracks
+        adapter.notifyDataSetChanged()
+
+        tracksListRecycler.visibility = View.VISIBLE
+        searchHistoryTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
+    }
+
+    override fun showEmpty(message: String?) {
+        tracksSearchPresenter.trackList.clear()
+        Log.e("SearchActivity", "trackList is empty")
+        adapter.items = emptyList()
+        adapter.notifyDataSetChanged()
+        searchHistoryTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
+        Log.e("TracksSearchController", "show empty tracklist message")
+        placeholderMessageText.text = getString(R.string.empty_song_list_error_text)
+        placeholderMessage.visibility = View.VISIBLE
+        placeholderIcon.setBackgroundResource(R.drawable.empty_results_error)
+        refreshButton.visibility = View.VISIBLE // GONE
+        if (message != null) {
+            showToast(message)
+        }
+    }
+
+    override fun showError(message: String?) {
+        tracksSearchPresenter.trackList.clear()
+        Log.e("SearchActivity", "trackList is empty")
+        adapter.items = emptyList()
+        adapter.notifyDataSetChanged()
+        searchHistoryTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
+        Log.e("TracksSearchController", "show empty tracklist message")
+        placeholderMessageText.text = getString(R.string.network_error_text)
+        placeholderMessage.visibility = View.VISIBLE
+        placeholderIcon.setBackgroundResource(R.drawable.internet_error)
+        refreshButton.visibility = View.VISIBLE // GONE
+        if (message != null) {
+            showToast(message)
+        }
+    }
+
+    override fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+        placeholderMessage.visibility = View.GONE
+        tracksListRecycler.visibility = View.GONE
+        searchHistoryTitle.visibility = View.GONE
+        clearTrackHistoryButton.visibility = View.GONE
+    }
+
+    override fun showHistory(tracks: List<Track>) {
+        Log.e("TracksSearchController", tracks.toString())
+        if (tracks.isNotEmpty()){
+            searchHistoryTitle.visibility = View.VISIBLE
+            clearTrackHistoryButton.visibility = View.VISIBLE
+            placeholderMessage.visibility = View.GONE
+            Log.e("SearchActivity", "trackhistory = $tracks")
+            adapter.items = tracks
+            adapter.notifyDataSetChanged()
+            tracksListRecycler.visibility = View.VISIBLE
+        } else {
+            searchHistoryTitle.visibility = View.GONE
+            clearTrackHistoryButton.visibility = View.GONE
+        }
     }
 
     override fun showToast(message: String) {
