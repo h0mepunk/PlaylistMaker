@@ -25,6 +25,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchView
 import com.example.playlistmaker.ui.track.TrackAdapter
+import com.example.playlistmaker.ui.track.model.TracksState
 
 class SearchActivity : AppCompatActivity(), TracksSearchView {
     private lateinit var adapter: TrackAdapter
@@ -154,7 +155,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun showContent(tracks: List<Track>) {
+    fun showContent(tracks: List<Track>) {
         progressBar.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
 
@@ -167,41 +168,24 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         clearTrackHistoryButton.visibility = View.GONE
     }
 
-    override fun showEmpty(message: String?) {
+    fun showError(messageId: Int, iconId: Int) {
+        Log.e("SearchActivity", "trackList loading error")
+
         tracksSearchPresenter.trackList.clear()
-        Log.e("SearchActivity", "trackList is empty")
         adapter.items = emptyList()
         adapter.notifyDataSetChanged()
+
         searchHistoryTitle.visibility = View.GONE
         clearTrackHistoryButton.visibility = View.GONE
-        Log.e("TracksSearchController", "show empty tracklist message")
-        placeholderMessageText.text = getString(R.string.empty_song_list_error_text)
+
+        placeholderMessageText.text = getString(messageId)
+        placeholderIcon.setBackgroundResource(iconId)
         placeholderMessage.visibility = View.VISIBLE
-        placeholderIcon.setBackgroundResource(R.drawable.empty_results_error)
-        refreshButton.visibility = View.VISIBLE // GONE
-        if (message != null) {
-            showToast(message)
-        }
+
+        refreshButton.visibility = View.VISIBLE
     }
 
-    override fun showError(message: String?) {
-        tracksSearchPresenter.trackList.clear()
-        Log.e("SearchActivity", "trackList is empty")
-        adapter.items = emptyList()
-        adapter.notifyDataSetChanged()
-        searchHistoryTitle.visibility = View.GONE
-        clearTrackHistoryButton.visibility = View.GONE
-        Log.e("TracksSearchController", "show empty tracklist message")
-        placeholderMessageText.text = getString(R.string.network_error_text)
-        placeholderMessage.visibility = View.VISIBLE
-        placeholderIcon.setBackgroundResource(R.drawable.internet_error)
-        refreshButton.visibility = View.VISIBLE // GONE
-        if (message != null) {
-            showToast(message)
-        }
-    }
-
-    override fun showLoading() {
+    fun showLoading() {
         progressBar.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
         tracksListRecycler.visibility = View.GONE
@@ -209,7 +193,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         clearTrackHistoryButton.visibility = View.GONE
     }
 
-    override fun showHistory(tracks: List<Track>) {
+    fun showHistory(tracks: List<Track>) {
         Log.e("TracksSearchController", tracks.toString())
         if (tracks.isNotEmpty()){
             searchHistoryTitle.visibility = View.VISIBLE
@@ -225,14 +209,32 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         }
     }
 
-    override fun showUnknownError() {
+    fun showUnknownError() {
         placeholderMessage.visibility = View.GONE
     }
 
-    override fun showToast(message: String) {
-        Log.e("SearchActivity", "showToast: $message")
+    override fun render(state: TracksState) {
+        when (state) {
+            is TracksState.Loading -> showLoading()
+            is TracksState.Error -> showError(
+                messageId = R.string.network_error_text,
+                iconId = R.drawable.internet_error
+            )
+
+            is TracksState.Content -> showContent(state.movies)
+            is TracksState.Empty -> showError(
+                messageId = R.string.empty_song_list_error_text,
+                iconId = R.drawable.empty_results_error
+            )
+
+            is TracksState.UnknownErrorState -> showUnknownError()
+        }
+    }
+
+    override fun showToast(additionalMessage: String) {
+        Log.e("SearchActivity", "showToast: $additionalMessage")
         runOnUiThread {
-            Toast.makeText(this, message, Toast.LENGTH_LONG)
+            Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG)
                 .show()
         }
     }

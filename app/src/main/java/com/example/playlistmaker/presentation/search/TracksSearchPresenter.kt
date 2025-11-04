@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.core.content.ContextCompat
 import com.example.playlistmaker.Const
-import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.track.model.TracksState
 import com.example.playlistmaker.util.Creator
 
 class TracksSearchPresenter(
@@ -71,7 +70,8 @@ class TracksSearchPresenter(
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view.showLoading()
+           // view.showLoading()
+            view.render(TracksState.Loading)
             tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     Log.e("TracksSearchController", "foundTracks: $foundTracks")
@@ -79,14 +79,19 @@ class TracksSearchPresenter(
                         if (foundTracks != null) {
                             trackList.clear()
                             trackList.addAll(foundTracks)
-                            view.showContent(trackList)
+                            view.render(TracksState.Content(trackList))
                         }
                         if (errorMessage != null) {
-                            view.showError(errorMessage)
+                            view.render(
+                                TracksState.Error(errorMessage)
+                            )
+                            view.showToast(errorMessage)
                         } else if (foundTracks.isNullOrEmpty()) {
-                            view.showEmpty(errorMessage)
+                            view.render(TracksState.Empty)
                         } else {
-                            view.showUnknownError()
+                            view.render(
+                                TracksState.UnknownErrorState
+                            )
                         }
                     }
                 }
