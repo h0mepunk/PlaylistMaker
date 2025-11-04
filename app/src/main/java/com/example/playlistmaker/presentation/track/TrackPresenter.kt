@@ -9,7 +9,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.track.TrackView
 import com.example.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -113,6 +112,6 @@ class TrackPresenter(
     }
 
     fun onDestroy() {
-        mediaPlayer.release()
+        mediaPlayer.reset()
     }
 }
