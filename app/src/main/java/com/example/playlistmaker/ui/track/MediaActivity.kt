@@ -6,19 +6,37 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.track.TrackView
 import com.example.playlistmaker.presentation.track.TrackPresenter
+import com.example.playlistmaker.ui.track.model.TrackState
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
-class MediaActivity : AppCompatActivity(), TrackView {
+class MediaActivity : MvpAppCompatActivity(), TrackView {
     private lateinit var toolbar : Toolbar
     private lateinit var playButton : Button
     private lateinit var trackTime : TextView
     private lateinit var placeholderImage: ImageView
-    private lateinit var trackPresenter : TrackPresenter
+//    @InjectPresenter
+//    private lateinit var trackPresenter : TrackPresenter
+//
+//    @ProvidePresenter
+//    fun providePresenter(): TrackPresenter {
+//        return Creator.provideTrackPresenter(
+//            context = this.applicationContext,
+//        )
+//    }
+
+    private val trackPresenter by moxyPresenter {
+        Creator.provideTrackPresenter(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +54,7 @@ class MediaActivity : AppCompatActivity(), TrackView {
         val trackDuration = findViewById<TextView>(R.id.media_info_length_value)
         val trackCountry = findViewById<TextView>(R.id.media_info_country_value)
 
-        trackPresenter = Creator.provideTrackController(this, this)
+       // trackPresenter = Creator.provideTrackPresenter(this)
         trackPresenter.onCreate()
 
         trackTitle.text = trackPresenter.currentTrack.trackName
@@ -67,26 +85,38 @@ class MediaActivity : AppCompatActivity(), TrackView {
         trackPresenter.onDestroy()
     }
 
-    override fun setPlayButtonActive(active: Boolean) {
-        val resId = if (active) {
-            R.drawable.media_play
-        } else {
-            R.drawable.media_stop
-        }
-        playButton.setBackgroundResource(resId)
-        playButton.background = AppCompatResources.getDrawable(this, resId)
-    }
-
-    override fun getPlaceholderImageView(): ImageView {
-        return placeholderImage
-    }
-
-    override fun setTrackTimeText(text: String) {
-        trackTime.text = text
+    override fun showCover(url: String) {
+        Glide.with(this)
+            .load(url)
+            .placeholder(R.drawable.media_cover_preview)
+            .apply(
+                RequestOptions().transform(
+                    RoundedCorners(
+                        this.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()
+                    )
+                )
+            )
+            .into(placeholderImage)
     }
 
     override fun enablePlayButton(enabled: Boolean) {
         playButton.isEnabled = enabled
+    }
+
+    override fun render(state: TrackState) {
+        when (state) {
+            is TrackState.Paused -> {
+                playButton.setBackgroundResource(R.drawable.media_play)
+            }
+            is TrackState.Playing -> {
+                playButton.setBackgroundResource(R.drawable.media_stop)
+                trackTime.text = state.trackTime?: getString(R.string.start_time_zero)
+            }
+            is TrackState.Stopped -> {
+                playButton.setBackgroundResource(R.drawable.media_play)
+                trackTime.text = getString(R.string.start_time_zero)
+            }
+        }
     }
 
 }

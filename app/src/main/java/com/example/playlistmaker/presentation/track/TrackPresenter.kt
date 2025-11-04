@@ -4,19 +4,18 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
-import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.track.model.TrackState
 import com.example.playlistmaker.util.Creator
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@InjectViewState
 class TrackPresenter(
-    val view: TrackView,
     private val context: Context,
-) {
+): MvpPresenter<TrackView>() {
 
     private val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
     private val tracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
@@ -28,10 +27,14 @@ class TrackPresenter(
     private fun updateTimer() {
         mediaPlayerInteractor.updateTimer (
             onUpdate = {
-                view.setTrackTimeText(SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
-                ).format(mediaPlayer.currentPosition))
+                renderState(
+                    TrackState.Playing(
+                        SimpleDateFormat(
+                            "mm:ss",
+                            Locale.getDefault()
+                        ).format(mediaPlayer.currentPosition)
+                    )
+                )
                 handler.postDelayed(timerRunnable, 250)
             }
         )
@@ -41,10 +44,10 @@ class TrackPresenter(
         mediaPlayerInteractor.preparePlayer(
             url,
             onPrepared = {
-                view.enablePlayButton(true)
+                viewState.enablePlayButton(true)
             },
             onCompletion = {
-                view.setPlayButtonActive(true)
+                renderState(TrackState.Playing(null))
             }
         )
     }
@@ -52,7 +55,7 @@ class TrackPresenter(
     private fun startPlayer() {
         mediaPlayerInteractor.startPlayer(
             onPlaying = {
-                view.setPlayButtonActive(false)
+                renderState(TrackState.Playing(null))
                 handler.post(timerRunnable)
             }
         )
@@ -61,7 +64,7 @@ class TrackPresenter(
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer(
             onPause = {
-                view.setPlayButtonActive(true)
+                renderState(TrackState.Paused)
                 handler.removeCallbacks(timerRunnable)
             }
         )
@@ -70,8 +73,7 @@ class TrackPresenter(
     fun stopPlayer() {
         mediaPlayerInteractor.stopPlayer (
             onStop = {
-                view.setPlayButtonActive(true)
-                view.setTrackTimeText(context.getString(R.string.start_time_zero))
+                renderState(TrackState.Stopped)
             }
         )
     }
@@ -90,18 +92,7 @@ class TrackPresenter(
     fun onCreate() {
         currentTrack = tracksHistoryInteractor.getCurrentTrack()
 
-        Glide.with(context)
-            .load(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg"))
-            .placeholder(R.drawable.media_cover_preview)
-            .apply(
-                RequestOptions().transform(
-                    RoundedCorners(
-                        context.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()
-                    )
-                )
-            )
-            .into(view.getPlaceholderImageView())
-
+        viewState.showCover(currentTrack.artworkUrl100.replaceAfterLast('/',"512x512bb.jpg"))
 
         mediaPlayer.setOnCompletionListener {
             Log.e("TrackController","player completed")
@@ -111,7 +102,11 @@ class TrackPresenter(
         preparePlayer(currentTrack.previewUrl)
     }
 
-    fun onDestroy() {
+    private fun renderState(state: TrackState) {
+        viewState.render(state)
+    }
+
+    override fun onDestroy() {
         mediaPlayer.reset()
     }
 }

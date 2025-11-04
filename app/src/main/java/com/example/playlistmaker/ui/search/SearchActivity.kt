@@ -14,31 +14,22 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchView
-import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.ui.track.TrackAdapter
-import com.example.playlistmaker.ui.track.model.TracksState
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.example.playlistmaker.ui.track.model.TracksSearchState
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
 
-class SearchActivity : AppCompatActivity(), TracksSearchView {
+class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
     private lateinit var adapter: TrackAdapter
-    @InjectPresenter
-    private  var tracksSearchPresenter: TracksSearchPresenter? = null
-
-    @ProvidePresenter
-    fun providePresenter(): TracksSearchPresenter {
-        return Creator.provideTracksSearchPresenter(
-            context = this.applicationContext,
-        )
+    private val tracksSearchPresenter by moxyPresenter {
+        Creator.provideTracksSearchPresenter(applicationContext)
     }
     private lateinit var searchText: EditText
     private lateinit var placeholderMessageText: TextView
@@ -79,19 +70,19 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
-        updateTracksList(tracksSearchPresenter!!.trackList)
+        updateTracksList(tracksSearchPresenter.trackList)
 
         refreshButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            tracksSearchPresenter?.searchRequest(tracksSearchPresenter!!.lastSearchText.toString())
+            tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
         }
 
         clearButton.setOnClickListener {
             searchText.setText(EMPTY_SEARCH_TEXT)
-            showHistory(tracksSearchPresenter!!.getHistory())
+            showHistory(tracksSearchPresenter.getHistory())
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-            tracksSearchPresenter!!.trackList.clear()
-            updateTracksList(tracksSearchPresenter!!.trackList)
+            tracksSearchPresenter.trackList.clear()
+            updateTracksList(tracksSearchPresenter.trackList)
         }
 
         toolbar.setNavigationOnClickListener {
@@ -99,7 +90,9 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         }
 
         clearTrackHistoryButton.setOnClickListener {
-            tracksSearchPresenter!!.trackHistoryInteractor.saveTracksHistory(ArrayList()) // clear history
+            tracksSearchPresenter.trackHistoryInteractor.saveTracksHistory(ArrayList())
+            adapter.items = emptyList()
+            adapter.notifyDataSetChanged()
             searchHistoryTitle.visibility = View.GONE
             clearTrackHistoryButton.visibility = View.GONE
         }
@@ -109,8 +102,8 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (searchText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-                    tracksSearchPresenter!!.lastSearchText = searchText.text.toString()
-                    tracksSearchPresenter!!.searchRequest(tracksSearchPresenter!!.lastSearchText.toString())
+                    tracksSearchPresenter.lastSearchText = searchText.text.toString()
+                    tracksSearchPresenter.searchRequest(tracksSearchPresenter!!.lastSearchText.toString())
                 }
             }
             false
@@ -139,27 +132,24 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
         }
         textWatcher?.let { searchText.addTextChangedListener(it) }
-        tracksSearchPresenter!!.onCreate()
-        showHistory(tracksSearchPresenter!!.getHistory())
+        tracksSearchPresenter.onCreate()
+        showHistory(tracksSearchPresenter.getHistory())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { searchText.removeTextChangedListener(it) }
-        tracksSearchPresenter!!.onDestroy()
-        if (isFinishing) {
-            ((this.application)?.applicationContext as App).tracksSearchPresenter = null
-        }
+        tracksSearchPresenter.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        tracksSearchPresenter!!.onSaveInstanceState(outState)
+        tracksSearchPresenter.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText.setText(tracksSearchPresenter!!.onRestoreInstanceState(savedInstanceState)?:"")
+        searchText.setText(tracksSearchPresenter.onRestoreInstanceState(savedInstanceState)?:"")
     }
 
     fun updateTracksList(newTracksList: List<Track>) {
@@ -184,7 +174,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
     fun showError(messageId: Int, iconId: Int) {
         Log.e("SearchActivity", "trackList loading error")
 
-        tracksSearchPresenter!!.trackList.clear()
+        tracksSearchPresenter.trackList.clear()
         adapter.items = emptyList()
         adapter.notifyDataSetChanged()
 
@@ -226,21 +216,21 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         placeholderMessage.visibility = View.GONE
     }
 
-    override fun render(state: TracksState) {
+    override fun render(state: TracksSearchState) {
         when (state) {
-            is TracksState.Loading -> showLoading()
-            is TracksState.Error -> showError(
+            is TracksSearchState.Loading -> showLoading()
+            is TracksSearchState.Error -> showError(
                 messageId = R.string.network_error_text,
                 iconId = R.drawable.internet_error
             )
 
-            is TracksState.Content -> showContent(state.movies)
-            is TracksState.Empty -> showError(
+            is TracksSearchState.Content -> showContent(state.movies)
+            is TracksSearchState.Empty -> showError(
                 messageId = R.string.empty_song_list_error_text,
                 iconId = R.drawable.empty_results_error
             )
 
-            is TracksState.UnknownErrorState -> showUnknownError()
+            is TracksSearchState.UnknownErrorSearchState -> showUnknownError()
         }
     }
 

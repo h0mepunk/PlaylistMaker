@@ -10,10 +10,12 @@ import com.example.playlistmaker.Const
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.track.model.TracksState
+import com.example.playlistmaker.ui.track.model.TracksSearchState
 import com.example.playlistmaker.util.Creator
+import moxy.InjectViewState
 import moxy.MvpPresenter
 
+@InjectViewState
 class TracksSearchPresenter(
     private val context: Context,
 ): MvpPresenter<TracksSearchView>() {
@@ -63,18 +65,18 @@ class TracksSearchPresenter(
     }
     fun searchDebounce(changedText: String) {
         Log.e("TracksSearchController", "all callbacks removed")
+        handler.removeCallbacksAndMessages(null)
+        Log.e("TracksSearchController", "callback added $changedText")
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
         if(this.lastSearchText == changedText) {
             return
         }
         this.lastSearchText = changedText
-        handler.removeCallbacksAndMessages(null)
-        Log.e("TracksSearchController", "callback added $changedText")
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            renderState(TracksState.Loading)
+            renderState(TracksSearchState.Loading)
             tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     Log.e("TracksSearchController", "foundTracks: $foundTracks")
@@ -82,18 +84,18 @@ class TracksSearchPresenter(
                         if (foundTracks != null) {
                             trackList.clear()
                             trackList.addAll(foundTracks)
-                            renderState(TracksState.Content(trackList))
+                            renderState(TracksSearchState.Content(trackList))
                         }
                         if (errorMessage != null) {
                             renderState(
-                                TracksState.Error(errorMessage)
+                                TracksSearchState.Error(errorMessage)
                             )
                             viewState.showToast(errorMessage)
                         } else if (foundTracks.isNullOrEmpty()) {
-                            renderState(TracksState.Empty)
+                            renderState(TracksSearchState.Empty)
                         } else {
                             renderState(
-                                TracksState.UnknownErrorState
+                                TracksSearchState.UnknownErrorSearchState
                             )
                         }
                     }
@@ -106,7 +108,7 @@ class TracksSearchPresenter(
         return trackHistoryInteractor.getTracksHistory()
     }
 
-    private fun renderState(state: TracksState) {
+    private fun renderState(state: TracksSearchState) {
         viewState.render(state)
     }
 }

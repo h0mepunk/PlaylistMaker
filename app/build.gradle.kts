@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -36,9 +37,11 @@ android {
 }
 
 dependencies {
-    implementation(libs.moxy)
-    implementation(libs.moxy.android)
-    implementation(libs.kapt)
+    implementation(libs.moxy)           // com.github.moxy-community:moxy:2.2.2
+    implementation(libs.moxy.androidx)  // com.github.moxy-community:moxy-androidx:2.2.2
+    implementation("com.github.moxy-community:moxy-ktx:2.2.2") // для moxyPresenter
+    kapt(libs.moxy.compiler)            // com.github.moxy-community:moxy-compiler:2.2.2
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -48,6 +51,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)
+ //   kapt(libs.glide.compiler)
     annotationProcessor(libs.glide.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

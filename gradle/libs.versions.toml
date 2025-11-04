@@ -1,6 +1,6 @@
 [versions]
 agp = "8.5.0"
-kotlin = "1.9.0"
+kotlin = "1.9.22"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -29,11 +29,11 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 moxy = { group = "com.github.moxy-community", name = "moxy", version.ref = "moxy" }
-moxy-android = { group = "com.github.moxy-community", name = "moxy-android", version.ref = "moxy" }
-kapt = { group = "com.github.moxy-community", name = "moxy-compiler", version.ref = "moxy" }
+moxy-androidx = { group = "com.github.moxy-community", name = "moxy-androidx", version.ref = "moxy" }
+moxy-ktx = { group = "com.github.moxy-community", name = "moxy-ktx", version.ref = "moxy" }
+moxy-compiler = { group = "com.github.moxy-community", name = "moxy-compiler", version.ref = "moxy" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kapt = { id = "kotlin-kapt", version.ref = "moxy" }
 

@@ -3,6 +3,8 @@ package com.example.playlistmaker.ui.main
 import android.app.Application
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.util.Creator
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
 class App : Application() {
 

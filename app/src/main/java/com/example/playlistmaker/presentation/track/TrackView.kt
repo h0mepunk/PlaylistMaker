@@ -1,15 +1,20 @@
 package com.example.playlistmaker.presentation.track
 
-import android.widget.ImageView
+import com.example.playlistmaker.ui.track.model.TrackState
+import moxy.MvpView
+import moxy.viewstate.strategy.AddToEndSingleStrategy
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-interface TrackView {
+interface TrackView : MvpView {
 
-    fun setPlayButtonActive(active: Boolean)
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun showCover(url: String)
 
-    fun getPlaceholderImageView(): ImageView
-
-    fun setTrackTimeText(text: String)
-
+    @StateStrategyType(OneExecutionStateStrategy::class)
     fun enablePlayButton(enabled: Boolean)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun render(state: TrackState)
 
 }
