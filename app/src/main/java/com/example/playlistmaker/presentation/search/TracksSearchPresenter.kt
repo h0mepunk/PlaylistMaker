@@ -14,9 +14,9 @@ import com.example.playlistmaker.ui.track.model.TracksState
 import com.example.playlistmaker.util.Creator
 
 class TracksSearchPresenter(
-    val view: TracksSearchView,
     private val context: Context,
 ) {
+    private var view: TracksSearchView? = null
     private var tracksInteractor: TracksInteractor = Creator.provideTracksInteractor(context)
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
@@ -70,8 +70,7 @@ class TracksSearchPresenter(
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-           // view.showLoading()
-            view.render(TracksState.Loading)
+            view?.render(TracksState.Loading)
             tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     Log.e("TracksSearchController", "foundTracks: $foundTracks")
@@ -79,50 +78,36 @@ class TracksSearchPresenter(
                         if (foundTracks != null) {
                             trackList.clear()
                             trackList.addAll(foundTracks)
-                            view.render(TracksState.Content(trackList))
+                            view?.render(TracksState.Content(trackList))
                         }
                         if (errorMessage != null) {
-                            view.render(
+                            view?.render(
                                 TracksState.Error(errorMessage)
                             )
-                            view.showToast(errorMessage)
+                            view?.showToast(errorMessage)
                         } else if (foundTracks.isNullOrEmpty()) {
-                            view.render(TracksState.Empty)
+                            view?.render(TracksState.Empty)
                         } else {
-                            view.render(
+                            view?.render(
                                 TracksState.UnknownErrorState
                             )
                         }
                     }
                 }
-                // Add error response handling later
             })
-
-//                onErrorResponse = {
-//                    errorText ->
-//                    progressBar.visibility = View.GONE
-//                    showMessage(
-//                        text = R.string.network_error_text,
-//                        additionalMessage = errorText,
-//                        buttonVisibility = View.VISIBLE,
-//                        icon = R.drawable.internet_error
-//                    )
-//                },
-//                onError = { t ->
-//                    progressBar.visibility = View.GONE
-//                    t.printStackTrace()
-//                showMessage(
-//                    text = R.string.network_error_text,
-//                    additionalMessage = "",
-//                    buttonVisibility = View.VISIBLE,
-//                    icon = R.drawable.internet_error
-//                )
-//                }
-//            )
         }
     }
 
     fun getHistory(): List<Track> {
         return trackHistoryInteractor.getTracksHistory()
     }
+
+    fun attachView(view: TracksSearchView) {
+        this.view = view
+    }
+
+    fun detachView() {
+        this.view = null
+    }
+
 }

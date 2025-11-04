@@ -29,7 +29,7 @@ import com.example.playlistmaker.ui.track.model.TracksState
 
 class SearchActivity : AppCompatActivity(), TracksSearchView {
     private lateinit var adapter: TrackAdapter
-    private lateinit var tracksSearchPresenter: TracksSearchPresenter
+    private  var tracksSearchPresenter: TracksSearchPresenter? = null
     private lateinit var searchText: EditText
     private lateinit var placeholderMessageText: TextView
     private lateinit var placeholderIcon: ImageView
@@ -67,22 +67,32 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
 
-        tracksSearchPresenter= Creator.provideTracksSearchPresenter(this, this)
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        tracksSearchPresenter = (this.application as? TracksApplication)?.tracksSearchPresenter
 
-        updateTracksList(tracksSearchPresenter.trackList)
+        if (tracksSearchPresenter == null) {
+            tracksSearchPresenter = Creator.provideTracksSearchPresenter(
+                context = this,
+            )
+            (this.application as? TracksApplication)?.tracksSearchPresenter = tracksSearchPresenter
+        }
+
+        tracksSearchPresenter?.attachView(this)
+
+        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+
+        updateTracksList(tracksSearchPresenter!!.trackList)
 
         refreshButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
+            tracksSearchPresenter?.searchRequest(tracksSearchPresenter!!.lastSearchText.toString())
         }
 
         clearButton.setOnClickListener {
             searchText.setText(EMPTY_SEARCH_TEXT)
-            showHistory(tracksSearchPresenter.getHistory())
+            showHistory(tracksSearchPresenter!!.getHistory())
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-            tracksSearchPresenter.trackList.clear()
-            updateTracksList(tracksSearchPresenter.trackList)
+            tracksSearchPresenter!!.trackList.clear()
+            updateTracksList(tracksSearchPresenter!!.trackList)
         }
 
         toolbar.setNavigationOnClickListener {
@@ -90,7 +100,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         }
 
         clearTrackHistoryButton.setOnClickListener {
-            tracksSearchPresenter.trackHistoryInteractor.saveTracksHistory(ArrayList()) // clear history
+            tracksSearchPresenter!!.trackHistoryInteractor.saveTracksHistory(ArrayList()) // clear history
             searchHistoryTitle.visibility = View.GONE
             clearTrackHistoryButton.visibility = View.GONE
         }
@@ -100,8 +110,8 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (searchText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-                    tracksSearchPresenter.lastSearchText = searchText.text.toString()
-                    tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
+                    tracksSearchPresenter!!.lastSearchText = searchText.text.toString()
+                    tracksSearchPresenter!!.searchRequest(tracksSearchPresenter!!.lastSearchText.toString())
                 }
             }
             false
@@ -113,40 +123,41 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val searchText = s?.toString()?:""
-                tracksSearchPresenter.lastSearchText = searchText
-                tracksSearchPresenter.searchDebounce(searchText)
+                tracksSearchPresenter!!.lastSearchText = searchText
+                tracksSearchPresenter!!.searchDebounce(searchText)
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
                     Log.e("TracksSearchController", "all callbacks removed")
-                    tracksSearchPresenter.handler.removeCallbacksAndMessages(null)
-                    showHistory(tracksSearchPresenter.getHistory())
+                    tracksSearchPresenter!!.handler.removeCallbacksAndMessages(null)
+                    showHistory(tracksSearchPresenter!!.getHistory())
                 }
                 if((searchText.hasFocus()) && s.isNullOrEmpty()) {
-                    showHistory(tracksSearchPresenter.getHistory())
+                    showHistory(tracksSearchPresenter!!.getHistory())
                 }
             }
 
         }
         textWatcher?.let { searchText.addTextChangedListener(it) }
-        tracksSearchPresenter.onCreate()
-        showHistory(tracksSearchPresenter.getHistory())
+        tracksSearchPresenter!!.onCreate()
+        showHistory(tracksSearchPresenter!!.getHistory())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        tracksSearchPresenter.onDestroy()
+        textWatcher?.let { searchText.removeTextChangedListener(it) }
+        tracksSearchPresenter!!.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        tracksSearchPresenter.onSaveInstanceState(outState)
+        tracksSearchPresenter!!.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText.setText(tracksSearchPresenter.onRestoreInstanceState(savedInstanceState)?:"")
+        searchText.setText(tracksSearchPresenter!!.onRestoreInstanceState(savedInstanceState)?:"")
     }
 
     fun updateTracksList(newTracksList: List<Track>) {
@@ -171,7 +182,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
     fun showError(messageId: Int, iconId: Int) {
         Log.e("SearchActivity", "trackList loading error")
 
-        tracksSearchPresenter.trackList.clear()
+        tracksSearchPresenter!!.trackList.clear()
         adapter.items = emptyList()
         adapter.notifyDataSetChanged()
 

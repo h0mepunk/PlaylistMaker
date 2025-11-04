@@ -59,8 +59,8 @@ object Creator {
     val tracksApiService = retrofit.create(TrackApiService::class.java)
 
 
-    fun provideTracksSearchPresenter(tracksView: TracksSearchView, context: Context): TracksSearchPresenter {
-        return TracksSearchPresenter(tracksView, context)
+    fun provideTracksSearchPresenter(context: Context): TracksSearchPresenter {
+        return TracksSearchPresenter(context)
     }
 
     fun provideTrackController(trackView: TrackView, context: Context): TrackPresenter {

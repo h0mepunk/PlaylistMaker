@@ -1,10 +1,10 @@
 package com.example.playlistmaker.ui.main
 
 import android.app.Application
+import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.util.Creator
 
 class App : Application() {
-
     private val themeInteractor by lazy { Creator.provideThemeInteractor() }
 
     override fun onCreate() {
