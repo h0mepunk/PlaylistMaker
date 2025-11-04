@@ -12,12 +12,11 @@ import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.track.model.TracksState
 import com.example.playlistmaker.util.Creator
+import moxy.MvpPresenter
 
 class TracksSearchPresenter(
     private val context: Context,
-) {
-    private var view: TracksSearchView? = null
-    private var state: TracksState? = null
+): MvpPresenter<TracksSearchView>() {
     private var tracksInteractor: TracksInteractor = Creator.provideTracksInteractor(context)
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
@@ -28,7 +27,6 @@ class TracksSearchPresenter(
     val handler = Handler(Looper.getMainLooper())
     var lastSearchText: String? = ""
 
-    private var latestSearchText: String? = null
     private lateinit var sharedPreferences : SharedPreferences
 
     var trackHistoryInteractor : TracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
@@ -55,7 +53,7 @@ class TracksSearchPresenter(
         outState.putCharSequence(SEARCH_TEXT, lastSearchText)
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
         handler.removeCallbacks(searchRunnable)
     }
 
@@ -90,7 +88,7 @@ class TracksSearchPresenter(
                             renderState(
                                 TracksState.Error(errorMessage)
                             )
-                            view?.showToast(errorMessage)
+                            viewState.showToast(errorMessage)
                         } else if (foundTracks.isNullOrEmpty()) {
                             renderState(TracksState.Empty)
                         } else {
@@ -109,19 +107,6 @@ class TracksSearchPresenter(
     }
 
     private fun renderState(state: TracksState) {
-        this.state = state
-        this.view?.render(state)
+        viewState.render(state)
     }
-
-    fun attachView(view: TracksSearchView) {
-        this.view = view
-        state?.let {
-            this.view?.render(it)
-        }
-    }
-
-    fun detachView() {
-        this.view = null
-    }
-
 }

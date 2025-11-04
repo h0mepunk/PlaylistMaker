@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,10 +26,20 @@ import com.example.playlistmaker.presentation.search.TracksSearchView
 import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.ui.track.model.TracksState
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
 class SearchActivity : AppCompatActivity(), TracksSearchView {
     private lateinit var adapter: TrackAdapter
+    @InjectPresenter
     private  var tracksSearchPresenter: TracksSearchPresenter? = null
+
+    @ProvidePresenter
+    fun providePresenter(): TracksSearchPresenter {
+        return Creator.provideTracksSearchPresenter(
+            context = this.applicationContext,
+        )
+    }
     private lateinit var searchText: EditText
     private lateinit var placeholderMessageText: TextView
     private lateinit var placeholderIcon: ImageView
@@ -67,17 +76,6 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
-
-        tracksSearchPresenter = ((this.application)?.applicationContext as App).tracksSearchPresenter
-
-        if (tracksSearchPresenter == null) {
-            tracksSearchPresenter = Creator.provideTracksSearchPresenter(
-                context = this.applicationContext,
-            )
-            ((this.application)?.applicationContext as App).tracksSearchPresenter = tracksSearchPresenter
-        }
-
-        tracksSearchPresenter?.attachView(this)
 
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
@@ -145,31 +143,9 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         showHistory(tracksSearchPresenter!!.getHistory())
     }
 
-    override fun onPause() {
-        super.onPause()
-        tracksSearchPresenter!!.detachView()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        tracksSearchPresenter!!.detachView()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        tracksSearchPresenter!!.attachView(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        tracksSearchPresenter!!.attachView(this)
-    }
-
-
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { searchText.removeTextChangedListener(it) }
-        tracksSearchPresenter!!.detachView()
         tracksSearchPresenter!!.onDestroy()
         if (isFinishing) {
             ((this.application)?.applicationContext as App).tracksSearchPresenter = null
@@ -178,7 +154,6 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        tracksSearchPresenter!!.detachView()
         tracksSearchPresenter!!.onSaveInstanceState(outState)
     }
 

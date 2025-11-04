@@ -36,7 +36,9 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.moxy)
+    implementation(libs.moxy.android)
+    implementation(libs.kapt)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
