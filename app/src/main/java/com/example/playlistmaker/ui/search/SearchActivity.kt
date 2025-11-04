@@ -69,6 +69,8 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         tracksSearchPresenter= Creator.provideTracksSearchPresenter(this, this)
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
+        updateTracksList(tracksSearchPresenter.trackList)
+
         refreshButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
@@ -143,18 +145,10 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        tracksSearchPresenter.onRestoreInstanceState(savedInstanceState)
+        searchText.setText(tracksSearchPresenter.onRestoreInstanceState(savedInstanceState)?:"")
     }
 
-    override fun showPlaceholderMessage(isVisible: Boolean) {
-        placeholderMessage.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    override fun setEditText(text: String?) {
-        searchText.setText(text?:"")
-    }
-
-    override fun updateTracksList(newTracksList: List<Track>) {
+    fun updateTracksList(newTracksList: List<Track>) {
         Log.e("SearchActivity", "trackList = $newTracksList")
         adapter.items = newTracksList
         adapter.notifyDataSetChanged()
@@ -229,6 +223,10 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
             searchHistoryTitle.visibility = View.GONE
             clearTrackHistoryButton.visibility = View.GONE
         }
+    }
+
+    override fun showUnknownError() {
+        placeholderMessage.visibility = View.GONE
     }
 
     override fun showToast(message: String) {

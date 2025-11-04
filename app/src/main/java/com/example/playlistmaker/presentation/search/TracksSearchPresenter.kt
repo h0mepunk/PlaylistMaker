@@ -32,8 +32,6 @@ class TracksSearchPresenter(
     var trackHistoryInteractor : TracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
 
     fun onCreate() {
-        view.updateTracksList(trackList)
-
         tracksInteractor = Creator.provideTracksInteractor(context)
         sharedPreferences = context.getSharedPreferences(
             Const.PLAYLIST_MAKER_PREFERENCES,
@@ -43,12 +41,12 @@ class TracksSearchPresenter(
 
     }
 
-    fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    fun onRestoreInstanceState(savedInstanceState: Bundle): String? {
         lastSearchText = savedInstanceState.getCharSequence(
             SEARCH_TEXT,
             EMPTY_SEARCH_TEXT as CharSequence
         ).toString()
-        view.setEditText(lastSearchText)
+        return lastSearchText
     }
 
     fun onSaveInstanceState(outState: Bundle) {
@@ -88,7 +86,7 @@ class TracksSearchPresenter(
                         } else if (foundTracks.isNullOrEmpty()) {
                             view.showEmpty(errorMessage)
                         } else {
-                            view.showPlaceholderMessage(false)
+                            view.showUnknownError()
                         }
                     }
                 }

@@ -2,11 +2,7 @@ package com.example.playlistmaker.presentation.search
 
 import com.example.playlistmaker.domain.models.Track
 interface TracksSearchView {
-    fun showPlaceholderMessage(isVisible: Boolean)
-
-    fun setEditText(text: String?)
-
-    fun updateTracksList(newTracksList: List<Track>)
+    fun showUnknownError()
 
     fun showToast(message: String)
 
