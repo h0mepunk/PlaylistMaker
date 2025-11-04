@@ -72,7 +72,7 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
 
         if (tracksSearchPresenter == null) {
             tracksSearchPresenter = Creator.provideTracksSearchPresenter(
-                context = this,
+                context = this.applicationContext,
             )
             ((this.application)?.applicationContext as App).tracksSearchPresenter = tracksSearchPresenter
         }
@@ -145,14 +145,40 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         showHistory(tracksSearchPresenter!!.getHistory())
     }
 
+    override fun onPause() {
+        super.onPause()
+        tracksSearchPresenter!!.detachView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        tracksSearchPresenter!!.detachView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        tracksSearchPresenter!!.attachView(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tracksSearchPresenter!!.attachView(this)
+    }
+
+
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { searchText.removeTextChangedListener(it) }
+        tracksSearchPresenter!!.detachView()
         tracksSearchPresenter!!.onDestroy()
+        if (isFinishing) {
+            ((this.application)?.applicationContext as App).tracksSearchPresenter = null
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        tracksSearchPresenter!!.detachView()
         tracksSearchPresenter!!.onSaveInstanceState(outState)
     }
 

@@ -17,6 +17,7 @@ class TracksSearchPresenter(
     private val context: Context,
 ) {
     private var view: TracksSearchView? = null
+    private var state: TracksState? = null
     private var tracksInteractor: TracksInteractor = Creator.provideTracksInteractor(context)
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
@@ -26,6 +27,8 @@ class TracksSearchPresenter(
     var trackList = ArrayList<Track>()
     val handler = Handler(Looper.getMainLooper())
     var lastSearchText: String? = ""
+
+    private var latestSearchText: String? = null
     private lateinit var sharedPreferences : SharedPreferences
 
     var trackHistoryInteractor : TracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
@@ -62,6 +65,9 @@ class TracksSearchPresenter(
     }
     fun searchDebounce(changedText: String) {
         Log.e("TracksSearchController", "all callbacks removed")
+        if(this.lastSearchText == changedText) {
+            return
+        }
         this.lastSearchText = changedText
         handler.removeCallbacksAndMessages(null)
         Log.e("TracksSearchController", "callback added $changedText")
@@ -70,7 +76,7 @@ class TracksSearchPresenter(
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view?.render(TracksState.Loading)
+            renderState(TracksState.Loading)
             tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     Log.e("TracksSearchController", "foundTracks: $foundTracks")
@@ -78,17 +84,17 @@ class TracksSearchPresenter(
                         if (foundTracks != null) {
                             trackList.clear()
                             trackList.addAll(foundTracks)
-                            view?.render(TracksState.Content(trackList))
+                            renderState(TracksState.Content(trackList))
                         }
                         if (errorMessage != null) {
-                            view?.render(
+                            renderState(
                                 TracksState.Error(errorMessage)
                             )
                             view?.showToast(errorMessage)
                         } else if (foundTracks.isNullOrEmpty()) {
-                            view?.render(TracksState.Empty)
+                            renderState(TracksState.Empty)
                         } else {
-                            view?.render(
+                            renderState(
                                 TracksState.UnknownErrorState
                             )
                         }
@@ -102,8 +108,16 @@ class TracksSearchPresenter(
         return trackHistoryInteractor.getTracksHistory()
     }
 
+    private fun renderState(state: TracksState) {
+        this.state = state
+        this.view?.render(state)
+    }
+
     fun attachView(view: TracksSearchView) {
         this.view = view
+        state?.let {
+            this.view?.render(it)
+        }
     }
 
     fun detachView() {
