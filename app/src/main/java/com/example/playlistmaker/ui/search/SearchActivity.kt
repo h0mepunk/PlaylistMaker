@@ -24,6 +24,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.presentation.search.TracksSearchView
+import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.ui.track.model.TracksState
 
@@ -67,13 +68,13 @@ class SearchActivity : AppCompatActivity(), TracksSearchView {
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
 
-        tracksSearchPresenter = (this.application as? TracksApplication)?.tracksSearchPresenter
+        tracksSearchPresenter = ((this.application)?.applicationContext as App).tracksSearchPresenter
 
         if (tracksSearchPresenter == null) {
             tracksSearchPresenter = Creator.provideTracksSearchPresenter(
                 context = this,
             )
-            (this.application as? TracksApplication)?.tracksSearchPresenter = tracksSearchPresenter
+            ((this.application)?.applicationContext as App).tracksSearchPresenter = tracksSearchPresenter
         }
 
         tracksSearchPresenter?.attachView(this)

@@ -5,6 +5,8 @@ import com.example.playlistmaker.presentation.search.TracksSearchPresenter
 import com.example.playlistmaker.util.Creator
 
 class App : Application() {
+
+    var tracksSearchPresenter : TracksSearchPresenter? = null
     private val themeInteractor by lazy { Creator.provideThemeInteractor() }
 
     override fun onCreate() {
