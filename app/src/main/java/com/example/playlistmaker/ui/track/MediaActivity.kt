@@ -24,18 +24,9 @@ class MediaActivity : MvpAppCompatActivity(), TrackView {
     private lateinit var playButton : Button
     private lateinit var trackTime : TextView
     private lateinit var placeholderImage: ImageView
-//    @InjectPresenter
-//    private lateinit var trackPresenter : TrackPresenter
-//
-//    @ProvidePresenter
-//    fun providePresenter(): TrackPresenter {
-//        return Creator.provideTrackPresenter(
-//            context = this.applicationContext,
-//        )
-//    }
 
     private val trackPresenter by moxyPresenter {
-        Creator.provideTrackPresenter(applicationContext)
+        Creator.provideTrackPresenter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +45,6 @@ class MediaActivity : MvpAppCompatActivity(), TrackView {
         val trackDuration = findViewById<TextView>(R.id.media_info_length_value)
         val trackCountry = findViewById<TextView>(R.id.media_info_country_value)
 
-       // trackPresenter = Creator.provideTrackPresenter(this)
         trackPresenter.onCreate()
 
         trackTitle.text = trackPresenter.currentTrack.trackName

@@ -28,7 +28,7 @@ import moxy.ktx.moxyPresenter
 
 class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
     private lateinit var adapter: TrackAdapter
-    private val tracksSearchPresenter by moxyPresenter {
+    private val presenter by moxyPresenter {
         Creator.provideTracksSearchPresenter(applicationContext)
     }
     private lateinit var searchText: EditText
@@ -70,19 +70,19 @@ class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
 
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
-        updateTracksList(tracksSearchPresenter.trackList)
+        updateTracksList(presenter.trackList)
 
         refreshButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            tracksSearchPresenter.searchRequest(tracksSearchPresenter.lastSearchText.toString())
+            presenter.searchRequest(presenter.lastSearchText.toString())
         }
 
         clearButton.setOnClickListener {
             searchText.setText(EMPTY_SEARCH_TEXT)
-            showHistory(tracksSearchPresenter.getHistory())
+            showHistory(presenter.getHistory())
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-            tracksSearchPresenter.trackList.clear()
-            updateTracksList(tracksSearchPresenter.trackList)
+            presenter.trackList.clear()
+            updateTracksList(presenter.trackList)
         }
 
         toolbar.setNavigationOnClickListener {
@@ -90,7 +90,7 @@ class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
         }
 
         clearTrackHistoryButton.setOnClickListener {
-            tracksSearchPresenter.trackHistoryInteractor.saveTracksHistory(ArrayList())
+            presenter.trackHistoryInteractor.saveTracksHistory(ArrayList())
             adapter.items = emptyList()
             adapter.notifyDataSetChanged()
             searchHistoryTitle.visibility = View.GONE
@@ -102,8 +102,8 @@ class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (searchText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-                    tracksSearchPresenter.lastSearchText = searchText.text.toString()
-                    tracksSearchPresenter.searchRequest(tracksSearchPresenter!!.lastSearchText.toString())
+                    presenter.lastSearchText = searchText.text.toString()
+                    presenter.searchRequest(presenter!!.lastSearchText.toString())
                 }
             }
             false
@@ -115,41 +115,41 @@ class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val searchText = s?.toString()?:""
-                tracksSearchPresenter!!.lastSearchText = searchText
-                tracksSearchPresenter!!.searchDebounce(searchText)
+                presenter.lastSearchText = searchText
+                presenter.searchDebounce(searchText)
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
                     Log.e("TracksSearchController", "all callbacks removed")
-                    tracksSearchPresenter!!.handler.removeCallbacksAndMessages(null)
-                    showHistory(tracksSearchPresenter!!.getHistory())
+                    presenter.handler.removeCallbacksAndMessages(null)
+                    showHistory(presenter.getHistory())
                 }
                 if((searchText.hasFocus()) && s.isNullOrEmpty()) {
-                    showHistory(tracksSearchPresenter!!.getHistory())
+                    showHistory(presenter.getHistory())
                 }
             }
 
         }
         textWatcher?.let { searchText.addTextChangedListener(it) }
-        tracksSearchPresenter.onCreate()
-        showHistory(tracksSearchPresenter.getHistory())
+        presenter.onCreate()
+        showHistory(presenter.getHistory())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { searchText.removeTextChangedListener(it) }
-        tracksSearchPresenter.onDestroy()
+        presenter.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        tracksSearchPresenter.onSaveInstanceState(outState)
+        presenter.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText.setText(tracksSearchPresenter.onRestoreInstanceState(savedInstanceState)?:"")
+        searchText.setText(presenter.onRestoreInstanceState(savedInstanceState)?:"")
     }
 
     fun updateTracksList(newTracksList: List<Track>) {
@@ -174,7 +174,7 @@ class SearchActivity : MvpAppCompatActivity(), TracksSearchView {
     fun showError(messageId: Int, iconId: Int) {
         Log.e("SearchActivity", "trackList loading error")
 
-        tracksSearchPresenter.trackList.clear()
+        presenter.trackList.clear()
         adapter.items = emptyList()
         adapter.notifyDataSetChanged()
 

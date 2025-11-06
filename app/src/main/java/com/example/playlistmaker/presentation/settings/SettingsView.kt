@@ -1,14 +1,23 @@
 package com.example.playlistmaker.presentation.settings
 
-interface SettingsView {
+import moxy.MvpView
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-    fun clickShareApp(action: () -> Unit)
+interface SettingsView: MvpView {
 
-    fun clickContactSupport(action: () -> Unit)
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun openShareApp()
 
-    fun clickUserAgreement(action: () -> Unit)
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun contactSupport()
 
-    fun switchTheme(action: (isDarkMode: Boolean) -> Unit)
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun openUserAgreement()
 
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun switchTheme(isDarkMode: Boolean)
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
     fun setTheme(isDarkMode: Boolean)
 }

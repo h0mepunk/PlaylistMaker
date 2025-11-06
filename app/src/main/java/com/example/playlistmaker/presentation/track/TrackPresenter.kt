@@ -1,6 +1,5 @@
 package com.example.playlistmaker.presentation.track
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -13,9 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @InjectViewState
-class TrackPresenter(
-    private val context: Context,
-): MvpPresenter<TrackView>() {
+class TrackPresenter(): MvpPresenter<TrackView>() {
 
     private val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
     private val tracksHistoryInteractor = Creator.provideTracksHistoryInteractor()

@@ -62,16 +62,16 @@ object Creator {
         return TracksSearchPresenter(context)
     }
 
-    fun provideTrackPresenter(context: Context): TrackPresenter {
-        return TrackPresenter(context)
+    fun provideTrackPresenter(): TrackPresenter {
+        return TrackPresenter()
     }
 
-    fun provideSettingsPresenter(settingsView: SettingsView, context: Context): SettingsPresenter {
-        return SettingsPresenter(settingsView, context)
+    fun provideSettingsPresenter(): SettingsPresenter {
+        return SettingsPresenter()
     }
 
-    fun provideMainPresenter(view: MainView, context: Context): MainPresenter {
-        return MainPresenter(view,context)
+    fun provideMainPresenter(): MainPresenter {
+        return MainPresenter()
     }
     private fun getTracksRepository(context: Context): TracksRepository {
         return TracksRepositoryImpl(

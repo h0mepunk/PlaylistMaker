@@ -7,8 +7,6 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 
 class App : Application() {
-
-    var tracksSearchPresenter : TracksSearchPresenter? = null
     private val themeInteractor by lazy { Creator.provideThemeInteractor() }
 
     override fun onCreate() {

@@ -1,9 +1,17 @@
 package com.example.playlistmaker.presentation.main
 
-interface MainView {
+import moxy.MvpView
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-    fun onMediaButtonTap(action: () -> Unit)
-    fun onSearchButtonTap(action: () -> Unit)
-    fun onSettingsButtonTap(action: () -> Unit)
+interface MainView: MvpView {
 
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun openSearch()
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun openSettings()
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun openMedia()
 }
