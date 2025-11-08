@@ -40,6 +40,10 @@ dependencies {
     implementation(libs.moxy)           // com.github.moxy-community:moxy:2.2.2
     implementation(libs.moxy.androidx)  // com.github.moxy-community:moxy-androidx:2.2.2
     implementation("com.github.moxy-community:moxy-ktx:2.2.2") // для moxyPresenter
+    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.activity:activity-ktx:1.6.1")
     kapt(libs.moxy.compiler)            // com.github.moxy-community:moxy-compiler:2.2.2
 
     implementation(libs.androidx.core.ktx)
