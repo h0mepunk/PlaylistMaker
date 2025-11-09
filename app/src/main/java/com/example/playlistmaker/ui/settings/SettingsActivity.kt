@@ -1,7 +1,7 @@
 package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R

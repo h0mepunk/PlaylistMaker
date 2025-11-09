@@ -2,19 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     style="@style/background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_height"
         android:orientation="horizontal"
-        android:navigationIcon="@drawable/arrow_back"
-        android:title="@string/settings_title"
+        app:navigationIcon="@drawable/arrow_back"
+        app:title="@string/settings_title"
         android:titleTextAppearance="@style/toolbar_title_text">
-    </Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
     <com.google.android.material.switchmaterial.SwitchMaterial
         style="@style/settings_menu_item"
         android:id="@+id/setting_item_dark_theme"

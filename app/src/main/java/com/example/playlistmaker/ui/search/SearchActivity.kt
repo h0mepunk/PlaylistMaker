@@ -13,7 +13,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
+import com.google.android.material.appbar.MaterialToolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -40,7 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryTitle: TextView
     private lateinit var refreshButton: Button
 
-    private lateinit var toolbar: Toolbar
+    private lateinit var toolbar: MaterialToolbar
     private var textWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
