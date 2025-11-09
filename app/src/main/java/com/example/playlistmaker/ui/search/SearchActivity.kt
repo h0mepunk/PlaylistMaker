@@ -126,14 +126,14 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    Log.e("TracksSearchController", "all callbacks removed")
-                    viewModel?.handler?.removeCallbacksAndMessages(null)
-                    viewModel?.showHistory()
-                }
-                if((searchText.hasFocus()) && s.isNullOrEmpty()) {
-                    viewModel?.showHistory()
-                }
+//                if (s.isNullOrEmpty()) {
+//                    Log.e("TracksSearchController", "all callbacks removed")
+//                  //  viewModel?.handler?.removeCallbacksAndMessages(null)
+//                  //  viewModel?.showHistory()
+//                }
+//                if((searchText.hasFocus()) && s.isNullOrEmpty()) {
+//                    viewModel?.showHistory()
+//                }
             }
 
         }

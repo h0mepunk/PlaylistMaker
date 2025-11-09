@@ -101,24 +101,27 @@ class TracksSearchViewModel( private val context: Context): ViewModel() {
             renderState(TracksState.Loading)
             tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    Log.e("TracksSearchController", "foundTracks: $foundTracks")
+                    Log.e("TracksSearchViewModel", "foundTracks: $foundTracks")
                     try {
                         handler.post {
-                            val movies = mutableListOf<Track>()
+                            val tracks = mutableListOf<Track>()
                             if (foundTracks != null) {
-                                movies.addAll(foundTracks)
+                                Log.e("TracksSearchViewModel", tracks.toString())
+                                tracks.addAll(foundTracks)
                             }
-
                             when {
                                 errorMessage != null -> {
+                                    Log.e("TracksSearchViewModel", errorMessage)
                                     renderState(TracksState.Error(errorMessage))
                                     showToast.postValue(errorMessage)
                                 }
-                                movies.isEmpty() -> {
+                                tracks.isEmpty() -> {
+                                    Log.e("TracksSearchViewModel", "empty track list")
                                     renderState(TracksState.Empty)
                                 }
                                 else -> {
-                                    renderState(TracksState.Content(foundTracks!!))
+                                    Log.e("TracksSearchViewModel", tracks.toString())
+                                    renderState(TracksState.Content(tracks?: emptyList()))
                                 }
                             }
                         }
