@@ -28,8 +28,6 @@ import com.example.playlistmaker.presentation.main.MainPresenter
 import com.example.playlistmaker.presentation.main.MainView
 import com.example.playlistmaker.presentation.settings.SettingsPresenter
 import com.example.playlistmaker.presentation.track.TrackPresenter
-import com.example.playlistmaker.presentation.search.TracksSearchPresenter
-import com.example.playlistmaker.presentation.search.TracksSearchView
 import com.example.playlistmaker.presentation.settings.SettingsView
 import com.google.gson.Gson
 import retrofit2.Retrofit
@@ -57,11 +55,6 @@ object Creator {
         .build()
 
     val tracksApiService = retrofit.create(TrackApiService::class.java)
-
-
-    fun provideTracksSearchPresenter(context: Context): TracksSearchPresenter {
-        return TracksSearchPresenter(context)
-    }
 
     fun provideTrackController(trackView: TrackView, context: Context): TrackPresenter {
         return TrackPresenter(trackView, context)

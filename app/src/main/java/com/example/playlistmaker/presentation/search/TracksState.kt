@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.track.model
+package com.example.playlistmaker.presentation.search
 
 import com.example.playlistmaker.domain.models.Track
 
@@ -7,7 +7,11 @@ sealed interface TracksState {
     object Loading : TracksState
 
     data class Content(
-        val movies: List<Track>
+        val tracks: List<Track>
+    ) : TracksState
+
+    data class History(
+        val tracks: List<Track>
     ) : TracksState
 
     data class Error(
