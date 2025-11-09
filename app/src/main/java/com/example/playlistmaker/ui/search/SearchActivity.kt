@@ -78,20 +78,7 @@ class SearchActivity : AppCompatActivity() {
             showToast(it)
         }
 
-      //  tracksSearchPresenter = ((this.application)?.applicationContext as App).tracksSearchPresenter
-
-//        if (tracksSearchPresenter == null) {
-//            tracksSearchPresenter = Creator.provideTracksSearchPresenter(
-//                context = this.applicationContext,
-//            )
-//            ((this.application)?.applicationContext as App).tracksSearchPresenter = tracksSearchPresenter
-//        }
-
-    //    tracksSearchPresenter?.attachView(this)
-
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-
-    //    updateTracksList(tracksSearchPresenter!!.trackList)
 
         refreshButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
@@ -102,8 +89,6 @@ class SearchActivity : AppCompatActivity() {
             searchText.setText(EMPTY_SEARCH_TEXT)
             viewModel?.showHistory()
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-            //viewModel.trackList.clear()
-            //updateTracksList(tracksSearchPresenter!!.trackList)
         }
 
         toolbar.setNavigationOnClickListener {
