@@ -39,7 +39,10 @@ class TrackActivity : AppCompatActivity() {
         val trackDuration = findViewById<TextView>(R.id.media_info_length_value)
         val trackCountry = findViewById<TextView>(R.id.media_info_country_value)
 
-        viewModel = ViewModelProvider(this, TrackViewModel.getFactory())[TrackViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            TrackViewModel.getFactory()
+        )[TrackViewModel::class.java]
         viewModel?.onCreate()
 
         viewModel?.observeState()?.observe(this) {

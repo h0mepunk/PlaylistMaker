@@ -4,16 +4,30 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.R
+import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.util.Creator
 
-class SettingsViewModel: ViewModel() {
+class SettingsViewModel( private val context: Context): ViewModel() {
 
+    companion object {
+
+        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val app = (this[APPLICATION_KEY] as App)
+                SettingsViewModel(app)
+            }
+        }
+    }
     fun switchTheme(isDarkTheme: Boolean) {
             Creator.provideThemeInteractor().setTheme(isDarkTheme)
         }
 
-    fun clickShareApp(context: Context) {
+    fun clickShareApp() {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(
@@ -23,7 +37,7 @@ class SettingsViewModel: ViewModel() {
             context.startActivity(intent)
         }
 
-    fun clickContactSupport(context: Context) {
+    fun clickContactSupport() {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = "mailto:".toUri()
             intent.putExtra(
@@ -41,7 +55,7 @@ class SettingsViewModel: ViewModel() {
             context.startActivity(intent)
         }
 
-    fun clickUserAgreement(context: Context) {
+    fun clickUserAgreement() {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = context.getString(R.string.user_agreement_url_value).toUri()
             context.startActivity(intent)

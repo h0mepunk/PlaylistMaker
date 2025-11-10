@@ -66,7 +66,10 @@ class SearchActivity : AppCompatActivity() {
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
 
-        viewModel = ViewModelProvider(this, TracksSearchViewModel.getFactory())[TracksSearchViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            TracksSearchViewModel.getFactory()
+        )[TracksSearchViewModel::class.java]
 
         viewModel?.onCreate()
 

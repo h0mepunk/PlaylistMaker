@@ -1,15 +1,14 @@
 package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
 import com.example.playlistmaker.util.Creator
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
-import kotlin.getValue
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -18,11 +17,17 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var contactSupport : MaterialTextView
     private lateinit var userAgreement : MaterialTextView
     private lateinit var themeSwitcher : SwitchMaterial
-    private val viewModel: SettingsViewModel by viewModels()
+    private var viewModel: SettingsViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getFactory()
+        )[SettingsViewModel::class.java]
+
         toolbar = findViewById(R.id.settings_toolbar)
         shareButton = findViewById(R.id.setting_item_share)
         contactSupport = findViewById(R.id.setting_item_contact_support)
@@ -31,11 +36,11 @@ class SettingsActivity : AppCompatActivity() {
 
         themeSwitcher.isChecked = Creator.provideThemeInteractor().getTheme()
 
-        contactSupport.setOnClickListener { viewModel.clickContactSupport(this) }
-        shareButton.setOnClickListener { viewModel.clickShareApp(this) }
-        userAgreement.setOnClickListener { viewModel.clickUserAgreement(this) }
+        contactSupport.setOnClickListener { viewModel?.clickContactSupport() }
+        shareButton.setOnClickListener { viewModel?.clickShareApp() }
+        userAgreement.setOnClickListener { viewModel?.clickUserAgreement() }
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.switchTheme(isChecked)
+            viewModel?.switchTheme(isChecked)
         }
 
         toolbar.setNavigationOnClickListener {
