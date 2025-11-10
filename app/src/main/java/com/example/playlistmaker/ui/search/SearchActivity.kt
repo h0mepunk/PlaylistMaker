@@ -126,14 +126,13 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-//                if (s.isNullOrEmpty()) {
-//                    Log.e("TracksSearchController", "all callbacks removed")
-//                  //  viewModel?.handler?.removeCallbacksAndMessages(null)
-//                  //  viewModel?.showHistory()
-//                }
-//                if((searchText.hasFocus()) && s.isNullOrEmpty()) {
-//                    viewModel?.showHistory()
-//                }
+                if (s.isNullOrEmpty()) {
+                    Log.e("TracksSearchController", "all callbacks removed")
+                    viewModel?.showHistory()
+                }
+                if((searchText.hasFocus()) && s.isNullOrEmpty()) {
+                    viewModel?.showHistory()
+                }
             }
 
         }
@@ -156,11 +155,11 @@ class SearchActivity : AppCompatActivity() {
         searchText.setText(viewModel?.onRestoreInstanceState(savedInstanceState)?:"")
     }
 
-    fun updateTracksList(newTracksList: List<Track>) {
-        Log.e("SearchActivity", "trackList = $newTracksList")
-        adapter.items = newTracksList
-        adapter.notifyDataSetChanged()
-    }
+//    fun updateTracksList(newTracksList: List<Track>) {
+//        Log.e("SearchActivity", "trackList = $newTracksList")
+//        adapter.items = newTracksList
+//        adapter.notifyDataSetChanged()
+//    }
 
     fun showContent(tracks: List<Track>) {
         progressBar.visibility = View.GONE
