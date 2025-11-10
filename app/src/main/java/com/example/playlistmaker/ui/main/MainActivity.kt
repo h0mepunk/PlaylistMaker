@@ -2,17 +2,17 @@ package com.example.playlistmaker.ui.main
 
 import android.os.Bundle
 import android.widget.Button
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.presentation.main.MainView
+import com.example.playlistmaker.presentation.main.MainViewModel
 
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var buttonSearch : Button
     private lateinit var buttonSettings : Button
-    private lateinit var mediaButton : Button
-    private val mainPresenter = Creator.provideMainPresenter(this, this)
+    private lateinit var buttonMedia : Button
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -20,21 +20,12 @@ class MainActivity : AppCompatActivity(), MainView {
         setContentView(R.layout.activity_main)
         buttonSearch = findViewById(R.id.search_button)
         buttonSettings = findViewById(R.id.settings_button)
-        mediaButton = findViewById(R.id.media_button)
-        mainPresenter.onCreate()
-    }
+        buttonMedia = findViewById(R.id.media_button)
 
-    override fun onMediaButtonTap(action: () -> Unit) {
-        mediaButton.setOnClickListener { action() }
-    }
+        buttonMedia.setOnClickListener { viewModel.mediaButtonTap(this) }
 
-    override fun onSearchButtonTap(
-        action: () -> Unit
-    ) {
-        buttonSearch.setOnClickListener { action() }
-    }
+        buttonSearch.setOnClickListener { viewModel.searchButtonTap(this) }
 
-    override fun onSettingsButtonTap(action: () -> Unit) {
-        buttonSettings.setOnClickListener { action() }
+        buttonSettings.setOnClickListener { viewModel.settingsButtonTap(this) }
     }
 }

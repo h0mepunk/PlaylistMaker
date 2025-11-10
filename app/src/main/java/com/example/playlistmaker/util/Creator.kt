@@ -24,10 +24,7 @@ import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
 import com.example.playlistmaker.presentation.track.TrackView
-import com.example.playlistmaker.presentation.main.MainPresenter
 import com.example.playlistmaker.presentation.main.MainView
-import com.example.playlistmaker.presentation.settings.SettingsPresenter
-import com.example.playlistmaker.presentation.track.TrackPresenter
 import com.example.playlistmaker.presentation.settings.SettingsView
 import com.google.gson.Gson
 import retrofit2.Retrofit
@@ -56,17 +53,6 @@ object Creator {
 
     val tracksApiService = retrofit.create(TrackApiService::class.java)
 
-    fun provideTrackController(trackView: TrackView, context: Context): TrackPresenter {
-        return TrackPresenter(trackView, context)
-    }
-
-    fun provideSettingsPresenter(settingsView: SettingsView, context: Context): SettingsPresenter {
-        return SettingsPresenter(settingsView, context)
-    }
-
-    fun provideMainPresenter(view: MainView, context: Context): MainPresenter {
-        return MainPresenter(view,context)
-    }
     private fun getTracksRepository(context: Context): TracksRepository {
         return TracksRepositoryImpl(
             RetrofitNetworkClient(tracksApiService, context),

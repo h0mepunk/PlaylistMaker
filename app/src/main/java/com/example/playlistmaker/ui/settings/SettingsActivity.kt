@@ -1,22 +1,24 @@
 package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.presentation.settings.SettingsView
+import com.example.playlistmaker.presentation.settings.SettingsViewModel
+import com.example.playlistmaker.util.Creator
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
+import kotlin.getValue
 
-class SettingsActivity : AppCompatActivity(), SettingsView {
+class SettingsActivity : AppCompatActivity() {
 
     private lateinit var toolbar : Toolbar
     private lateinit var shareButton : MaterialTextView
     private lateinit var contactSupport : MaterialTextView
     private lateinit var userAgreement : MaterialTextView
     private lateinit var themeSwitcher : SwitchMaterial
-    val settingsPresenter = Creator.provideSettingsPresenter(this, this)
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,32 +29,17 @@ class SettingsActivity : AppCompatActivity(), SettingsView {
         userAgreement = findViewById(R.id.setting_item_user_agreement)
         themeSwitcher = findViewById(R.id.setting_item_dark_theme)
 
-        settingsPresenter.onCreate()
+        themeSwitcher.isChecked = Creator.provideThemeInteractor().getTheme()
+
+        contactSupport.setOnClickListener { viewModel.clickContactSupport(this) }
+        shareButton.setOnClickListener { viewModel.clickShareApp(this) }
+        userAgreement.setOnClickListener { viewModel.clickUserAgreement(this) }
+        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.switchTheme(isChecked)
+        }
 
         toolbar.setNavigationOnClickListener {
             finish()
         }
-    }
-
-    override fun clickContactSupport(action: () -> Unit) {
-        contactSupport.setOnClickListener { action() }
-    }
-
-    override fun clickShareApp(action: () -> Unit) {
-        shareButton.setOnClickListener { action() }
-    }
-
-    override fun clickUserAgreement(action: () -> Unit) {
-        userAgreement.setOnClickListener { action() }
-    }
-
-    override fun switchTheme(action: (Boolean) -> Unit) {
-        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
-            action(isChecked)
-        }
-    }
-
-    override fun setTheme(isDarkMode: Boolean) {
-        themeSwitcher.isChecked = isDarkMode
     }
 }

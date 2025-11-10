@@ -60,8 +60,8 @@ class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
                 tracksHistoryInteractor.saveTracksHistory(trackHistory)
                 tracksHistoryInteractor.saveCurrentTrack(track)
 
-                val mediaActivity = Intent(context, MediaActivity::class.java)
-                context.startActivity(mediaActivity)
+                val trackActivity = Intent(context, TrackActivity::class.java)
+                context.startActivity(trackActivity)
             }
         }
     }

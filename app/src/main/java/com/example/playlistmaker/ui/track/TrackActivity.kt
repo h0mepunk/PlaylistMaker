@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -16,7 +15,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
 
-class MediaActivity : AppCompatActivity() {
+class TrackActivity : AppCompatActivity() {
     private lateinit var toolbar : Toolbar
     private lateinit var playButton : Button
     private lateinit var trackTime : TextView

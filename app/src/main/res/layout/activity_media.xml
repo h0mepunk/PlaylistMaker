@@ -13,7 +13,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".ui.track.MediaActivity">
+    tools:context=".ui.track.TrackActivity">
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/media_toolbar"
         android:layout_width="match_parent"

@@ -3,23 +3,17 @@ package com.example.playlistmaker.presentation.settings
 import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.util.Creator
 
-class SettingsPresenter(
-    private val view: SettingsView,
-    private val context: Context,
-) {
+class SettingsViewModel: ViewModel() {
 
-    fun onCreate() {
-
-        view.setTheme(Creator.provideThemeInteractor().getTheme())
-
-        view.switchTheme {
-            Creator.provideThemeInteractor().setTheme(it)
+    fun switchTheme(isDarkTheme: Boolean) {
+            Creator.provideThemeInteractor().setTheme(isDarkTheme)
         }
 
-        view.clickShareApp {
+    fun clickShareApp(context: Context) {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(
@@ -29,7 +23,7 @@ class SettingsPresenter(
             context.startActivity(intent)
         }
 
-        view.clickContactSupport {
+    fun clickContactSupport(context: Context) {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = "mailto:".toUri()
             intent.putExtra(
@@ -47,10 +41,10 @@ class SettingsPresenter(
             context.startActivity(intent)
         }
 
-        view.clickUserAgreement {
+    fun clickUserAgreement(context: Context) {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = context.getString(R.string.user_agreement_url_value).toUri()
             context.startActivity(intent)
         }
-    }
+
 }
