@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.track
 
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -10,19 +11,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.main.App
 import com.example.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackViewModel(): ViewModel() {
+class TrackViewModel(
+    private val mediaPlayerInteractor: MediaPlayerInteractor,
+    private val tracksHistoryInteractor: TracksHistoryInteractor,
+    private val mediaPlayer: MediaPlayer
+): ViewModel() {
 
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observeState(): LiveData<TrackState> = stateLiveData
-    private val mediaPlayerInteractor = Creator.provideMediaPlayerInteractor()
-    private val tracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
-    private val mediaPlayer = Creator.provideMediaPlayerInteractor().getMediaPlayer()
     lateinit var currentTrack: Track
     private val handler = Handler(Looper.getMainLooper())
     private var timerRunnable = Runnable { updateTimer() }
@@ -31,7 +35,11 @@ class TrackViewModel(): ViewModel() {
         fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = (this[APPLICATION_KEY] as App)
-                TrackViewModel()
+                TrackViewModel(
+                    Creator.provideMediaPlayerInteractor(),
+                    Creator.provideTracksHistoryInteractor(),
+                Creator.provideMediaPlayerInteractor().getMediaPlayer()
+                )
             }
         }
     }
