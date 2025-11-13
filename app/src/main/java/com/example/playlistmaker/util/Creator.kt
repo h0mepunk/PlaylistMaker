@@ -84,4 +84,8 @@ object Creator {
     fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
         return MediaPlayerInteractorImpl(getMediaPlayerRepository())
     }
+
+    fun getMediaPlayer(): MediaPlayer {
+        return mediaPlayer
+    }
 }

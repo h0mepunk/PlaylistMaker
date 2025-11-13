@@ -38,7 +38,7 @@ class TrackViewModel(
                 TrackViewModel(
                     Creator.provideMediaPlayerInteractor(),
                     Creator.provideTracksHistoryInteractor(),
-                Creator.provideMediaPlayerInteractor().getMediaPlayer()
+                    Creator.getMediaPlayer()
                 )
             }
         }
