@@ -23,9 +23,6 @@ import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksInteractorImpl
-import com.example.playlistmaker.presentation.track.TrackView
-import com.example.playlistmaker.presentation.main.MainView
-import com.example.playlistmaker.presentation.settings.SettingsView
 import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
