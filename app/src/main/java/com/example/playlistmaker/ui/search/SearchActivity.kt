@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
@@ -126,6 +127,9 @@ class SearchActivity : AppCompatActivity() {
                 viewModel?.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
+                if (!s.isNullOrEmpty()) {
+                    clearButton.visibility = View.VISIBLE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -157,12 +161,6 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         searchText.setText(viewModel?.onRestoreInstanceState(savedInstanceState)?:"")
     }
-
-//    fun updateTracksList(newTracksList: List<Track>) {
-//        Log.e("SearchActivity", "trackList = $newTracksList")
-//        adapter.items = newTracksList
-//        adapter.notifyDataSetChanged()
-//    }
 
     fun showContent(tracks: List<Track>) {
         progressBar.visibility = View.GONE

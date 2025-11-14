@@ -3,10 +3,11 @@ package com.example.playlistmaker.presentation.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.presentation.search.SingleLiveEvent
 
 class MainViewModel(): ViewModel() {
 
-    private val stateLiveData = MutableLiveData<MainState>()
+    private val stateLiveData = SingleLiveEvent<MainState>()
     fun observeState(): LiveData<MainState> = stateLiveData
 
     fun mediaButtonTap() {
