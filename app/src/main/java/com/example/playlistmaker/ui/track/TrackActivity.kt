@@ -7,13 +7,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
 class TrackActivity : AppCompatActivity() {
     private lateinit var toolbar : Toolbar
@@ -21,7 +22,7 @@ class TrackActivity : AppCompatActivity() {
     private lateinit var trackTime : TextView
     private lateinit var placeholderImage: ImageView
 
-    private var viewModel: TrackViewModel? = null
+    private val viewModel by viewModel<TrackViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,27 +40,23 @@ class TrackActivity : AppCompatActivity() {
         val trackDuration = findViewById<TextView>(R.id.media_info_length_value)
         val trackCountry = findViewById<TextView>(R.id.media_info_country_value)
 
-        viewModel = ViewModelProvider(
-            this,
-            TrackViewModel.getFactory()
-        )[TrackViewModel::class.java]
-        viewModel?.onCreate()
+        viewModel.onCreate()
 
-        viewModel?.observeState()?.observe(this) {
+        viewModel.observeState().observe(this) {
             render(it)
         }
 
-        trackTitle.text = viewModel?.currentTrack?.trackName
-        trackArtist.text = viewModel?.currentTrack?.artistName
-        trackAlbum.text = viewModel?.currentTrack?.collectionName
-        trackGenre.text = viewModel?.currentTrack?.primaryGenreName
-        trackReleaseDate.text = viewModel?.currentTrack?.releaseDate
-        trackDuration.text = viewModel?.currentTrack?.trackTime
-        trackCountry.text = viewModel?.currentTrack?.country
+        trackTitle.text = viewModel.currentTrack.trackName
+        trackArtist.text = viewModel.currentTrack.artistName
+        trackAlbum.text = viewModel.currentTrack.collectionName
+        trackGenre.text = viewModel.currentTrack.primaryGenreName
+        trackReleaseDate.text = viewModel.currentTrack.releaseDate
+        trackDuration.text = viewModel.currentTrack.trackTime
+        trackCountry.text = viewModel.currentTrack.country
 
         playButton.setOnClickListener {
             Log.e("TrackActivity","play/stop button clicked")
-            viewModel?.playbackControl()
+            viewModel.playbackControl()
         }
 
         toolbar.setNavigationOnClickListener {
@@ -69,25 +66,11 @@ class TrackActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel?.pausePlayer()
+        viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-    }
-
-//    fun setPlayButtonActive(active: Boolean) {
-//        val resId = if (active) {
-//            R.drawable.media_play
-//        } else {
-//            R.drawable.media_stop
-//        }
-//        playButton.setBackgroundResource(resId)
-//        playButton.background = AppCompatResources.getDrawable(this, resId)
-//    }
-
-    fun setTrackTimeText(text: String) {
-        trackTime.text = text
     }
 
     fun showCover(url: String) {

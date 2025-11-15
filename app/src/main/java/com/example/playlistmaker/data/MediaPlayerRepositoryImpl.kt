@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data
 
-import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
 import com.example.playlistmaker.domain.api.MediaPlayerRepository

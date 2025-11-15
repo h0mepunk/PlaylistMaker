@@ -3,13 +3,12 @@ package com.example.playlistmaker.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.example.playlistmaker.util.Creator.context
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.TracksSearchRequest
 import com.example.playlistmaker.domain.api.TrackApiService
 
-class RetrofitNetworkClient(private var trackApiService: TrackApiService, context: Context) : NetworkClient {
+class RetrofitNetworkClient(private var trackApiService: TrackApiService,private val context: Context) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (dto is TracksSearchRequest) {

@@ -31,61 +31,61 @@ object Creator {
 
     private val tracksMapper = TrackMapper()
 
-    lateinit var context: Context
-    val sharedPreferences: SharedPreferences by lazy { context.getSharedPreferences(
-        Const.PLAYLIST_MAKER_PREFERENCES,
-        Context.MODE_PRIVATE
-    )}
+//    lateinit var context: Context
+//    val sharedPreferences: SharedPreferences by lazy { context.getSharedPreferences(
+//        Const.PLAYLIST_MAKER_PREFERENCES,
+//        Context.MODE_PRIVATE
+//    )}
 
     val gson = Gson()
 
-    private val baseUrl = "https://itunes.apple.com"
+  //  private val baseUrl = "https://itunes.apple.com"
 
-    private var mediaPlayer = MediaPlayer()
+ //   private var mediaPlayer = MediaPlayer()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+//    private val retrofit = Retrofit.Builder()
+//        .baseUrl(baseUrl)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
 
-    val tracksApiService = retrofit.create(TrackApiService::class.java)
+ //   val tracksApiService = retrofit.create(TrackApiService::class.java)
 
-    private fun getTracksRepository(context: Context): TracksRepository {
-        return TracksRepositoryImpl(
-            RetrofitNetworkClient(tracksApiService, context),
-            tracksMapper
-        )
-    }
+//    private fun getTracksRepository(context: Context): TracksRepository {
+//        return TracksRepositoryImpl(
+//            RetrofitNetworkClient(tracksApiService, context),
+//            tracksMapper
+//        )
+//    }
 
-    private fun getTrackHistory(): TracksHistoryRepository {
-        return TracksHistoryRepositoryImpl(sharedPreferences, gson)
-    }
+//    private fun getTrackHistory(): TracksHistoryRepository {
+//        return TracksHistoryRepositoryImpl(sharedPreferences, gson)
+//    }
 
-    private fun getThemeRepository(): ThemeRepository {
-        return ThemeRepositoryImpl(sharedPreferences)
-    }
+//    private fun getThemeRepository(): ThemeRepository {
+//        return ThemeRepositoryImpl(sharedPreferences)
+//    }
 
-    private fun getMediaPlayerRepository(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl(mediaPlayer) // если юзать один медиаплеер то при повторном открытии ему ПИЗДЕЦ
-    }
+//    private fun getMediaPlayerRepository(): MediaPlayerRepository {
+//        return MediaPlayerRepositoryImpl(mediaPlayer) // если юзать один медиаплеер то при повторном открытии ему ПИЗДЕЦ
+//    }
 
-    fun provideTracksHistoryInteractor(): TracksHistoryInteractor {
-        return TracksHistoryInteractorImpl(getTrackHistory())
-    }
+//    fun provideTracksHistoryInteractor(): TracksHistoryInteractor {
+//        return TracksHistoryInteractorImpl(getTrackHistory())
+//    }
 
-    fun provideTracksInteractor(context: Context): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository(context))
-    }
+//    fun provideTracksInteractor(context: Context): TracksInteractor {
+//        return TracksInteractorImpl(getTracksRepository(context))
+//    }
 
-    fun provideThemeInteractor(): ThemeInteractor {
-        return ThemeInteractorImpl(getThemeRepository())
-    }
+//    fun provideThemeInteractor(): ThemeInteractor {
+//        return ThemeInteractorImpl(getThemeRepository())
+//    }
 
-    fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
-        return MediaPlayerInteractorImpl(getMediaPlayerRepository())
-    }
+//    fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
+//        return MediaPlayerInteractorImpl(getMediaPlayerRepository())
+//    }
 
-    fun getMediaPlayer(): MediaPlayer {
-        return mediaPlayer
-    }
+//    fun getMediaPlayer(): MediaPlayer {
+//        return mediaPlayer
+//    }
 }

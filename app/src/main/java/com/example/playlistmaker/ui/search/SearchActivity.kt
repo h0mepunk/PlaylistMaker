@@ -16,20 +16,22 @@ import android.widget.Toast
 import com.google.android.material.appbar.MaterialToolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.presentation.search.TracksState
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: TrackAdapter
 
-    private var viewModel: TracksSearchViewModel? = null
+    private val viewModel by viewModel<TracksSearchViewModel>()
     private lateinit var searchText: EditText
     private lateinit var placeholderMessageText: TextView
     private lateinit var placeholderIcon: ImageView
@@ -42,6 +44,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var refreshButton: Button
 
     private lateinit var toolbar: MaterialToolbar
+
+    private val trackHistoryInteractor: TracksHistoryInteractor by inject()
     private var textWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,18 +71,11 @@ class SearchActivity : AppCompatActivity() {
         placeholderMessage.visibility = View.GONE
         clearButton.isVisible = false
 
-        viewModel = ViewModelProvider(
-            this,
-            TracksSearchViewModel.getFactory()
-        )[TracksSearchViewModel::class.java]
-
-        viewModel?.onCreate()
-
-        viewModel?.observeState()?.observe(this) {
+        viewModel.observeState().observe(this) {
             render(it)
         }
 
-        viewModel?.observeShowToast()?.observe(this) {
+        viewModel.observeShowToast().observe(this) {
             showToast(it)
         }
 
@@ -86,12 +83,12 @@ class SearchActivity : AppCompatActivity() {
 
         refreshButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            viewModel?.searchRequest(viewModel?.lastSearchText.toString())
+            viewModel.searchRequest(viewModel.lastSearchText.toString())
         }
 
         clearButton.setOnClickListener {
             searchText.setText(EMPTY_SEARCH_TEXT)
-            viewModel?.showHistory()
+            viewModel.showHistory()
             inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
         }
 
@@ -100,7 +97,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearTrackHistoryButton.setOnClickListener {
-            viewModel?.trackHistoryInteractor?.saveTracksHistory(ArrayList())
+            trackHistoryInteractor.saveTracksHistory(ArrayList())
             adapter.items = emptyList()
             adapter.notifyDataSetChanged()
             searchHistoryTitle.visibility = View.GONE
@@ -112,8 +109,8 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (searchText.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(searchText.windowToken, 0)
-                    viewModel?.lastSearchText = searchText.text.toString()
-                    viewModel?.searchRequest(searchText.text.toString())
+                    viewModel.lastSearchText = searchText.text.toString()
+                    viewModel.searchRequest(searchText.text.toString())
                 }
             }
             false
@@ -124,27 +121,30 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel?.searchDebounce(
+                viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
                 if (!s.isNullOrEmpty()) {
                     clearButton.visibility = View.VISIBLE
+                }
+                if (s.isNullOrEmpty()) {
+                    clearButton.visibility = View.GONE
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
                     Log.e("TracksSearchController", "all callbacks removed")
-                    viewModel?.showHistory()
+                    viewModel.showHistory()
                 }
                 if((searchText.hasFocus()) && s.isNullOrEmpty()) {
-                    viewModel?.showHistory()
+                    viewModel.showHistory()
                 }
             }
 
         }
         textWatcher?.let { searchText.addTextChangedListener(it) }
-        viewModel?.showHistory()
+        viewModel.showHistory()
     }
 
     override fun onDestroy() {
@@ -154,12 +154,12 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-       viewModel?.onSaveInstanceState(outState)
+       viewModel.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText.setText(viewModel?.onRestoreInstanceState(savedInstanceState)?:"")
+        searchText.setText(viewModel.onRestoreInstanceState(savedInstanceState)?:"")
     }
 
     fun showContent(tracks: List<Track>) {

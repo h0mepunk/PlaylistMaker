@@ -3,23 +3,22 @@ package com.example.playlistmaker.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.main.MainState
 import com.example.playlistmaker.presentation.main.MainViewModel
-import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.search.SearchActivity
 import com.example.playlistmaker.ui.settings.SettingsActivity
 import com.example.playlistmaker.ui.track.TrackActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var buttonSearch : Button
     private lateinit var buttonSettings : Button
     private lateinit var buttonMedia : Button
-    private val viewModel: MainViewModel by viewModels()
+
+    private val viewModel by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

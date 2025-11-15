@@ -7,11 +7,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.presentation.settings.SettingsState
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
-import com.example.playlistmaker.util.Creator
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
+import org.koin.android.ext.android.inject
 import kotlin.getValue
 
 class SettingsActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var userAgreement : MaterialTextView
     private lateinit var themeSwitcher : SwitchMaterial
     private val viewModel: SettingsViewModel by viewModels()
+    private val themeInteractor: ThemeInteractor by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,7 @@ class SettingsActivity : AppCompatActivity() {
         userAgreement = findViewById(R.id.setting_item_user_agreement)
         themeSwitcher = findViewById(R.id.setting_item_dark_theme)
 
-        themeSwitcher.isChecked = Creator.provideThemeInteractor().getTheme()
+        themeSwitcher.isChecked = themeInteractor.getTheme()
 
         viewModel.observeState().observe(this) {
             render(it)
@@ -80,7 +82,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     fun clickTheme(isDarkTheme: Boolean) {
-        Creator.provideThemeInteractor().setTheme(isDarkTheme)
+        themeInteractor.setTheme(isDarkTheme)
     }
 
     fun clickUserAgreement() {

@@ -1,0 +1,30 @@
+package com.example.playlistmaker.di
+
+import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.api.ThemeInteractor
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
+import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
+import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import org.koin.dsl.module
+
+val interactorModule = module {
+
+    single<MediaPlayerInteractor>{
+        MediaPlayerInteractorImpl(get())
+    }
+
+    single<ThemeInteractor> {
+        ThemeInteractorImpl(get())
+    }
+
+    single<TracksHistoryInteractor> {
+        TracksHistoryInteractorImpl(get())
+    }
+
+    single<TracksInteractor>{
+        TracksInteractorImpl(get())
+    }
+}
