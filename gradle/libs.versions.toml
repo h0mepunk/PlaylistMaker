@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0"
+agp = "8.6.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -12,6 +12,9 @@ constraintlayout = "2.1.4"
 glide = "4.14.2"
 gson = "2.10"
 retrofit = "2.9.0"
+core = "1.16.0"
+viewModel = "2.5.1"
+liveData = "2.5.1"
 
 [libraries]
 retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit"}
@@ -27,6 +30,9 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref ="liveData" }
+androidx-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewModel" }
+androidx-core = {group = "androidx.core", name = "core-ktx", version.ref = "core"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

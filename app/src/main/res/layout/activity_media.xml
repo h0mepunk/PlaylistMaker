@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/background"
     android:fillViewport="true">
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,15 +13,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".ui.track.MediaActivity">
-    <Toolbar
+    tools:context=".ui.track.TrackActivity">
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/media_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_height"
         android:orientation="horizontal"
-        android:navigationIcon="@drawable/arrow_back"
-        android:titleTextAppearance="@style/toolbar_title_text">
-    </Toolbar>
+        app:navigationIcon="@drawable/arrow_back"
+        app:titleTextAppearance="@style/toolbar_title_text">
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_border"

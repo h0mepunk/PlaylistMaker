@@ -1,14 +1,9 @@
 package com.example.playlistmaker.domain.impl
 
-import android.media.MediaPlayer
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 
 class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository): MediaPlayerInteractor {
-
-    override fun getMediaPlayer(): MediaPlayer {
-        return repository.getMediaPlayer()
-    }
 
     override fun getPlayerState(): Int {
         return repository.getPlayerState()
