@@ -64,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
         refreshButton = findViewById(R.id.refreshButton)
         toolbar = findViewById(R.id.search_toolbar)
 
-        adapter = TrackAdapter()
+        adapter = TrackAdapter(trackHistoryInteractor)
         tracksListRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         tracksListRecycler.adapter = adapter
 

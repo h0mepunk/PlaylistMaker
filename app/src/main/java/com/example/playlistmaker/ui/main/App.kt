@@ -17,11 +17,11 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val theme = themeInteractor.getTheme()
         startKoin {
             androidContext(this@App)
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
         }
+        val theme = themeInteractor.getTheme()
         switchTheme(theme)
     }
 
