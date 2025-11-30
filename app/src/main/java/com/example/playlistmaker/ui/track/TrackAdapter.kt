@@ -15,22 +15,19 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
-import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 
-class TrackAdapter: RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
+class TrackAdapter(private val tracksHistoryInteractor: TracksHistoryInteractor): RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
 
     private lateinit var sharedPreferences : SharedPreferences
-    private lateinit var tracksHistoryInteractor: TracksHistoryInteractor
     private lateinit var context: Context
     var items: List<Track> = emptyList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
-        tracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
         sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         context = parent.context
         return TracksViewHolder(view)

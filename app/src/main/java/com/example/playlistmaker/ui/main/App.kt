@@ -1,20 +1,31 @@
 package com.example.playlistmaker.ui.main
 
 import android.app.Application
-import com.example.playlistmaker.util.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
+import com.example.playlistmaker.domain.api.ThemeInteractor
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import kotlin.getValue
 
 class App : Application() {
-    private val themeInteractor by lazy { Creator.provideThemeInteractor() }
+    private val themeInteractor: ThemeInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
-        Creator.context = applicationContext
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
         val theme = themeInteractor.getTheme()
         switchTheme(theme)
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
-        Creator.provideThemeInteractor().setTheme(darkThemeEnabled)
+        themeInteractor.setTheme(darkThemeEnabled)
     }
 }
 

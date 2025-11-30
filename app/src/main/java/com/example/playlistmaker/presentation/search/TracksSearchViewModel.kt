@@ -1,7 +1,5 @@
 package com.example.playlistmaker.presentation.search
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,55 +8,30 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.Const
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.main.App
-import com.example.playlistmaker.util.Creator
 
-class TracksSearchViewModel( private val context: Context): ViewModel() {
+class TracksSearchViewModel(
+    private val tracksInteractor: TracksInteractor,
+    private val trackHistoryInteractor: TracksHistoryInteractor,
+): ViewModel() {
 
     private val stateLiveData = MutableLiveData<TracksState>()
     fun observeState(): LiveData<TracksState> = stateLiveData
     private val showToast = SingleLiveEvent<String?>()
     fun observeShowToast(): LiveData<String?> = showToast
 
-    private var tracksInteractor: TracksInteractor = Creator.provideTracksInteractor(context)
     companion object {
         private val SEARCH_REQUEST_TOKEN = Any()
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val EMPTY_SEARCH_TEXT = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val app = (this[APPLICATION_KEY] as App)
-                TracksSearchViewModel(app)
-            }
-        }
     }
     val handler = Handler(Looper.getMainLooper())
     var lastSearchText: String? = ""
 
-    private lateinit var sharedPreferences : SharedPreferences
     private var latestSearchText: String? = null
-
-    var trackHistoryInteractor : TracksHistoryInteractor = Creator.provideTracksHistoryInteractor()
-
-    fun onCreate() {
-        tracksInteractor = Creator.provideTracksInteractor(context)
-        sharedPreferences = context.getSharedPreferences(
-            Const.PLAYLIST_MAKER_PREFERENCES,
-            Context.MODE_PRIVATE
-        )
-        trackHistoryInteractor = Creator.provideTracksHistoryInteractor()
-
-    }
 
     fun onRestoreInstanceState(savedInstanceState: Bundle): String? {
         lastSearchText = savedInstanceState.getCharSequence(

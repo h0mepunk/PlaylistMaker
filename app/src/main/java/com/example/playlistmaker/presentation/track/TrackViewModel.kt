@@ -7,15 +7,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.main.App
-import com.example.playlistmaker.util.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -30,19 +24,6 @@ class TrackViewModel(
     lateinit var currentTrack: Track
     private val handler = Handler(Looper.getMainLooper())
     private var timerRunnable = Runnable { updateTimer() }
-
-    companion object {
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val app = (this[APPLICATION_KEY] as App)
-                TrackViewModel(
-                    Creator.provideMediaPlayerInteractor(),
-                    Creator.provideTracksHistoryInteractor(),
-                    Creator.getMediaPlayer()
-                )
-            }
-        }
-    }
 
     private fun updateTimer() {
         mediaPlayerInteractor.updateTimer(
