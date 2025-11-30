@@ -1,47 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id= "@+id/fragment_playlists"
     tools:context=".ui.library.LibraryActivity">
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/placeholderView"-->
-<!--        android:layout_marginTop="@dimen/error_layout_lib_margin_top"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:visibility="visible"-->
-<!--        android:orientation="vertical">-->
-<!--        <Button-->
-<!--            android:id="@+id/newPlaylistButton"-->
-<!--            style="@style/new_playlist_button"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:text="@string/new_playlist_button"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content">-->
-<!--        </Button>-->
-<!--        <ImageView-->
-<!--            android:id="@+id/placeholderLibIcon"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="46dp"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:src="@drawable/empty_results_error">-->
-<!--        </ImageView>-->
-<!--        <TextView-->
-<!--            android:id="@+id/placeholderMessageText"-->
-<!--            style="@style/error_text"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:text="@string/placeholder_fav_message"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content">-->
-<!--        </TextView>-->
-<!--    </LinearLayout>-->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_playlists_child_container"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:gravity="center"
+        android:textSize="44dp"
+        android:text="PLAYLISTS FRAGMENT"
+        android:layout_height="match_parent">
+    </TextView>
 
 </LinearLayout>

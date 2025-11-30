@@ -7,34 +7,12 @@
     android:id= "@+id/fragment_library"
     tools:context=".ui.library.LibraryActivity">
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/placeholderViewLibrary"-->
-<!--        android:layout_marginTop="@dimen/error_layout_lib_margin_top"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:visibility="visible"-->
-<!--        android:orientation="vertical">-->
-<!--        <ImageView-->
-<!--            android:id="@+id/placeholderLibIcon"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="106dp"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:src="@drawable/empty_results_error">-->
-<!--        </ImageView>-->
-<!--        <TextView-->
-<!--            android:id="@+id/placeholderMessageText"-->
-<!--            style="@style/error_text"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:text="@string/placeholder_playlists_message"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content">-->
-<!--        </TextView>-->
-<!--    </LinearLayout>-->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_lib_child_container"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:gravity="center"
+        android:textSize="44dp"
+        android:text="LIBRARY FRAGMENT"
+        android:layout_height="match_parent">
+    </TextView>
 
 </LinearLayout>

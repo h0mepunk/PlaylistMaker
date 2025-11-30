@@ -30,8 +30,8 @@ class TrackListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        childFragmentManager.beginTransaction()
-            .add(R.id.fragment_lib_child_container, ErrorFragment())
+        parentFragmentManager.beginTransaction()
+            .add(R.id.fragment_library, ErrorFragment())
             .commit()
     }
 }
