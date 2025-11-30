@@ -25,4 +25,7 @@
     <string name="media_info_album">Альбом</string>
     <string name="media_info_length">Длительность</string>
     <string name="start_time_zero">0:00</string>
+    <string name="placeholder_fav_message">Ваша медиатека пуста</string>
+    <string name="placeholder_playlists_message">Вы не создали ни одного плэйлиста</string>
+    <string name="new_playlist_button">Новый плейлист</string>
 </resources>
