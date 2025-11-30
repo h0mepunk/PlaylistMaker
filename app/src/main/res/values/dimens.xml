@@ -39,5 +39,5 @@
     <dimen name="media_cover_corner_radius">8dp</dimen>
     <dimen name="progressBarSize">44dp</dimen>
     <dimen name="searchPreloaderMarginTop">140dp</dimen>
-    <dimen name="section_margin">16</dimen>
+    <dimen name="section_margin">16dp</dimen>
 </resources>

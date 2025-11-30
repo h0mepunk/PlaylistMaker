@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:id="@+id/library_view"
     style="@style/background"
     android:backgroundTint="@color/search_background">
 
@@ -12,7 +13,6 @@
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_lib_height"
-        android:orientation="horizontal"
         app:navigationIcon="@drawable/arrow_back"
         app:title="@string/library_title"
         android:titleTextAppearance="@style/toolbar_title_text">
@@ -27,40 +27,10 @@
         android:background="@color/white"
         app:tabRippleColor="@color/dark"
         app:tabTextColor="@color/black"
-        app:tabIndicatorColor="@color/black"/>
-
-    <LinearLayout
-        android:id="@+id/placeholderView"
-        android:layout_marginTop="@dimen/error_layout_lib_margin_top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:orientation="vertical">
-        <Button
-            android:id="@+id/newPlaylistButton"
-            style="@style/new_playlist_button"
-            android:layout_gravity="center"
-            android:text="@string/new_playlist_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </Button>
-        <ImageView
-            android:id="@+id/placeholderLibIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="46dp"
-            android:layout_gravity="center"
-            android:src="@drawable/empty_results_error">
-        </ImageView>
-        <TextView
-            android:id="@+id/placeholderMessageText"
-            style="@style/error_text"
-            android:layout_marginTop="16dp"
-            android:text="@string/placeholder_fav_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </TextView>
-    </LinearLayout>
+        app:tabIndicatorFullWidth="false"
+        app:tabMaxWidth="180dp"
+        app:tabMode="fixed"
+        app:tabIndicatorColor="@color/dark"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
