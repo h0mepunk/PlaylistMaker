@@ -2,8 +2,10 @@ package com.example.playlistmaker.ui.library
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityLibraryBinding
+import com.example.playlistmaker.ui.library.error.ErrorFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class LibraryActivity: AppCompatActivity() {

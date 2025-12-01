@@ -33,5 +33,7 @@ class ErrorFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val errorText = requireArguments().getInt("ERROR_TEXT")
+        val buttonVisibility = requireArguments().getBoolean("BUTTON_VISIBLE")
     }
 }

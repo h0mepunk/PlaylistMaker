@@ -10,11 +10,19 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:orientation="vertical">
+        <Button
+            android:id="@+id/errorButton"
+            android:layout_gravity="center"
+            android:text="@string/new_playlist_button"
+            style="@style/new_playist_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
         <ImageView
             android:id="@+id/placeholderLibIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="106dp"
+            android:layout_marginTop="46dp"
             android:layout_gravity="center"
             android:src="@drawable/empty_results_error">
         </ImageView>
