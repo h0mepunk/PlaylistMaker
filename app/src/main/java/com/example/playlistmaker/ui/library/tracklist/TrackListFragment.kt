@@ -9,7 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import kotlin.getValue
 
 class TrackListFragment : Fragment() {
 
@@ -24,6 +28,8 @@ class TrackListFragment : Fragment() {
         }
     }
 
+    val libraryViewModel by activityViewModel<LibraryViewModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,17 +40,21 @@ class TrackListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(trackList.isEmpty()) {
-            showError(
-                getString(R.string.placeholder_fav_message),
-                false
-            )
-        } else {
-            parentFragmentManager.beginTransaction()
-                .add(R.id.fragment_library,
-                    newInstance(trackList)
+        libraryViewModel.getCurrentTrackList().observe(viewLifecycleOwner) {
+            trackList ->
+            if(trackList.isEmpty()) {
+                showError(
+                    getString(R.string.placeholder_fav_message),
+                    false
                 )
-                .commit()
+            } else {
+                parentFragmentManager.beginTransaction()
+                    .add(
+                        R.id.fragment_library,
+                        newInstance(trackList)
+                    )
+                    .commit()
+            }
         }
     }
 

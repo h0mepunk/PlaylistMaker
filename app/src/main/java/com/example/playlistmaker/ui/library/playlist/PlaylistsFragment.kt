@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
 
@@ -25,6 +27,8 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
+    val libraryViewModel by activityViewModel<LibraryViewModel>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_playlists, container, false)
@@ -32,18 +36,22 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (playlistsList.isEmpty()) {
-            showError(
-                getString(R.string.placeholder_playlists_message),
-                buttonVisibility = true
-            )
-        } else {
-            parentFragmentManager.beginTransaction()
-                .add(
-                    R.id.fragment_playlists,
-                    newInstance(playlistsList)
-                )
-                .commit()
+
+        libraryViewModel.getCurrentPlaylist().observe(viewLifecycleOwner) {
+            playlistsList ->
+                if (playlistsList.isEmpty()) {
+                    showError(
+                        getString(R.string.placeholder_playlists_message),
+                        buttonVisibility = true
+                    )
+                } else {
+                    parentFragmentManager.beginTransaction()
+                        .add(
+                            R.id.fragment_playlists,
+                            newInstance(playlistsList)
+                        )
+                        .commit()
+                }
         }
     }
 
