@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityLibraryBinding
 import com.example.playlistmaker.databinding.FragmentErrorBinding
-import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 
 class ErrorFragment: Fragment() {
 
     private var _binding: FragmentErrorBinding? = null
     private val binding get() = _binding!!
+
+    private var errorText: String? = null
+    private var buttonVisibility: Boolean? = null
 
     companion object {
         private const val ERROR_TEXT = "error_text"
@@ -39,15 +38,21 @@ class ErrorFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val errorText = requireArguments().getString(ERROR_TEXT)
-        val buttonVisibility = requireArguments().getBoolean(BUTTON_VISIBLE)
+        errorText = requireArguments().getString(ERROR_TEXT)
+        buttonVisibility = requireArguments().getBoolean(BUTTON_VISIBLE)?: false
         binding.placeholderMessageText.text = errorText
-        binding.newPlaylistButton.visibility = if(buttonVisibility) View.VISIBLE else View.INVISIBLE
+        binding.newPlaylistButton.visibility = if(buttonVisibility!!) View.VISIBLE else View.INVISIBLE
             binding.newPlaylistButton.setOnClickListener {
                 //TODO implement
             }
 
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ERROR_TEXT, errorText)
+        outState.putBoolean(BUTTON_VISIBLE, buttonVisibility!!)
     }
 
     override fun onDestroyView() {

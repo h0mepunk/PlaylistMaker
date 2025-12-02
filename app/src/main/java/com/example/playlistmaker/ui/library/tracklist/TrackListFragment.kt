@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.LiveData
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
-import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.getValue
 
 class TrackListFragment : Fragment() {
 
-    val trackList: List<Track> = emptyList() //requireArguments().getString(TRACK_LIST)? emptyList()
+    private lateinit var trackList: LiveData<List<Track>>  //requireArguments().getString(TRACK_LIST)? emptyList()
     companion object {
         private const val TRACK_LIST = "track_list"
 
@@ -40,6 +40,7 @@ class TrackListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        trackList = libraryViewModel.getCurrentTrackList()
         libraryViewModel.getCurrentTrackList().observe(viewLifecycleOwner) {
             trackList ->
             if(trackList.isEmpty()) {
@@ -56,6 +57,11 @@ class TrackListFragment : Fragment() {
                     .commit()
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(TRACK_LIST, trackList.toString()) // add to json convertation
     }
 
     fun getErrorFragment(

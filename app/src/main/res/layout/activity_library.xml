@@ -10,7 +10,7 @@
     android:backgroundTint="@color/search_background">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/settings_toolbar"
+        android:id="@+id/library_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_lib_height"
         app:navigationIcon="@drawable/arrow_back"

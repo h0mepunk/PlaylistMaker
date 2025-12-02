@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.LiveData
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.LibraryViewModel
@@ -15,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
 
-    val playlistsList: List<Playlist> =  emptyList()//requireArguments().getString(PLAYLISTS_LIST)?: emptyList()
+    private lateinit var playlistsList: LiveData<List<Playlist>>
 
     companion object {
         private const val PLAYLISTS_LIST = "playlists_list"
@@ -36,7 +37,7 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        playlistsList = libraryViewModel.getCurrentPlaylist()
         libraryViewModel.getCurrentPlaylist().observe(viewLifecycleOwner) {
             playlistsList ->
                 if (playlistsList.isEmpty()) {
@@ -53,6 +54,11 @@ class PlaylistsFragment : Fragment() {
                         .commit()
                 }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation
     }
 
     fun getErrorFragment(

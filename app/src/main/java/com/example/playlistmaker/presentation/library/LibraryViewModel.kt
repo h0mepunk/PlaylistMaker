@@ -10,16 +10,6 @@ import com.example.playlistmaker.ui.library.error.ErrorFragment
 
 class LibraryViewModel: ViewModel() {
 
-    fun getErrorFragment(
-        errorText: String,
-        buttonVisibility: Boolean
-    ) = ErrorFragment().apply {
-        arguments = bundleOf(
-            "error_text" to errorText,
-            "button_visible" to buttonVisibility
-        )
-    }
-
     fun setCurrentPlaylist(playlistList: List<Playlist>) {
         //TODO
     }
