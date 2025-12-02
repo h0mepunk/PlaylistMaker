@@ -13,6 +13,8 @@
     <color name="background_color">@color/blue</color>
     <color name="tabs_background_color">@color/white</color>
     <color name="tabs_text_color">@color/dark</color>
+    <color name="button_background">@color/dark</color>
+    <color name="button_text">@color/white</color>
     <color name="settings_icon">@color/grey</color>
     <color name="cross_icon">@color/grey</color>
     <color name="search_icon_menu">@color/dark</color>

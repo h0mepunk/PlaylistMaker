@@ -42,8 +42,8 @@ class ErrorFragment: Fragment() {
         val errorText = requireArguments().getString(ERROR_TEXT)
         val buttonVisibility = requireArguments().getBoolean(BUTTON_VISIBLE)
         binding.placeholderMessageText.text = errorText
-        binding.errorButton.visibility = if(buttonVisibility) View.VISIBLE else View.INVISIBLE
-            binding.errorButton.setOnClickListener {
+        binding.newPlaylistButton.visibility = if(buttonVisibility) View.VISIBLE else View.INVISIBLE
+            binding.newPlaylistButton.setOnClickListener {
                 //TODO implement
             }
 

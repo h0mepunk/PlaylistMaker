@@ -115,6 +115,7 @@
         <item name="android:textFontWeight">500</item>
     </style>
     <style name="new_playlist_button">
+        <item name="android:background">@drawable/refresh_button</item>
         <item name="android:fontFamily">"@font/ys_display_medium"</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:textSize">14dp</item>
