@@ -63,7 +63,7 @@ class PlaylistsFragment : Fragment() {
     ) {
         parentFragmentManager.commit {
             replace(
-                R.id.fragment_library,
+                R.id.fragment_playlists,
                 getErrorFragment(errorText, buttonVisibility)
             )
             addToBackStack(null)

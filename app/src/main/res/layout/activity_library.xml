@@ -20,17 +20,20 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/section_margin"
-        android:layout_marginRight="@dimen/section_margin"
-        android:background="@color/white"
-        app:tabRippleColor="@color/dark"
-        app:tabTextColor="@color/black"
+        style="@style/nav_tab"
         app:tabIndicatorFullWidth="false"
-        app:tabMaxWidth="180dp"
-        app:tabMode="fixed"
-        app:tabIndicatorColor="@color/dark"/>
+        app:tabIndicator="@drawable/tab_rectangle"
+        app:tabTextAppearance="@style/tab_text_style"
+        android:textAllCaps = "false"
+        android:layout_width="match_parent"
+        android:gravity="fill"
+        app:tabIndicatorGravity="bottom"
+        app:tabSelectedTextColor="@color/tabs_text_color"
+        app:tabTextColor="@color/tabs_text_color"
+        app:tabIndicatorColor="@color/tabs_text_color"
+        app:tabIndicatorHeight="2dp"
+        app:tabBackground="@color/tabs_background_color"
+        android:layout_height="wrap_content"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

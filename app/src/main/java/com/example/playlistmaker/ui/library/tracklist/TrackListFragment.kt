@@ -49,8 +49,8 @@ class TrackListFragment : Fragment() {
     }
 
     fun getErrorFragment(
-        errorText: String = getString(R.string.placeholder_fav_message),
-        buttonVisibility: Boolean = false
+        errorText: String ,
+        buttonVisibility: Boolean
     ) = ErrorFragment().apply {
         arguments = bundleOf(
             "error_text" to errorText,
