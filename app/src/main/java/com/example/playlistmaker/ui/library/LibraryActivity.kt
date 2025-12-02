@@ -17,9 +17,6 @@ class LibraryActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLibraryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction().add(R.id.fragment_library, LibraryFragment()).commit()
-//        }
 
         binding.viewPager.adapter = LibraryViewPagerAdapter(supportFragmentManager, lifecycle)
 
