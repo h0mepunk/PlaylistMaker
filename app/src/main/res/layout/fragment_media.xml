@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -107,7 +110,7 @@
     </androidx.appcompat.widget.AppCompatButton>
 
     <TextView
-        android:id="@+id/media_track_length"
+        android:id="@+id/media_track_time"
         android:text="0:00"
         style="@style/media_time_text"
         app:layout_constraintTop_toBottomOf="@id/media_button_play"
@@ -135,7 +138,7 @@
         android:text="@string/media_info_length"
         style="@style/media_info_element"
         android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@id/media_track_length"
+        app:layout_constraintTop_toBottomOf="@id/media_track_time"
         app:layout_constraintStart_toStartOf="@id/left_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
@@ -144,7 +147,7 @@
         android:text="5:35"
         style="@style/media_info_value"
         android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@id/media_track_length"
+        app:layout_constraintTop_toBottomOf="@id/media_track_time"
         app:layout_constraintEnd_toEndOf="@id/right_border_16">
     </com.google.android.material.textview.MaterialTextView>
 
@@ -213,3 +216,4 @@
     </com.google.android.material.textview.MaterialTextView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+</FrameLayout>

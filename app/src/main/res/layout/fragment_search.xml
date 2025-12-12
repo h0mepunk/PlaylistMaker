@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -63,7 +67,7 @@
         android:layout_height="wrap_content"
         ></TextView>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/song_list_recycler"
+        android:id="@+id/track_list_recycler"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/tracks_list_recycler_margin_top"
         android:layout_height="wrap_content">
@@ -105,3 +109,4 @@
         </Button>
     </LinearLayout>
 </LinearLayout>
+</FrameLayout>

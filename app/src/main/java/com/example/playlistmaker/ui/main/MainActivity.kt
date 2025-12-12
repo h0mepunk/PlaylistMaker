@@ -1,16 +1,16 @@
 package com.example.playlistmaker.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentMainBinding
 import com.example.playlistmaker.presentation.main.MainState
 import com.example.playlistmaker.presentation.main.MainViewModel
-import com.example.playlistmaker.ui.library.LibraryActivity
-import com.example.playlistmaker.ui.search.SearchActivity
-import com.example.playlistmaker.ui.settings.SettingsActivity
-import com.example.playlistmaker.ui.track.TrackActivity
+import com.example.playlistmaker.ui.search.SearchFragment
+import com.example.playlistmaker.ui.settings.SettingsFragment
+import com.example.playlistmaker.ui.track.TrackFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -19,12 +19,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonSettings : Button
     private lateinit var buttonMedia : Button
 
+    private lateinit var binding: FragmentMainBinding
+
     private val viewModel by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = FragmentMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         buttonSearch = findViewById(R.id.search_button)
         buttonSettings = findViewById(R.id.settings_button)
@@ -42,18 +45,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun mediaButtonTap() {
-        val trackActivity = Intent(this, LibraryActivity::class.java)
-        startActivity(trackActivity)
+       supportFragmentManager.commit {
+           replace(R.id.fragment_main, TrackFragment())
+       }
     }
 
     fun searchButtonTap() {
-        val searchActivity = Intent(this, SearchActivity::class.java)
-        startActivity(searchActivity)
+        supportFragmentManager.commit {
+            replace(R.id.fragment_main, SearchFragment())
+        }
     }
 
     fun settingsButtonTap() {
-        val settingsActivity = Intent(this, SettingsActivity::class.java)
-        startActivity(settingsActivity)
+        supportFragmentManager.commit {
+            replace(R.id.fragment_main, SettingsFragment())
+        }
     }
 
     fun render(mainState: MainState) {

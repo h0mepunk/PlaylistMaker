@@ -35,7 +35,7 @@ class TrackListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_library, container, false)
+        return inflater.inflate(R.layout.fragment_library_content, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,7 +51,7 @@ class TrackListFragment : Fragment() {
             } else {
                 parentFragmentManager.beginTransaction()
                     .add(
-                        R.id.fragment_library,
+                        R.id.fragment_library_content,
                         newInstance(trackList)
                     )
                     .commit()
@@ -79,7 +79,7 @@ class TrackListFragment : Fragment() {
         buttonVisibility: Boolean
     ) {
         parentFragmentManager.commit {
-            replace(R.id.fragment_library, getErrorFragment(errorText, buttonVisibility))
+            replace(R.id.fragment_library_content, getErrorFragment(errorText, buttonVisibility))
             addToBackStack(null)
         }
     }

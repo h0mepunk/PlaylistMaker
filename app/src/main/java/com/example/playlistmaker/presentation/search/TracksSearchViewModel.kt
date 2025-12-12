@@ -33,8 +33,8 @@ class TracksSearchViewModel(
 
     private var latestSearchText: String? = null
 
-    fun onRestoreInstanceState(savedInstanceState: Bundle): String? {
-        lastSearchText = savedInstanceState.getCharSequence(
+    fun onRestoreInstanceState(savedInstanceState: Bundle?): String? {
+        lastSearchText = savedInstanceState?.getCharSequence(
             SEARCH_TEXT,
             EMPTY_SEARCH_TEXT as CharSequence
         ).toString()
