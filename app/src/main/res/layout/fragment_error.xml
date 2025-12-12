@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/placeholderViewLibrary"
+        android:layout_marginTop="@dimen/error_layout_lib_margin_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:orientation="vertical">
+        <Button
+            app:backgroundTint="@color/button_background"
+            android:textColor="@color/button_text"
+            style="@style/new_playlist_button"
+            android:id="@+id/newPlaylistButton"
+            android:layout_gravity="center"
+            android:text="@string/new_playlist_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+        <ImageView
+            android:id="@+id/placeholderLibIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:layout_gravity="center"
+            android:src="@drawable/empty_results_error">
+        </ImageView>
+        <TextView
+            android:id="@+id/placeholderMessageText"
+            style="@style/error_text"
+            android:layout_marginTop="16dp"
+            android:text="@string/placeholder_playlists_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+    </LinearLayout>
+
+</FrameLayout>

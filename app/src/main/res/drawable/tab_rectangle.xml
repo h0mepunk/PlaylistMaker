@@ -1,0 +1,10 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- цвет индикатора -->
+    <solid android:color="@color/arrow_back_icon" />
+
+    <!-- высота полоски -->
+    <size
+        android:height="2dp"
+        android:width="148dp" />
+</shape>

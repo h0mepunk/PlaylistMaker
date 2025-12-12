@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.main.MainState
 import com.example.playlistmaker.presentation.main.MainViewModel
+import com.example.playlistmaker.ui.library.LibraryActivity
 import com.example.playlistmaker.ui.search.SearchActivity
 import com.example.playlistmaker.ui.settings.SettingsActivity
 import com.example.playlistmaker.ui.track.TrackActivity
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun mediaButtonTap() {
-        val trackActivity = Intent(this, TrackActivity::class.java)
+        val trackActivity = Intent(this, LibraryActivity::class.java)
         startActivity(trackActivity)
     }
 

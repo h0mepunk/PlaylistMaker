@@ -10,7 +10,11 @@
     <color name="settings_background_color">@color/black</color>
     <color name="background_color">@color/dark</color>
     <color name="settings_icon">@color/white</color>
-    <color name="cross_icon">@color/dark</color>
+    <color name="tabs_background_color">@color/dark</color>
+    <color name="button_background">@color/white</color>
+    <color name="button_text">@color/dark</color>
+    <color name="tabs_text_color">@color/white</color>
+    <color name="cross_icon">@color/white</color>
     <color name="search_icon_menu">@color/dark</color>
     <color name="search_icon_mini">@color/dark</color>
     <color name="share_icon">@color/white</color>

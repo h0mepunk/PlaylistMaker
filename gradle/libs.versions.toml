@@ -15,6 +15,8 @@ retrofit = "2.9.0"
 core = "1.16.0"
 viewModel = "2.5.1"
 liveData = "2.5.1"
+materialVersion = "1.13.0"
+koin = "3.3.0"
 
 [libraries]
 retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit"}
@@ -33,6 +35,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref ="liveData" }
 androidx-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewModel" }
 androidx-core = {group = "androidx.core", name = "core-ktx", version.ref = "core"}
+google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+koin = {group = "io.insert-koin", name = "koin-android", version.ref = "koin"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
