@@ -8,7 +8,7 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.google.android.material.tabs.TabLayoutMediator
 
-class LibraryActivity: AppCompatActivity() {
+class LibraryActivity: AppCompatActivity() { 
 
     private lateinit var tabMediator: TabLayoutMediator
     private lateinit var binding: ActivityLibraryBinding

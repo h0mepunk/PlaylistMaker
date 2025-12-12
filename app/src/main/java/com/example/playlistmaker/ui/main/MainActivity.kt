@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun mediaButtonTap() {
-        val libraryActivity = Intent(this, LibraryActivity::class.java)
-        startActivity(libraryActivity)
+        val trackActivity = Intent(this, LibraryActivity::class.java)
+        startActivity(trackActivity)
     }
 
     fun searchButtonTap() {
