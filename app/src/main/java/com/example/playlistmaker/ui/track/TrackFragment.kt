@@ -13,6 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
+import com.example.playlistmaker.ui.main.MainFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -53,7 +54,11 @@ class TrackFragment : Fragment() {
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.root_container, MainFragment())
+                .addToBackStack("my_backstack")
+                .setReorderingAllowed(true)
+                .commit()
         }
 
     }
@@ -62,6 +67,7 @@ class TrackFragment : Fragment() {
         super.onPause()
         viewModel.pausePlayer()
     }
+
 
     fun showCover(url: String) {
         Glide.with(this)

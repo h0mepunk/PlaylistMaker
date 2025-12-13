@@ -10,26 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.appbar.MaterialToolbar
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.presentation.search.TracksState
+import com.example.playlistmaker.ui.main.MainFragment
 import com.example.playlistmaker.ui.track.TrackFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,7 +46,7 @@ class SearchFragment : Fragment() {
         adapter = TrackAdapter(trackHistoryInteractor) { track ->
             parentFragmentManager.beginTransaction()
                 .replace(
-                    R.id.fragment_main,
+                    R.id.root_container,
                     TrackFragment()
                 )
                 .addToBackStack(null)
@@ -93,7 +85,10 @@ class SearchFragment : Fragment() {
         viewModel.showHistory()
 
         binding.searchToolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.root_container, MainFragment())
+                .setReorderingAllowed(true)
+                .commit()
         }
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager

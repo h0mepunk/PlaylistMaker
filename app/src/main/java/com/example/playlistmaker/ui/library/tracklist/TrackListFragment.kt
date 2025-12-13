@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.LiveData
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
@@ -30,12 +31,15 @@ class TrackListFragment : Fragment() {
 
     val libraryViewModel by activityViewModel<LibraryViewModel>()
 
+    private lateinit var binding : FragmentLibraryContentBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_library_content, container, false)
+        binding = FragmentLibraryContentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

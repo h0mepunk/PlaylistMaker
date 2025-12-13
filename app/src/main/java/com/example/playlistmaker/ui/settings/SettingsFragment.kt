@@ -5,17 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediaBinding
-import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.presentation.settings.SettingsState
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
+import com.example.playlistmaker.ui.main.MainFragment
 import org.koin.android.ext.android.inject
 import kotlin.getValue
 
@@ -43,7 +41,10 @@ class SettingsFragment : Fragment() {
         }
 
         binding.settingsToolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.root_container, MainFragment())
+                .setReorderingAllowed(true)
+                .commit()
         }
     }
 

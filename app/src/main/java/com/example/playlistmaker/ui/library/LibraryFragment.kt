@@ -9,6 +9,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.main.MainFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class LibraryFragment: Fragment() {
@@ -31,6 +32,20 @@ class LibraryFragment: Fragment() {
 
         binding = FragmentLibraryBinding.inflate(layoutInflater)
 
+//        binding.viewPager.adapter = LibraryViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+//
+//        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+//            when(position) {
+//                0 ->  tab.text = getString(R.string.fav_tracks_tab_title)
+//                1 -> tab.text = getString(R.string.playlists_tab_title)
+//            }
+//        }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.viewPager.adapter = LibraryViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -39,16 +54,14 @@ class LibraryFragment: Fragment() {
                 1 -> tab.text = getString(R.string.playlists_tab_title)
             }
         }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         tabMediator.attach()
 
         binding.libraryToolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.root_container, MainFragment())
+                .setReorderingAllowed(true)
+                .commit()
         }
     }
 
