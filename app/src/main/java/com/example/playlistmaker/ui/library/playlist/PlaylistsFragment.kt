@@ -75,13 +75,23 @@ class PlaylistsFragment : Fragment() {
         outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation
     }
 
+    fun getErrorFragment(
+        errorText: String,
+        buttonVisibility: Boolean
+    ) = ErrorFragment().apply {
+        arguments = setErrorArgs(errorText, buttonVisibility)
+    }
+
     fun showError(
         errorText: String,
         buttonVisibility: Boolean
     ) {
-        findNavController().navigate(
-            R.id.fragment_error,
-            TrackListFragment.Companion.setErrorArgs(errorText, buttonVisibility)
-        )
+        parentFragmentManager.commit {
+            replace(
+                R.id.fragment_playlists,
+                getErrorFragment(errorText, buttonVisibility)
+            )
+            addToBackStack(null)
+        }
     }
 }

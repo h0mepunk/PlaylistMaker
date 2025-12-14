@@ -17,9 +17,6 @@
         <action
             android:id="@+id/action_libraryFragment_to_mainFragment"
             app:destination="@id/main_fragment" />
-        <action
-            android:id="@+id/action_library_fragment_to_errorFragment2"
-            app:destination="@id/errorFragment2" />
     </fragment>
     <fragment
         android:id="@+id/main_fragment"
@@ -61,13 +58,5 @@
         <action
             android:id="@+id/action_trackFragment_to_searchFragment"
             app:destination="@id/search_fragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/errorFragment2"
-        android:name="com.example.playlistmaker.ui.library.error.ErrorFragment"
-        android:label="ErrorFragment" >
-        <action
-            android:id="@+id/action_errorFragment2_to_library_fragment"
-            app:destination="@id/library_fragment" />
     </fragment>
 </navigation>

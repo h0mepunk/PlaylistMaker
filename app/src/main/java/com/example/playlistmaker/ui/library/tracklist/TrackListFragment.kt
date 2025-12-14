@@ -14,6 +14,7 @@ import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.getValue
 
@@ -76,13 +77,23 @@ class TrackListFragment : Fragment() {
         outState.putString(TRACK_LIST, trackList.toString()) // add to json convertation
     }
 
+    fun getErrorFragment(
+        errorText: String,
+        buttonVisibility: Boolean
+    ) = ErrorFragment().apply {
+        arguments = PlaylistsFragment.Companion.setErrorArgs(errorText, buttonVisibility)
+    }
+
     fun showError(
         errorText: String,
         buttonVisibility: Boolean
     ) {
-       findNavController().navigate(
-           R.id.fragment_error,
-           setErrorArgs(errorText, buttonVisibility)
-       )
+        parentFragmentManager.commit {
+            replace(
+                R.id.fragment_library_content,
+                getErrorFragment(errorText, buttonVisibility)
+            )
+            addToBackStack(null)
+        }
     }
 }
