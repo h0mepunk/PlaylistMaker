@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/main_fragment">
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.playlistmaker.ui.main.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+    <fragment
+        android:id="@+id/library_fragment"
+        android:name="com.example.playlistmaker.ui.library.LibraryFragment"
+        android:label="LibraryFragment">
+        <action
+            android:id="@+id/action_libraryFragment_to_mainFragment"
+            app:destination="@id/main_fragment" />
+        <action
+            android:id="@+id/action_library_fragment_to_errorFragment2"
+            app:destination="@id/errorFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.example.playlistmaker.ui.main.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_searchFragment"
+            app:destination="@id/search_fragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settings_fragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_libraryFragment"
+            app:destination="@id/library_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.example.playlistmaker.ui.search.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_trackFragment"
+            app:destination="@id/track_fragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_mainFragment"
+            app:destination="@id/main_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.example.playlistmaker.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_mainFragment"
+            app:destination="@id/main_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/track_fragment"
+        android:name="com.example.playlistmaker.ui.track.TrackFragment"
+        android:label="TrackFragment" >
+        <action
+            android:id="@+id/action_trackFragment_to_searchFragment"
+            app:destination="@id/search_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/errorFragment2"
+        android:name="com.example.playlistmaker.ui.library.error.ErrorFragment"
+        android:label="ErrorFragment" >
+        <action
+            android:id="@+id/action_errorFragment2_to_library_fragment"
+            app:destination="@id/library_fragment" />
+    </fragment>
+</navigation>

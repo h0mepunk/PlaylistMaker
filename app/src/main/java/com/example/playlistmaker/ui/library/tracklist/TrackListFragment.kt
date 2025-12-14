@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.LiveData
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
 import com.example.playlistmaker.domain.models.Track
@@ -22,10 +23,19 @@ class TrackListFragment : Fragment() {
     companion object {
         private const val TRACK_LIST = "track_list"
 
-        fun newInstance(trackList: List<Track>) = TrackListFragment().apply {
-            arguments = Bundle().apply {
+        fun createArgs(trackList: List<Track>) = Bundle().apply {
                 putString(TRACK_LIST, trackList.toString()) // Simplified
-            }
+        }
+
+        fun newInstance(trackList: List<Track>) = TrackListFragment().apply {
+            arguments = createArgs(trackList)
+        }
+        fun setErrorArgs(
+            errorText: String,
+            buttonVisibility: Boolean
+        ) = Bundle().apply {
+            putString("error_text", errorText)
+            putBoolean("button_visible", buttonVisibility)
         }
     }
 
@@ -53,12 +63,10 @@ class TrackListFragment : Fragment() {
                     false
                 )
             } else {
-                parentFragmentManager.beginTransaction()
-                    .add(
-                        R.id.fragment_library_content,
-                        newInstance(trackList)
-                    )
-                    .commit()
+                findNavController().navigate(
+                    R.id.fragment_library_content,
+                    createArgs(trackList)
+                )
             }
         }
     }
@@ -68,23 +76,13 @@ class TrackListFragment : Fragment() {
         outState.putString(TRACK_LIST, trackList.toString()) // add to json convertation
     }
 
-    fun getErrorFragment(
-        errorText: String ,
-        buttonVisibility: Boolean
-    ) = ErrorFragment().apply {
-        arguments = bundleOf(
-            "error_text" to errorText,
-            "button_visible" to buttonVisibility
-        )
-    }
-
     fun showError(
         errorText: String,
         buttonVisibility: Boolean
     ) {
-        parentFragmentManager.commit {
-            replace(R.id.fragment_library_content, getErrorFragment(errorText, buttonVisibility))
-            addToBackStack(null)
-        }
+       findNavController().navigate(
+           R.id.fragment_error,
+           setErrorArgs(errorText, buttonVisibility)
+       )
     }
 }

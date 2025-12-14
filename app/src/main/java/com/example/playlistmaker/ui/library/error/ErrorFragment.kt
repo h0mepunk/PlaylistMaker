@@ -42,9 +42,10 @@ class ErrorFragment: Fragment() {
         buttonVisibility = requireArguments().getBoolean(BUTTON_VISIBLE)?: false
         binding.placeholderMessageText.text = errorText
         binding.newPlaylistButton.visibility = if(buttonVisibility!!) View.VISIBLE else View.INVISIBLE
-            binding.newPlaylistButton.setOnClickListener {
+
+        binding.newPlaylistButton.setOnClickListener {
                 //TODO implement
-            }
+        }
 
 
     }

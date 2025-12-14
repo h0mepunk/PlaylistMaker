@@ -8,11 +8,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.LiveData
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import com.example.playlistmaker.ui.library.tracklist.TrackListFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
@@ -23,9 +25,19 @@ class PlaylistsFragment : Fragment() {
         private const val PLAYLISTS_LIST = "playlists_list"
 
         fun newInstance(playlistsList: List<Playlist>) = PlaylistsFragment().apply {
-            arguments = Bundle().apply {
+            arguments = setPlaylistArg(playlistsList)
+        }
+
+        fun setPlaylistArg(playlistsList: List<Playlist>) = Bundle().apply {
                 putString(PLAYLISTS_LIST, playlistsList.toString()) // Simplified
             }
+
+        fun setErrorArgs(
+            errorText: String,
+            buttonVisibility: Boolean
+        ) = Bundle().apply {
+            putString("error_text", errorText)
+            putBoolean("button_visible", buttonVisibility)
         }
     }
 
@@ -47,15 +59,13 @@ class PlaylistsFragment : Fragment() {
                 if (playlistsList.isEmpty()) {
                     showError(
                         getString(R.string.placeholder_playlists_message),
-                        buttonVisibility = true
+                        true
                     )
                 } else {
-                    parentFragmentManager.beginTransaction()
-                        .add(
-                            R.id.fragment_playlists,
-                            newInstance(playlistsList)
-                        )
-                        .commit()
+                    findNavController().navigate(
+                        R.id.fragment_playlists,
+                        setPlaylistArg(playlistsList)
+                    )
                 }
         }
     }
@@ -65,26 +75,13 @@ class PlaylistsFragment : Fragment() {
         outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation
     }
 
-    fun getErrorFragment(
-        errorText: String,
-        buttonVisibility: Boolean
-    ) = ErrorFragment().apply {
-        arguments = bundleOf(
-            "error_text" to errorText,
-            "button_visible" to buttonVisibility
-        )
-    }
-
     fun showError(
         errorText: String,
         buttonVisibility: Boolean
     ) {
-        parentFragmentManager.commit {
-            replace(
-                R.id.fragment_playlists,
-                getErrorFragment(errorText, buttonVisibility)
-            )
-            addToBackStack(null)
-        }
+        findNavController().navigate(
+            R.id.fragment_error,
+            TrackListFragment.Companion.setErrorArgs(errorText, buttonVisibility)
+        )
     }
 }

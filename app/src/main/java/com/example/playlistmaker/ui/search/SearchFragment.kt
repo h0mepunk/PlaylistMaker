@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
@@ -21,8 +22,6 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.presentation.search.TracksState
-import com.example.playlistmaker.ui.main.MainFragment
-import com.example.playlistmaker.ui.track.TrackFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
@@ -44,13 +43,7 @@ class SearchFragment : Fragment() {
     ): View? {
         binding = FragmentSearchBinding.inflate(layoutInflater)
         adapter = TrackAdapter(trackHistoryInteractor) { track ->
-            parentFragmentManager.beginTransaction()
-                .replace(
-                    R.id.root_container,
-                    TrackFragment()
-                )
-                .addToBackStack(null)
-                .commit()
+            findNavController().navigate(R.id.track_fragment)
         }
         binding.trackListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.trackListRecycler.adapter = adapter
@@ -85,10 +78,7 @@ class SearchFragment : Fragment() {
         viewModel.showHistory()
 
         binding.searchToolbar.setNavigationOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.root_container, MainFragment())
-                .setReorderingAllowed(true)
-                .commit()
+            findNavController().navigate(R.id.main_fragment)
         }
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager

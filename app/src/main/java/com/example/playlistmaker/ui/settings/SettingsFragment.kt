@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.api.ThemeInteractor
@@ -41,10 +42,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.settingsToolbar.setNavigationOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.root_container, MainFragment())
-                .setReorderingAllowed(true)
-                .commit()
+            findNavController().navigate(R.id.main_fragment)
         }
     }
 
