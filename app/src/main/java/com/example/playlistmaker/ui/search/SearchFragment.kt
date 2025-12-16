@@ -43,7 +43,7 @@ class SearchFragment : Fragment() {
     ): View? {
         binding = FragmentSearchBinding.inflate(layoutInflater)
         adapter = TrackAdapter(trackHistoryInteractor) { track ->
-            findNavController().navigate(R.id.track_fragment)
+            findNavController().navigate(R.id.action_searchFragment_to_trackFragment)
         }
         binding.trackListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.trackListRecycler.adapter = adapter
@@ -74,12 +74,7 @@ class SearchFragment : Fragment() {
             viewModel.searchRequest(viewModel.lastSearchText.toString())
         }
 
-
         viewModel.showHistory()
-
-        binding.searchToolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.main_fragment)
-        }
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -14,7 +13,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
-import com.example.playlistmaker.ui.main.MainFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -53,11 +51,6 @@ class TrackFragment : Fragment() {
             Log.e("TrackActivity","play/stop button clicked")
             viewModel.playbackControl()
         }
-
-        binding.mediaToolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.search_fragment)
-        }
-
     }
 
     override fun onPause() {

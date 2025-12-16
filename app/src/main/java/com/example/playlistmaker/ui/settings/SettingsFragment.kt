@@ -14,7 +14,6 @@ import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.presentation.settings.SettingsState
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
-import com.example.playlistmaker.ui.main.MainFragment
 import org.koin.android.ext.android.inject
 import kotlin.getValue
 
@@ -39,10 +38,6 @@ class SettingsFragment : Fragment() {
 
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
-        }
-
-        binding.settingsToolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.main_fragment)
         }
     }
 

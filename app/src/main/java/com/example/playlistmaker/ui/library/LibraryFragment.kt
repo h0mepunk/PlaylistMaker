@@ -47,10 +47,6 @@ class LibraryFragment: Fragment() {
         }
 
         tabMediator.attach()
-
-        binding.libraryToolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.main_fragment)
-        }
     }
 
     override fun onDestroy() {

@@ -30,4 +30,5 @@
     <string name="new_playlist_button">Новый плейлист</string>
     <string name="playlists_tab_title">Плейлисты</string>
     <string name="fav_tracks_tab_title">Избранные треки</string>
+    <string name="main_title">Main</string>
 </resources>

@@ -20,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_height"
         android:orientation="horizontal"
-        app:navigationIcon="@drawable/arrow_back"
         app:title="@string/search_title"
         android:titleTextAppearance="@style/toolbar_title_text">
     </com.google.android.material.appbar.MaterialToolbar>
