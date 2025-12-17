@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -51,6 +52,11 @@ class TrackFragment : Fragment() {
             Log.e("TrackActivity","play/stop button clicked")
             viewModel.playbackControl()
         }
+
+        binding.mediaToolbar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.search_fragment)
+        }
+
     }
 
     override fun onPause() {

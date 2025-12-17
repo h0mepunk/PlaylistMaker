@@ -43,7 +43,11 @@ class SearchFragment : Fragment() {
     ): View? {
         binding = FragmentSearchBinding.inflate(layoutInflater)
         adapter = TrackAdapter(trackHistoryInteractor) { track ->
-            findNavController().navigate(R.id.action_searchFragment_to_trackFragment)
+            findNavController().navigate(R.id.action_search_fragment_to_track_fragment,
+                Bundle().apply {
+                    putString("track", track.toString()) // Simplified
+                }
+            )
         }
         binding.trackListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.trackListRecycler.adapter = adapter
@@ -142,57 +146,85 @@ class SearchFragment : Fragment() {
     }
 
     fun showContent(tracks: List<Track>) {
-        binding.searchProgressBar.visibility = View.GONE
-        binding.placeholderView .visibility = View.GONE
 
         Log.e("SearchActivity", "trackList = $tracks")
         adapter.items = tracks
         adapter.notifyDataSetChanged()
 
-        binding.trackListRecycler.visibility = View.VISIBLE
-        binding.searchHistoryTitle.visibility = View.GONE
-        binding.clearHistoryButton.visibility = View.GONE
+        applyVisibility(
+            placeholderVisible = false,
+            recyclerVisible = true,
+            progressBarVisible = false,
+            historyTitleVisible = false,
+            clearHistoryVisible = false
+        )
     }
 
     fun showError(messageId: Int, iconId: Int) {
         Log.e("SearchActivity", "trackList loading error")
         adapter.items = emptyList()
         adapter.notifyDataSetChanged()
-        binding.searchProgressBar.visibility = View.GONE
-
-        binding.searchHistoryTitle.visibility = View.GONE
-        binding.clearHistoryButton.visibility = View.GONE
-
         binding.placeholderMessageText.text = getString(messageId)
         binding.placeholderIcon.setBackgroundResource(iconId)
-        binding.placeholderView.visibility = View.VISIBLE
 
-        binding.refreshButton.visibility = View.VISIBLE
+        applyVisibility(
+            placeholderVisible = true,
+            recyclerVisible = false,
+            progressBarVisible = false,
+            historyTitleVisible = false,
+            clearHistoryVisible = false
+        )
     }
 
     fun showLoading() {
-        binding.searchProgressBar.visibility = View.VISIBLE
-        binding.placeholderView.visibility = View.GONE
-        binding.trackListRecycler.visibility = View.GONE
-        binding.searchHistoryTitle.visibility = View.GONE
-        binding.clearHistoryButton.visibility = View.GONE
+        applyVisibility(
+            placeholderVisible = false,
+            recyclerVisible = false,
+            progressBarVisible = true,
+            historyTitleVisible = false,
+            clearHistoryVisible = false
+        )
+
     }
 
     fun showHistory(tracks: List<Track>) {
         Log.e("TracksSearchController", tracks.toString())
         if (tracks.isNotEmpty()){
-            binding.searchHistoryTitle.visibility = View.VISIBLE
-            binding.clearHistoryButton.visibility = View.VISIBLE
-            binding.placeholderView.visibility = View.GONE
+            applyVisibility(
+                placeholderVisible = false,
+                recyclerVisible = true,
+                progressBarVisible = false,
+                historyTitleVisible = true,
+                clearHistoryVisible = true
+            )
             Log.e("SearchActivity", "trackhistory = $tracks")
             adapter.items = tracks
             adapter.notifyDataSetChanged()
-            binding.trackListRecycler.visibility = View.VISIBLE
         } else {
-            binding.searchHistoryTitle.visibility = View.GONE
-            binding.clearHistoryButton.visibility = View.GONE
+            applyVisibility(
+                placeholderVisible = false,
+                recyclerVisible = true,
+                progressBarVisible = false,
+                historyTitleVisible = false,
+                clearHistoryVisible = false
+            )
         }
     }
+
+    private fun applyVisibility(
+        placeholderVisible: Boolean,
+        recyclerVisible: Boolean,
+        progressBarVisible: Boolean,
+        historyTitleVisible: Boolean,
+        clearHistoryVisible: Boolean
+    ) {
+        binding.placeholderView.isVisible = placeholderVisible
+        binding.trackListRecycler.isVisible = recyclerVisible
+        binding.searchProgressBar.isVisible = progressBarVisible
+        binding.searchHistoryTitle.isVisible = historyTitleVisible
+        binding.clearHistoryButton.isVisible = clearHistoryVisible
+    }
+
 
     fun showUnknownError() {
         binding.placeholderView.visibility = View.GONE
