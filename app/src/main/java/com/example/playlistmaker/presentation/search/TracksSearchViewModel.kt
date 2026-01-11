@@ -8,9 +8,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.toString
 
 class TracksSearchViewModel(
@@ -34,6 +38,8 @@ class TracksSearchViewModel(
 
     private var latestSearchText: String? = null
 
+    private var searchJob: Job? = null
+
     fun onRestoreInstanceState(savedInstanceState: Bundle?): String? {
         val restored = savedInstanceState?.getCharSequence(SEARCH_TEXT)
         lastSearchText = restored?.toString() ?: EMPTY_SEARCH_TEXT
@@ -55,17 +61,13 @@ class TracksSearchViewModel(
             return
         }
 
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        latestSearchText = changedText
 
-        val searchRunnable = Runnable { searchRequest(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest(changedText)
+        }
     }
 
     fun searchRequest(newSearchText: String) {
@@ -111,10 +113,5 @@ class TracksSearchViewModel(
 
     private fun renderState(state: TracksState) {
         stateLiveData.postValue(state)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 }

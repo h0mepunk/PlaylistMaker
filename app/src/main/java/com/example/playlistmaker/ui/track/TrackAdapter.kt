@@ -1,10 +1,7 @@
 package com.example.playlistmaker.ui.track
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +25,6 @@ class TrackAdapter(
     private lateinit var context: Context
     var items: List<Track> = emptyList()
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
         sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
@@ -43,7 +39,6 @@ class TrackAdapter(
         Log.e("????", "onBindViewHolder items ${items}")
 
         holder.itemView.setOnClickListener {
-            if(clickDebounce()) {
                 val track = items[position]
                 var trackHistory = tracksHistoryInteractor.getTracksHistory()
                 if (trackHistory.size == 10) {
@@ -61,29 +56,11 @@ class TrackAdapter(
                 tracksHistoryInteractor.saveCurrentTrack(track)
 
                 onTrackClick(track)
-            }
         }
     }
 
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    private var isClickAllowed = true
-
-    private val handler = Handler(Looper.getMainLooper())
-
-    private fun clickDebounce() : Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    companion object {
-        const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     class TracksViewHolder(
