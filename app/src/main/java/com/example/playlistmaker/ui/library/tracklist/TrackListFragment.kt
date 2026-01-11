@@ -8,10 +8,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.LiveData
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.getValue
 
@@ -21,21 +24,33 @@ class TrackListFragment : Fragment() {
     companion object {
         private const val TRACK_LIST = "track_list"
 
-        fun newInstance(trackList: List<Track>) = TrackListFragment().apply {
-            arguments = Bundle().apply {
+        fun createArgs(trackList: List<Track>) = Bundle().apply {
                 putString(TRACK_LIST, trackList.toString()) // Simplified
-            }
+        }
+
+        fun newInstance(trackList: List<Track>) = TrackListFragment().apply {
+            arguments = createArgs(trackList)
+        }
+        fun setErrorArgs(
+            errorText: String,
+            buttonVisibility: Boolean
+        ) = Bundle().apply {
+            putString("error_text", errorText)
+            putBoolean("button_visible", buttonVisibility)
         }
     }
 
     val libraryViewModel by activityViewModel<LibraryViewModel>()
+
+    private lateinit var binding : FragmentLibraryContentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_library, container, false)
+        binding = FragmentLibraryContentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,12 +64,10 @@ class TrackListFragment : Fragment() {
                     false
                 )
             } else {
-                parentFragmentManager.beginTransaction()
-                    .add(
-                        R.id.fragment_library,
-                        newInstance(trackList)
-                    )
-                    .commit()
+                findNavController().navigate(
+                    R.id.fragment_library_content,
+                    createArgs(trackList)
+                )
             }
         }
     }
@@ -65,13 +78,10 @@ class TrackListFragment : Fragment() {
     }
 
     fun getErrorFragment(
-        errorText: String ,
+        errorText: String,
         buttonVisibility: Boolean
     ) = ErrorFragment().apply {
-        arguments = bundleOf(
-            "error_text" to errorText,
-            "button_visible" to buttonVisibility
-        )
+        arguments = PlaylistsFragment.Companion.setErrorArgs(errorText, buttonVisibility)
     }
 
     fun showError(
@@ -79,7 +89,10 @@ class TrackListFragment : Fragment() {
         buttonVisibility: Boolean
     ) {
         parentFragmentManager.commit {
-            replace(R.id.fragment_library, getErrorFragment(errorText, buttonVisibility))
+            replace(
+                R.id.fragment_library_content,
+                getErrorFragment(errorText, buttonVisibility)
+            )
             addToBackStack(null)
         }
     }

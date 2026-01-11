@@ -2,55 +2,51 @@ package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.presentation.settings.SettingsState
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textview.MaterialTextView
 import org.koin.android.ext.android.inject
 import kotlin.getValue
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
-    private lateinit var toolbar : Toolbar
-    private lateinit var shareButton : MaterialTextView
-    private lateinit var contactSupport : MaterialTextView
-    private lateinit var userAgreement : MaterialTextView
-    private lateinit var themeSwitcher : SwitchMaterial
-    private val viewModel: SettingsViewModel by viewModels()
+    private val viewModel by viewModels<SettingsViewModel>()
     private val themeInteractor: ThemeInteractor by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+    private lateinit var binding: FragmentSettingsBinding
 
-        toolbar = findViewById(R.id.settings_toolbar)
-        shareButton = findViewById(R.id.setting_item_share)
-        contactSupport = findViewById(R.id.setting_item_contact_support)
-        userAgreement = findViewById(R.id.setting_item_user_agreement)
-        themeSwitcher = findViewById(R.id.setting_item_dark_theme)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        themeSwitcher.isChecked = themeInteractor.getTheme()
-
-        viewModel.observeState().observe(this) {
-            render(it)
-        }
-
-        contactSupport.setOnClickListener { viewModel.clickContactSupport() }
-        shareButton.setOnClickListener { viewModel.clickShareApp() }
-        userAgreement.setOnClickListener { viewModel.clickUserAgreement() }
-        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+        binding.settingItemContactSupport.setOnClickListener { viewModel.clickContactSupport() }
+        binding.settingItemShare.setOnClickListener { viewModel.clickShareApp() }
+        binding.settingItemUserAgreement.setOnClickListener { viewModel.clickUserAgreement() }
+        binding.settingItemDarkTheme.setOnCheckedChangeListener { _, isChecked ->
             viewModel.switchTheme(isChecked)
         }
 
-        toolbar.setNavigationOnClickListener {
-            finish()
+        binding.settingItemDarkTheme.isChecked = themeInteractor.getTheme()
+
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            render(it)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     fun clickContactSupport() {

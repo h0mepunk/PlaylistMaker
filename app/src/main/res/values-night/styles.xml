@@ -184,4 +184,7 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/ys_text_medium</item>
     </style>
+    <style name="nav_item_active_indicator">
+        <item name="android:color">@color/switch_thumb_active_color</item>
+    </style>
 </resources>

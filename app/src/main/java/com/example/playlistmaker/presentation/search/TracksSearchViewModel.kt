@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
+import kotlin.toString
 
 class TracksSearchViewModel(
     private val tracksInteractor: TracksInteractor,
@@ -33,11 +34,9 @@ class TracksSearchViewModel(
 
     private var latestSearchText: String? = null
 
-    fun onRestoreInstanceState(savedInstanceState: Bundle): String? {
-        lastSearchText = savedInstanceState.getCharSequence(
-            SEARCH_TEXT,
-            EMPTY_SEARCH_TEXT as CharSequence
-        ).toString()
+    fun onRestoreInstanceState(savedInstanceState: Bundle?): String? {
+        val restored = savedInstanceState?.getCharSequence(SEARCH_TEXT)
+        lastSearchText = restored?.toString() ?: EMPTY_SEARCH_TEXT
         return lastSearchText
     }
 

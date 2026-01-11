@@ -19,7 +19,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 
-class TrackAdapter(private val tracksHistoryInteractor: TracksHistoryInteractor): RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
+class TrackAdapter(
+    private val tracksHistoryInteractor: TracksHistoryInteractor,
+    private val onTrackClick: (Track) -> Unit
+): RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
 
     private lateinit var sharedPreferences : SharedPreferences
     private lateinit var context: Context
@@ -57,8 +60,7 @@ class TrackAdapter(private val tracksHistoryInteractor: TracksHistoryInteractor)
                 tracksHistoryInteractor.saveTracksHistory(trackHistory)
                 tracksHistoryInteractor.saveCurrentTrack(track)
 
-                val trackActivity = Intent(context, TrackActivity::class.java)
-                context.startActivity(trackActivity)
+                onTrackClick(track)
             }
         }
     }

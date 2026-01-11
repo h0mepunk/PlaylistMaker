@@ -16,27 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
         tools:targetApi="31">
-        <activity android:name=".ui.library.LibraryActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ui.search.SearchActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
-        <activity
-            android:name=".ui.track.TrackActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            />
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait"
             >
             <intent-filter>
