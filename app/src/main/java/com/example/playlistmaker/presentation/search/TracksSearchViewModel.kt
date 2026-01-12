@@ -3,7 +3,6 @@ package com.example.playlistmaker.presentation.search
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +14,6 @@ import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.toString
 
 class TracksSearchViewModel(
     private val tracksInteractor: TracksInteractor,
@@ -33,7 +31,6 @@ class TracksSearchViewModel(
         const val EMPTY_SEARCH_TEXT = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
-    val handler = Handler(Looper.getMainLooper())
     var lastSearchText: String? = ""
 
     private var latestSearchText: String? = null
@@ -73,41 +70,43 @@ class TracksSearchViewModel(
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(TracksState.Loading)
-            tracksInteractor.searchTracks(newSearchText, object: TracksInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    Log.e("TracksSearchViewModel", "foundTracks: $foundTracks")
-                    try {
-                        handler.post {
-                            val tracks = mutableListOf<Track>()
-                            if (foundTracks != null) {
-                                Log.e("TracksSearchViewModel", tracks.toString())
-                                tracks.addAll(foundTracks)
-                            }
-                            when {
-                                errorMessage != null -> {
-                                    Log.e("TracksSearchViewModel", errorMessage)
-                                    renderState(TracksState.Error(errorMessage))
-                                    showToast.postValue(errorMessage)
-                                }
-                                tracks.isEmpty() -> {
-                                    Log.e("TracksSearchViewModel", "empty track list")
-                                    renderState(TracksState.Empty)
-                                }
-                                else -> {
-                                    Log.e("TracksSearchViewModel", tracks.toString())
-                                    renderState(TracksState.Content(tracks?: emptyList()))
-                                }
-                            }
-                        }
-                    } catch (t: Throwable) {
-                        Log.e("TracksSearchViewModel", "sww")
-                        handler.post {
-                            renderState(TracksState.UnknownErrorState)
-                            showToast.postValue(t.message ?: "Unexpected error")
-                        }
+
+            viewModelScope.launch {
+                tracksInteractor.searchTracks(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
+            }
+        }
+    }
+
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        Log.e("TracksSearchViewModel", "foundTracks: $foundTracks")
+        try {
+            val tracks = mutableListOf<Track>()
+            if (foundTracks != null) {
+                Log.e("TracksSearchViewModel", tracks.toString())
+                tracks.addAll(foundTracks)
+            }
+            when {
+                errorMessage != null -> {
+                    Log.e("TracksSearchViewModel", errorMessage)
+                    renderState(TracksState.Error(errorMessage))
+                    showToast.postValue(errorMessage)
                 }
-            })
+                tracks.isEmpty() -> {
+                    Log.e("TracksSearchViewModel", "empty track list")
+                    renderState(TracksState.Empty)
+                }
+                else -> {
+                    Log.e("TracksSearchViewModel", tracks.toString())
+                    renderState(TracksState.Content(tracks?: emptyList()))
+                }
+            }
+        } catch (t: Throwable) {
+            Log.e("TracksSearchViewModel", "Unexpected error")
+            renderState(TracksState.UnknownErrorState)
+            showToast.postValue(t.message ?: "Unexpected error")
         }
     }
 
