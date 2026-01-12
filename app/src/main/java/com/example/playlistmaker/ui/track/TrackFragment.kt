@@ -50,7 +50,7 @@ class TrackFragment : Fragment() {
 
         binding.mediaButtonPlay.setOnClickListener {
             Log.e("TrackActivity","play/stop button clicked")
-            viewModel.onPlayButtonClicked()
+            viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
@@ -61,7 +61,7 @@ class TrackFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
+        viewModel.pausePlayer(viewModel.currentTrack.trackTime)
     }
 
 

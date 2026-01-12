@@ -62,10 +62,10 @@ class TrackViewModel(
         )
     }
 
-    fun pausePlayer() {
+    fun pausePlayer(trackTime: String) {
         mediaPlayerInteractor.pausePlayer(
             onPause = {
-                renderState(TrackState.Paused)
+                renderState(TrackState.Paused(trackTime))
                 handler.removeCallbacks(timerRunnable)
             }
         )
@@ -79,10 +79,10 @@ class TrackViewModel(
         )
     }
 
-    fun onPlayButtonClicked() {
+    fun onPlayButtonClicked(trackTime: String) {
         when(stateLiveData.value) {
             is TrackState.Playing -> {
-                pausePlayer()
+                pausePlayer(trackTime)
             }
             is TrackState.Prepared, is TrackState.Paused -> {
                 startPlayer()
