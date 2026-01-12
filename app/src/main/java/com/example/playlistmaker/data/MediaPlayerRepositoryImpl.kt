@@ -19,6 +19,7 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlay
         onCompletion: () -> Unit
     ) {
         Log.e("MediaPlayer","preparing player with url $url")
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
