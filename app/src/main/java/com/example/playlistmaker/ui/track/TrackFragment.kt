@@ -6,18 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
-import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
-import com.example.playlistmaker.ui.main.MainActivity
-import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -54,7 +50,7 @@ class TrackFragment : Fragment() {
 
         binding.mediaButtonPlay.setOnClickListener {
             Log.e("TrackActivity","play/stop button clicked")
-            viewModel.playbackControl()
+            viewModel.onPlayButtonClicked()
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
@@ -91,6 +87,7 @@ class TrackFragment : Fragment() {
             is TrackState.Playing -> {
                 binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_stop)
                 binding.mediaTrackTime.text = state.trackTime?: getString(R.string.start_time_zero)
+                Log.e("???????", "time = " + state.trackTime.toString())
             }
             is TrackState.Stopped -> {
                 binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
@@ -103,9 +100,5 @@ class TrackFragment : Fragment() {
             }
             is TrackState.Prepared -> { binding.mediaButtonPlay.isEnabled = true }
         }
-    }
-
-    companion object {
-        const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }

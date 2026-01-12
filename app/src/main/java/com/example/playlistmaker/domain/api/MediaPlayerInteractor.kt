@@ -13,6 +13,4 @@ interface MediaPlayerInteractor {
     fun getPlayerState(): Int
 
     fun updateTimer(onUpdate: () -> Unit)
-
-    fun playbackControl(start: () -> Unit, pause: () -> Unit)
 }

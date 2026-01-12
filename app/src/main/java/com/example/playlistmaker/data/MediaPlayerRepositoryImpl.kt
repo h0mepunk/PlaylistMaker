@@ -78,22 +78,6 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlay
         }
     }
 
-    override fun playbackControl(
-        start: () -> Unit,
-        pause: () -> Unit
-    ) {
-        when(playerState) {
-            STATE_PLAYING -> {
-                Log.e("MediaPlayer","player paused playback")
-                pause()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                Log.e("MediaPlayer","player started playback")
-                start()
-            }
-        }
-    }
-
     companion object {
         const val STATE_DEFAULT = 0
         const val STATE_PREPARED = 1

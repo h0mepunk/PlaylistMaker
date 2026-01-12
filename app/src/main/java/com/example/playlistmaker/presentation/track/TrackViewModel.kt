@@ -79,15 +79,16 @@ class TrackViewModel(
         )
     }
 
-    fun playbackControl() {
-        mediaPlayerInteractor.playbackControl(
-            start = {
-                startPlayer()
-            },
-            pause = {
+    fun onPlayButtonClicked() {
+        when(stateLiveData.value) {
+            is TrackState.Playing -> {
                 pausePlayer()
             }
-        )
+            is TrackState.Prepared, is TrackState.Paused -> {
+                startPlayer()
+            }
+            else -> { }
+        }
     }
 
     fun onCreate() {
