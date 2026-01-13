@@ -91,7 +91,13 @@ class SearchFragment : Fragment() {
         }
 
         binding.refreshButton.setOnClickListener {
-            binding.searchProgressBar.visibility = View.VISIBLE
+            applyVisibility(
+                placeholderVisible = false,
+                recyclerVisible = true,
+                progressBarVisible = true,
+                historyTitleVisible = false,
+                clearHistoryVisible = false
+            )
             viewModel.searchRequest(viewModel.lastSearchText.toString())
         }
 
@@ -177,7 +183,11 @@ class SearchFragment : Fragment() {
         )
     }
 
-    fun showError(messageId: Int, iconId: Int) {
+    fun showError(
+        messageId: Int,
+        iconId: Int,
+        refreshButtonVisible: Boolean
+    ) {
         Log.e("SearchActivity", "trackList loading error")
         adapter?.items = emptyList()
         adapter?.notifyDataSetChanged()
@@ -189,7 +199,8 @@ class SearchFragment : Fragment() {
             recyclerVisible = false,
             progressBarVisible = false,
             historyTitleVisible = false,
-            clearHistoryVisible = false
+            clearHistoryVisible = false,
+            refreshButtonVisible = refreshButtonVisible
         )
     }
 
@@ -233,13 +244,15 @@ class SearchFragment : Fragment() {
         recyclerVisible: Boolean,
         progressBarVisible: Boolean,
         historyTitleVisible: Boolean,
-        clearHistoryVisible: Boolean
+        clearHistoryVisible: Boolean,
+        refreshButtonVisible: Boolean = false
     ) {
         binding.placeholderView.isVisible = placeholderVisible
         binding.trackListRecycler.isVisible = recyclerVisible
         binding.searchProgressBar.isVisible = progressBarVisible
         binding.searchHistoryTitle.isVisible = historyTitleVisible
         binding.clearHistoryButton.isVisible = clearHistoryVisible
+        binding.refreshButton.isVisible = refreshButtonVisible
     }
 
 
@@ -252,13 +265,15 @@ class SearchFragment : Fragment() {
             is TracksState.Loading -> showLoading()
             is TracksState.Error -> showError(
                 messageId = R.string.network_error_text,
-                iconId = R.drawable.internet_error
+                iconId = R.drawable.internet_error,
+                refreshButtonVisible = true
             )
 
             is TracksState.Content -> showContent(state.tracks)
             is TracksState.Empty -> showError(
                 messageId = R.string.empty_song_list_error_text,
-                iconId = R.drawable.empty_results_error
+                iconId = R.drawable.empty_results_error,
+                refreshButtonVisible = false
             )
 
             is TracksState.UnknownErrorState -> showUnknownError()
