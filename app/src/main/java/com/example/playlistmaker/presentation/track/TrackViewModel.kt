@@ -74,6 +74,7 @@ class TrackViewModel(
         mediaPlayerInteractor.stopPlayer(
             onStop = {
                 renderState(TrackState.Stopped)
+                timerJob?.cancel()
             }
         )
     }
