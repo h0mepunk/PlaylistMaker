@@ -30,14 +30,13 @@ class LibraryFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        binding = FragmentLibraryBinding.inflate(layoutInflater)
-
+        binding = FragmentLibraryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewPager.adapter = LibraryViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+        binding.viewPager.adapter = LibraryViewPagerAdapter(childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
@@ -49,10 +48,15 @@ class LibraryFragment: Fragment() {
         tabMediator.attach()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         tabMediator.detach()
+        super.onDestroyView()
     }
+
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        tabMediator.detach()
+//    }
 
     fun setCurrentPlaylist(playlistList: List<Playlist>) {
         //TODO
