@@ -33,10 +33,10 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        Log.e("????", "onBindViewHolder")
+        Log.i("????", "onBindViewHolder")
         holder.bind(items[position])
 
-        Log.e("????", "onBindViewHolder items ${items}")
+        Log.i("????", "onBindViewHolder items ${items}")
 
         holder.itemView.setOnClickListener {
                 val track = items[position]

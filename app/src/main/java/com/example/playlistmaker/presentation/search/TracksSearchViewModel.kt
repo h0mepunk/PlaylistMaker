@@ -1,8 +1,6 @@
 package com.example.playlistmaker.presentation.search
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,7 +24,6 @@ class TracksSearchViewModel(
     fun observeShowToast(): LiveData<String?> = showToast
 
     companion object {
-        private val SEARCH_REQUEST_TOKEN = Any()
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val EMPTY_SEARCH_TEXT = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -81,30 +78,30 @@ class TracksSearchViewModel(
     }
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
-        Log.e("TracksSearchViewModel", "foundTracks: $foundTracks")
+        Log.i("TracksSearchViewModel", "foundTracks: $foundTracks")
         try {
             val tracks = mutableListOf<Track>()
             if (foundTracks != null) {
-                Log.e("TracksSearchViewModel", tracks.toString())
+                Log.i("TracksSearchViewModel", tracks.toString())
                 tracks.addAll(foundTracks)
             }
             when {
                 errorMessage != null -> {
-                    Log.e("TracksSearchViewModel", errorMessage)
+                    Log.i("TracksSearchViewModel", errorMessage)
                     renderState(TracksState.Error(errorMessage))
                     showToast.postValue(errorMessage)
                 }
                 tracks.isEmpty() -> {
-                    Log.e("TracksSearchViewModel", "empty track list")
+                    Log.i("TracksSearchViewModel", "empty track list")
                     renderState(TracksState.Empty)
                 }
                 else -> {
-                    Log.e("TracksSearchViewModel", tracks.toString())
+                    Log.i("TracksSearchViewModel", tracks.toString())
                     renderState(TracksState.Content(tracks?: emptyList()))
                 }
             }
         } catch (t: Throwable) {
-            Log.e("TracksSearchViewModel", "Unexpected error")
+            Log.i("TracksSearchViewModel", "Unexpected error")
             renderState(TracksState.UnknownErrorState)
             showToast.postValue(t.message ?: "Unexpected error")
         }

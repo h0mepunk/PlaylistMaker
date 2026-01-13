@@ -28,6 +28,7 @@ class TrackViewModel(
     private var timerJob: Job? = null
 
     private fun startTimer() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (mediaPlayer.isPlaying) {
                 delay(250L)
@@ -103,7 +104,7 @@ class TrackViewModel(
         )
 
         mediaPlayer.setOnCompletionListener {
-            Log.e("TrackController", "player completed")
+            Log.i("TrackController", "player completed")
             stopPlayer()
         }
     }

@@ -7,8 +7,6 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.TracksSearchRequest
 import com.example.playlistmaker.domain.api.TrackApiService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(private var trackApiService: TrackApiService,private val context: Context) : NetworkClient {
 
@@ -22,14 +20,8 @@ class RetrofitNetworkClient(private var trackApiService: TrackApiService,private
             return Response().apply { resultCode = 400 }
         }
 
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = trackApiService.getTracks(dto.searchText)
-                response.apply { resultCode = 200 }
-            } catch (e: Exception) {
-                Response().apply { resultCode = 500 }
-            }
-        }
+        val response = trackApiService.getTracks(dto.searchText)
+        return response.apply { resultCode = 200 }
     }
 
     private fun isConnected(): Boolean {

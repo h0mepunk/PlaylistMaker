@@ -17,14 +17,14 @@ class TracksHistoryRepositoryImpl(
     override fun getTracksHistory(): ArrayList<Track> {
         val tracks = tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))
-        Log.e("TracksHistoryRepository track list got ${tracks.size}", tracks.toString())
+        Log.i("TracksHistoryRepository track list got ${tracks.size}", tracks.toString())
         return tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
     }
 
     override fun saveTracksHistory(tracks: ArrayList<Track>) {
-        Log.e("TracksHistoryRepository track list saved ${tracks.size}", tracks.toString())
+        Log.i("TracksHistoryRepository track list saved ${tracks.size}", tracks.toString())
         sharedPreferences.edit()
             .putString(
                 TRACK_HISTORY_LIST_KEY,
@@ -34,14 +34,14 @@ class TracksHistoryRepositoryImpl(
     }
 
     override fun saveCurrentTrack(track: Track) {
-        Log.e("TracksHistoryRepository track saved", track.toString())
+        Log.i("TracksHistoryRepository track saved", track.toString())
         sharedPreferences.edit()
             .putString(CURRENT_TRACK_KEY, trackToJson(track))
             .apply()
     }
 
     override fun getCurrentTrack(): Track {
-        Log.e("TracksHistoryRepository track got", trackFromJson(sharedPreferences.getString(
+        Log.i("TracksHistoryRepository track got", trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, "")).toString())
         return trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, ""))

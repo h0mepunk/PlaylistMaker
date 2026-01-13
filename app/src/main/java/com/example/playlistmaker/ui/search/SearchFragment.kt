@@ -170,7 +170,7 @@ class SearchFragment : Fragment() {
 
     fun showContent(tracks: List<Track>) {
 
-        Log.e("SearchActivity", "trackList = $tracks")
+        Log.i("SearchActivity", "trackList = $tracks")
         adapter?.items = tracks
         adapter?.notifyDataSetChanged()
 
@@ -188,7 +188,7 @@ class SearchFragment : Fragment() {
         iconId: Int,
         refreshButtonVisible: Boolean
     ) {
-        Log.e("SearchActivity", "trackList loading error")
+        Log.i("SearchActivity", "trackList loading error")
         adapter?.items = emptyList()
         adapter?.notifyDataSetChanged()
         binding.placeholderMessageText.text = getString(messageId)
@@ -216,7 +216,7 @@ class SearchFragment : Fragment() {
     }
 
     fun showHistory(tracks: List<Track>) {
-        Log.e("TracksSearchController", tracks.toString())
+        Log.i("TracksSearchController", tracks.toString())
         if (tracks.isNotEmpty()){
             applyVisibility(
                 placeholderVisible = false,
@@ -225,7 +225,7 @@ class SearchFragment : Fragment() {
                 historyTitleVisible = true,
                 clearHistoryVisible = true
             )
-            Log.e("SearchActivity", "trackhistory = $tracks")
+            Log.i("SearchActivity", "trackhistory = $tracks")
             adapter?.items = tracks
             adapter?.notifyDataSetChanged()
         } else {
@@ -282,7 +282,7 @@ class SearchFragment : Fragment() {
     }
 
     fun showToast(additionalMessage: String?) {
-        Log.e("SearchActivity", "showToast: $additionalMessage")
+        Log.i("SearchActivity", "showToast: $additionalMessage")
         requireActivity().runOnUiThread {
             Toast.makeText(requireActivity(), additionalMessage?: "Empty message", Toast.LENGTH_LONG)
                 .show()
