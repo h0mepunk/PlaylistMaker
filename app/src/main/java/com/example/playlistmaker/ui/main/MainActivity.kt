@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.transition.Visibility
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.databinding.FragmentLibraryBinding
@@ -23,10 +24,19 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.track_fragment ->  animateBottomNavigationView(View.GONE)
+                else -> animateBottomNavigationView(View.VISIBLE)
+            }
+        }
     }
 
-    fun animateBottomNavigationView() {
-        binding.bottomNavigation.visibility = View.GONE
+    fun animateBottomNavigationView(
+        visibility: Int = View.GONE
+    ) {
+        binding.bottomNavigation.visibility = visibility
     }
 
 }

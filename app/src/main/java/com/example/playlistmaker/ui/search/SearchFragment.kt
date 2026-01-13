@@ -61,7 +61,7 @@ class SearchFragment : Fragment() {
         }
 
         adapter = TrackAdapter(trackHistoryInteractor) { track ->
-            (activity as MainActivity).animateBottomNavigationView()
+            (activity as MainActivity).animateBottomNavigationView(View.GONE)
             onTrackClickDebounce(track)
         }
         binding.trackListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
