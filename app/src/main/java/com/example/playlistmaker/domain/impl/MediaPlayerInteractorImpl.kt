@@ -2,6 +2,7 @@ package com.example.playlistmaker.domain.impl
 
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
+import com.example.playlistmaker.domain.models.Track
 
 class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository): MediaPlayerInteractor {
 
@@ -27,5 +28,9 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository): 
 
     override fun updateTimer(onUpdate: () -> Unit) {
         repository.updateTimer(onUpdate)
+    }
+
+    override fun clickLike(track: Track) {
+        repository.clickLike(track)
     }
 }

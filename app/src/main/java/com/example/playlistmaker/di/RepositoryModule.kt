@@ -9,6 +9,8 @@ import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.ThemeRepository
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.api.TracksRepository
+import com.example.playlistmaker.domain.db.PlaylistRepository
+import com.example.playlistmaker.domain.impl.PlaylistRepositoryImpl
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -30,4 +32,8 @@ val repositoryModule = module {
     }
 
     factory { TrackDbConvertor() }
+
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(get(), get())
+    }
 }

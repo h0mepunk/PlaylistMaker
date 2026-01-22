@@ -3,6 +3,7 @@ package com.example.playlistmaker.data
 import android.media.MediaPlayer
 import android.util.Log
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
+import com.example.playlistmaker.domain.models.Track
 
 class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlayerRepository {
 
@@ -77,6 +78,11 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlay
             Log.i("MediaPlayer","update timer")
             onUpdate()
         }
+    }
+
+    override fun clickLike(currentTrack: Track) {
+        Log.i("MediaPlayer","like clicked for track: ${currentTrack.trackName}")
+
     }
 
     companion object {
