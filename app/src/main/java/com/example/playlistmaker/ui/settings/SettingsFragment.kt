@@ -26,6 +26,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.settingItemContactSupport.setOnClickListener { viewModel.clickContactSupport() }
         binding.settingItemShare.setOnClickListener { viewModel.clickShareApp() }
         binding.settingItemUserAgreement.setOnClickListener { viewModel.clickUserAgreement() }
@@ -45,7 +46,7 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 

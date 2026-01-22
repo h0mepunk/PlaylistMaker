@@ -105,7 +105,9 @@
         </TextView>
         <Button
             android:id="@+id/refreshButton"
-            style="@style/error_button"
+            style="@style/clear_history_button"
+            android:text="@string/refresh"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </Button>

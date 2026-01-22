@@ -28,6 +28,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_library_fragment_to_track_fragment"
+            app:destination="@id/track_fragment" />
     </fragment>
     <fragment
         android:id="@+id/search_fragment"
@@ -60,6 +63,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_settings_fragment_to_search_fragment"
+            app:destination="@id/search_fragment" />
+        <action
+            android:id="@+id/action_settings_fragment_to_track_fragment"
+            app:destination="@id/track_fragment" />
     </fragment>
     <fragment
         android:id="@+id/track_fragment"
@@ -72,5 +81,8 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_track_fragment_to_library_fragment"
+            app:destination="@id/library_fragment" />
     </fragment>
 </navigation>

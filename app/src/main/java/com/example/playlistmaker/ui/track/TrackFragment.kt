@@ -49,8 +49,8 @@ class TrackFragment : Fragment() {
         binding.mediaInfoCountryValue.text = viewModel.currentTrack.country
 
         binding.mediaButtonPlay.setOnClickListener {
-            Log.e("TrackActivity","play/stop button clicked")
-            viewModel.playbackControl()
+            Log.i("TrackActivity","play/stop button clicked")
+            viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
@@ -61,7 +61,7 @@ class TrackFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
+        viewModel.pausePlayer(viewModel.currentTrack.trackTime)
     }
 
 
@@ -87,6 +87,7 @@ class TrackFragment : Fragment() {
             is TrackState.Playing -> {
                 binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_stop)
                 binding.mediaTrackTime.text = state.trackTime?: getString(R.string.start_time_zero)
+                Log.i("???????", "time = " + state.trackTime.toString())
             }
             is TrackState.Stopped -> {
                 binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
@@ -100,6 +101,4 @@ class TrackFragment : Fragment() {
             is TrackState.Prepared -> { binding.mediaButtonPlay.isEnabled = true }
         }
     }
-
-
 }

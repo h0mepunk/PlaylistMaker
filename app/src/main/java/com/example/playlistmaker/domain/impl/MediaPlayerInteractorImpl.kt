@@ -28,8 +28,4 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository): 
     override fun updateTimer(onUpdate: () -> Unit) {
         repository.updateTimer(onUpdate)
     }
-
-    override fun playbackControl(start: () -> Unit, pause: () -> Unit) {
-        repository.playbackControl(start, pause)
-    }
 }

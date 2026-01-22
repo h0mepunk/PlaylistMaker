@@ -10,16 +10,18 @@ import com.example.playlistmaker.domain.api.TrackApiService
 
 class RetrofitNetworkClient(private var trackApiService: TrackApiService,private val context: Context) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
-        if (dto is TracksSearchRequest) {
-            val resp = trackApiService.getTracks(dto.searchText).execute()
+    override suspend fun doRequest(dto: Any): Response {
 
-            val body = resp.body() ?: Response()
+        if (!isConnected()) {
+            return Response().apply { resultCode = -1 }
+        }
 
-            return body.apply { resultCode = resp.code() }
-        } else {
+        if (dto !is TracksSearchRequest) {
             return Response().apply { resultCode = 400 }
         }
+
+        val response = trackApiService.getTracks(dto.searchText)
+        return response.apply { resultCode = 200 }
     }
 
     private fun isConnected(): Boolean {

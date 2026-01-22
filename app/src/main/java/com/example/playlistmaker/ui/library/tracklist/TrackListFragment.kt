@@ -88,12 +88,12 @@ class TrackListFragment : Fragment() {
         errorText: String,
         buttonVisibility: Boolean
     ) {
-        parentFragmentManager.commit {
+        childFragmentManager.commit {
+            setReorderingAllowed(true)
             replace(
                 R.id.fragment_library_content,
                 getErrorFragment(errorText, buttonVisibility)
             )
-            addToBackStack(null)
         }
     }
 }
