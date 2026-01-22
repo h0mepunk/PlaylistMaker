@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.example.playlistmaker.Const
 import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.NetworkClient
@@ -9,6 +10,7 @@ import com.example.playlistmaker.data.ThemeRepositoryImpl
 import com.example.playlistmaker.data.TrackMapper
 import com.example.playlistmaker.data.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.data.TracksRepositoryImpl
+import com.example.playlistmaker.data.db.entity.AppDatabase
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.ThemeRepository
@@ -36,6 +38,14 @@ val dataModule = module {
             .getSharedPreferences(
                 Const.PLAYLIST_MAKER_PREFERENCES,
                 Context.MODE_PRIVATE)
+    }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "database.db"
+        ).build()
     }
 
     factory { Gson() }
