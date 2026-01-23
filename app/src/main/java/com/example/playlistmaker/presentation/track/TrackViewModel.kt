@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
+import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -18,6 +20,7 @@ import java.util.Locale
 class TrackViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val tracksHistoryInteractor: TracksHistoryInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     private val mediaPlayer: MediaPlayer
 ): ViewModel() {
 
@@ -35,6 +38,20 @@ class TrackViewModel(
                 stateLiveData.postValue(TrackState.Playing(getCurrentPlayerPosition()))
             }
         }
+    }
+
+    private fun getIsTrackFavorite(): Boolean {
+        var isFavorite = false
+        viewModelScope.launch {
+            playlistInteractor.getTracks().collect { tracks ->
+                tracks.forEach { track ->
+                    if (track.trackId == currentTrack.trackId) {
+                        isFavorite = true
+                    }
+                }
+            }
+        }
+        return isFavorite
     }
 
     private fun getCurrentPlayerPosition(): String {
@@ -89,6 +106,17 @@ class TrackViewModel(
                 startPlayer()
             }
             else -> { }
+        }
+    }
+
+    fun onLikeButtonClicked(): Boolean {
+        val trackIsFavorite = getIsTrackFavorite()
+        if (trackIsFavorite) {
+            playlistInteractor.removeTrackFromPlaylist(currentTrack)
+            return true
+        } else {
+            playlistInteractor.addTrackToPlaylist(currentTrack)
+            return false
         }
     }
 

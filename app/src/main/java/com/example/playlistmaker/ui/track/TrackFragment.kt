@@ -49,8 +49,18 @@ class TrackFragment : Fragment() {
         binding.mediaInfoCountryValue.text = viewModel.currentTrack.country
 
         binding.mediaButtonPlay.setOnClickListener {
-            Log.i("TrackActivity","play/stop button clicked")
+            Log.i("TrackFragment","play/stop button clicked")
             viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
+        }
+
+        binding.mediaButtonLike.setOnClickListener {
+            Log.i("TrackFragment","like button clicked")
+            val liked = viewModel.onLikeButtonClicked()
+            if (liked) {
+                binding.mediaButtonLike.setBackgroundResource(R.drawable.media_liked)
+            } else {
+                binding.mediaButtonLike.setBackgroundResource(R.drawable.media_like)
+            }
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {

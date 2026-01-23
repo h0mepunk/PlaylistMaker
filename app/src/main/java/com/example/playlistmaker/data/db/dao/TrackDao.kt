@@ -6,15 +6,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.data.db.entity.TrackEntity
+import com.example.playlistmaker.domain.models.Track
 
 @Dao
 interface TrackDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrack(track: TrackEntity): TrackEntity
+    suspend fun insertTrack(track: Track): TrackEntity
 
     @Delete
-    suspend fun deleteTrack(track: TrackEntity): TrackEntity
+    suspend fun deleteTrack(track: Track): TrackEntity
 
     @Query("SELECT * FROM tracks_table")
     suspend fun getTracks(): List<TrackEntity>

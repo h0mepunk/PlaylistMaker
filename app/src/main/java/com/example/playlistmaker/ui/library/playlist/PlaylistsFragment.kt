@@ -4,22 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.LibraryViewModel
+import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
-import com.example.playlistmaker.ui.library.tracklist.TrackListFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
 
-    private lateinit var playlistsList: LiveData<List<Playlist>>
+    private lateinit var playlistsList: List<Playlist>
 
     companion object {
         private const val PLAYLISTS_LIST = "playlists_list"
@@ -53,20 +51,8 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playlistsList = libraryViewModel.getCurrentPlaylist()
-        libraryViewModel.getCurrentPlaylist().observe(viewLifecycleOwner) {
-            playlistsList ->
-                if (playlistsList.isEmpty()) {
-                    showError(
-                        getString(R.string.placeholder_playlists_message),
-                        true
-                    )
-                } else {
-                    findNavController().navigate(
-                        R.id.fragment_playlists,
-                        setPlaylistArg(playlistsList)
-                    )
-                }
+        libraryViewModel.observePlaylistsState().observe(viewLifecycleOwner) {
+            renderState(it)
         }
     }
 
@@ -92,6 +78,25 @@ class PlaylistsFragment : Fragment() {
                 R.id.fragment_playlists,
                 getErrorFragment(errorText, buttonVisibility)
             )
+        }
+    }
+
+    fun renderState(state: PlaylistsState) {
+        when(state) {
+            is PlaylistsState.PlaylistsEmpty -> {
+                playlistsList = emptyList()
+                showError(
+                    getString(R.string.placeholder_playlists_message),
+                    true
+                )
+            }
+            is PlaylistsState.PlaylistsContent -> {
+                playlistsList = state.playlistList
+                    findNavController().navigate(
+                        R.id.fragment_playlists,
+                        setPlaylistArg(playlistsList)
+                    )
+            }
         }
     }
 }

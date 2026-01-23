@@ -18,7 +18,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        TrackViewModel(get(), get(), get())
+        TrackViewModel(get(), get(), get(), get())
     }
 
     viewModel{
@@ -26,6 +26,6 @@ val viewModelModule = module {
     }
 
     viewModel{
-        LibraryViewModel()
+        LibraryViewModel(get())
     }
 }
