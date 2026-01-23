@@ -26,13 +26,11 @@ class PlaylistRepositoryImpl(
     }
 
     override fun addTrackToPlaylist(track: Track): Flow<Track> = flow {
-        val track = appDatabase.trackDao().insertTrack(track)
-        emit(convertFromTrackEntity(track))
+        appDatabase.trackDao().insertTrack(track.toTrackEntity())
     }
 
     override fun removeTrackFromPlaylist(track: Track): Flow<Track> = flow {
-        val tracks = appDatabase.trackDao().deleteTrack(track)
-        emit(convertFromTrackEntity(tracks))
+        appDatabase.trackDao().deleteTrack(track.toTrackEntity())
     }
 
     private fun convertFromTracksEntity(tracks: List<TrackEntity>): List<Track> {
@@ -48,8 +46,23 @@ class PlaylistRepositoryImpl(
             playlist.name,
             playlist.imgUrl100,
             playlist.id,
-            playlist.tracks,
+            emptyList(),
             playlist.previewUrl
             ) }
+    }
+
+    private fun Track.toTrackEntity(): TrackEntity {
+        return TrackEntity(
+            artistName = this.artistName,
+            trackId = this.trackId,
+            trackName = this.trackName,
+            collectionName = this.collectionName,
+            artworkUrl100 = this.artworkUrl100,
+            releaseDate = this.releaseDate,
+            primaryGenreName = this.primaryGenreName,
+            country = this.country,
+            previewUrl = this.previewUrl,
+            trackTime = this.trackTime
+        )
     }
 }

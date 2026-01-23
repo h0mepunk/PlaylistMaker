@@ -12,10 +12,9 @@ import com.example.playlistmaker.domain.models.Track
 interface TrackDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrack(track: Track): TrackEntity
-
+    suspend fun insertTrack(track: TrackEntity)
     @Delete
-    suspend fun deleteTrack(track: Track): TrackEntity
+    suspend fun deleteTrack(track: TrackEntity)
 
     @Query("SELECT * FROM tracks_table")
     suspend fun getTracks(): List<TrackEntity>
