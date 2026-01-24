@@ -13,7 +13,7 @@ sealed class TrackState(
     ) : TrackState(
         false,
         R.drawable.media_play,
-        "00:00",
+        "00:00"
     )
 
     class Playing(
@@ -22,28 +22,26 @@ sealed class TrackState(
         true,
         R.drawable.media_stop,
         trackTime?:"00:00",
-
     )
 
     class Paused(
-        val trackTime: String?
+        val trackTime: String?,
     ): TrackState(
         true,
         R.drawable.media_play,
         trackTime?:"00:00",
-
     )
 
     object Stopped: TrackState(
         false,
         R.drawable.media_play,
-        "00:00",
+        "00:00"
 
     )
 
     object Prepared: TrackState(
         true,
         R.drawable.media_play,
-        "00:00",
+        "00:00"
     )
 }

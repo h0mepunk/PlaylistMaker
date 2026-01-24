@@ -23,7 +23,6 @@ class TrackViewModel(
     private val playlistInteractor: PlaylistInteractor,
     private val mediaPlayer: MediaPlayer
 ): ViewModel() {
-
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observeState(): LiveData<TrackState> = stateLiveData
     lateinit var currentTrack: Track
@@ -40,7 +39,7 @@ class TrackViewModel(
         }
     }
 
-    private fun getIsTrackFavorite(): Boolean {
+    fun getIsTrackFavorite(): Boolean {
         var isFavorite = false
         viewModelScope.launch {
             playlistInteractor.getTracks().collect { tracks ->
@@ -109,14 +108,13 @@ class TrackViewModel(
         }
     }
 
-    fun onLikeButtonClicked(): Boolean {
-        val trackIsFavorite = getIsTrackFavorite()
-        if (trackIsFavorite) {
-            playlistInteractor.removeTrackFromPlaylist(currentTrack)
-            return true
-        } else {
+    fun onLikeButtonClicked(isFavorite: Boolean) {
+        if (isFavorite) {
             playlistInteractor.addTrackToPlaylist(currentTrack)
-            return false
+            Log.i("TrackViewModel","track removed from playlist: ${currentTrack.trackName}")
+        } else {
+            playlistInteractor.removeTrackFromPlaylist(currentTrack)
+            Log.i("TrackViewModel","track added to playlist: ${currentTrack.trackName}")
         }
     }
 
