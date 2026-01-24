@@ -14,16 +14,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class LibraryFragment: Fragment() {
 
-//    companion object {
-//        private const val TRACK_LIST = "track_list"
-//
-//        fun newInstance(trackList: List<Track>) = TrackListFragment().apply {
-//            arguments = Bundle().apply {
-//                putString(TRACK_LIST, trackList.toString()) // Simplified
-//            }
-//        }
-//    }
-
     private lateinit var tabMediator: TabLayoutMediator
     private lateinit var binding: FragmentLibraryBinding
 

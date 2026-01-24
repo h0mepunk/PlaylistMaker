@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.library.playlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
 
@@ -54,6 +56,8 @@ class PlaylistsFragment : Fragment() {
         libraryViewModel.observePlaylistsState().observe(viewLifecycleOwner) {
             renderState(it)
         }
+
+        libraryViewModel.getPlaylists()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -84,6 +88,7 @@ class PlaylistsFragment : Fragment() {
     fun renderState(state: PlaylistsState) {
         when(state) {
             is PlaylistsState.PlaylistsEmpty -> {
+                Log.i("PlaylistFragment","Playlists empty state")
                 playlistsList = emptyList()
                 showError(
                     getString(R.string.placeholder_playlists_message),
@@ -91,6 +96,7 @@ class PlaylistsFragment : Fragment() {
                 )
             }
             is PlaylistsState.PlaylistsContent -> {
+                Log.i("PlaylistFragment","playlists : ${state.playlistList}")
                 playlistsList = state.playlistList
                     findNavController().navigate(
                         R.id.fragment_playlists,

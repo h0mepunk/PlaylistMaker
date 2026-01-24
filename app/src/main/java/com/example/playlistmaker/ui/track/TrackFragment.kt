@@ -23,6 +23,8 @@ class TrackFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaBinding
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,10 +56,11 @@ class TrackFragment : Fragment() {
         }
 
         binding.mediaButtonLike.setOnClickListener {
-            Log.i("TrackFragment","like button clicked")
             val liked = viewModel.onLikeButtonClicked()
+            Log.i("TrackFragment","like button clicked, liked = $liked")
             if (liked) {
                 binding.mediaButtonLike.setBackgroundResource(R.drawable.media_liked)
+                pla
             } else {
                 binding.mediaButtonLike.setBackgroundResource(R.drawable.media_like)
             }

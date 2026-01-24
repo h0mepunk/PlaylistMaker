@@ -1,6 +1,5 @@
 package com.example.playlistmaker.presentation.library
 
-import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,14 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.track.TrackState
-import com.example.playlistmaker.ui.library.error.ErrorFragment
 import kotlinx.coroutines.launch
 
 class LibraryViewModel(
     val playlistRepository: PlaylistRepository
 ): ViewModel() {
 
+    val playlistsLiveData = MutableLiveData<List<Playlist>>()
     private val playlistsStateLiveData = MutableLiveData<PlaylistsState>()
 
     fun observePlaylistsState(): LiveData<PlaylistsState> = playlistsStateLiveData
@@ -24,18 +22,16 @@ class LibraryViewModel(
 
     fun observeTracksState(): LiveData<TrackListState> = tracksStateLiveData
 
-    fun getPlaylists(): LiveData<List<Playlist>> {
-        val playlistsLiveData = MutableLiveData<List<Playlist>>()
+    fun getPlaylists() {
         viewModelScope.launch {
-            val playlists = playlistRepository.getPlaylists()
+             playlistRepository.getPlaylists()
                 .collect { playlists ->
                     processPlaylists(playlists)
             }
         }
-        return playlistsLiveData
     }
 
-    fun getCurrentTrackList() {
+    fun getTrackList() {
         viewModelScope.launch {
             playlistRepository.getTracks()
                 .collect { tracks ->
