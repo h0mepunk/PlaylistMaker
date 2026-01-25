@@ -56,6 +56,14 @@ class TrackListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLibraryContentBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        libraryViewModel.observeTracksState().observe(viewLifecycleOwner) { state ->
+            renderState(state)
+        }
 
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
@@ -73,15 +81,12 @@ class TrackListFragment : Fragment() {
         }
         binding.trackLibraryListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.trackLibraryListRecycler.adapter = adapter
-        return binding.root
+
+        libraryViewModel.getTrackList()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        libraryViewModel.observeTracksState().observe(viewLifecycleOwner) { state ->
-            renderState(state)
-        }
-
+    override fun onResume() {
+        super.onResume()
         libraryViewModel.getTrackList()
     }
 

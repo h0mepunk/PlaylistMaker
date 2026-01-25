@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
@@ -18,8 +19,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TrackViewModel(
+    private val currentTrackInteractor: CurrentTrackInteractor,
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val tracksHistoryInteractor: TracksHistoryInteractor,
     private val playlistInteractor: PlaylistInteractor,
     private val mediaPlayer: MediaPlayer
 ): ViewModel() {
@@ -121,7 +122,7 @@ class TrackViewModel(
     }
 
     fun onCreate() {
-        currentTrack = tracksHistoryInteractor.getCurrentTrack()
+        currentTrack = currentTrackInteractor.getCurrentTrack()
 
         getIsTrackFavorite()
 
