@@ -10,13 +10,11 @@ class PlaylistInteractorImpl (
         private val playlistRepository: PlaylistRepository
     ) : PlaylistInteractor {
 
-    override fun addTrackToPlaylist(track: Track): Flow<Track> {
-            return playlistRepository.addTrackToPlaylist(track)
-        }
+    override suspend fun addTrackToPlaylist(track: Track)
+    { return playlistRepository.addTrackToPlaylist(track) }
 
-    override fun removeTrackFromPlaylist(track: Track): Flow<Track> {
-        return playlistRepository.removeTrackFromPlaylist(track)
-    }
+    override suspend fun removeTrackFromPlaylist(track: Track)
+    { return playlistRepository.removeTrackFromPlaylist(track) }
 
     override fun getTracks(): Flow<List<Track>> {
         return playlistRepository.getTracks()

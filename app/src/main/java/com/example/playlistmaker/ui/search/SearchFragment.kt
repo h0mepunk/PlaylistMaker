@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -68,7 +67,7 @@ class SearchFragment : Fragment() {
         binding.trackListRecycler.adapter = adapter
 
         binding.placeholderView.visibility = View.GONE
-        binding.clearIcon.isVisible = false
+        binding.clearIcon.visibility = View.GONE
 
         return binding.root
     }
@@ -92,11 +91,11 @@ class SearchFragment : Fragment() {
 
         binding.refreshButton.setOnClickListener {
             applyVisibility(
-                placeholderVisible = false,
-                recyclerVisible = true,
-                progressBarVisible = true,
-                historyTitleVisible = false,
-                clearHistoryVisible = false
+                placeholderVisible = View.GONE,
+                recyclerVisible = View.VISIBLE,
+                progressBarVisible = View.VISIBLE,
+                historyTitleVisible = View.GONE,
+                clearHistoryVisible = View.GONE
             )
             viewModel.searchRequest(viewModel.lastSearchText.toString())
         }
@@ -175,18 +174,18 @@ class SearchFragment : Fragment() {
         adapter?.notifyDataSetChanged()
 
         applyVisibility(
-            placeholderVisible = false,
-            recyclerVisible = true,
-            progressBarVisible = false,
-            historyTitleVisible = false,
-            clearHistoryVisible = false
+            placeholderVisible = View.GONE,
+            recyclerVisible = View.VISIBLE,
+            progressBarVisible = View.GONE,
+            historyTitleVisible = View.GONE,
+            clearHistoryVisible = View.GONE
         )
     }
 
     fun showError(
         messageId: Int,
         iconId: Int,
-        refreshButtonVisible: Boolean
+        refreshButtonVisible: Int
     ) {
         Log.i("SearchActivity", "trackList loading error")
         adapter?.items = emptyList()
@@ -195,22 +194,22 @@ class SearchFragment : Fragment() {
         binding.placeholderIcon.setBackgroundResource(iconId)
 
         applyVisibility(
-            placeholderVisible = true,
-            recyclerVisible = false,
-            progressBarVisible = false,
-            historyTitleVisible = false,
-            clearHistoryVisible = false,
+            placeholderVisible = View.VISIBLE,
+            recyclerVisible = View.GONE,
+            progressBarVisible = View.GONE,
+            historyTitleVisible = View.GONE,
+            clearHistoryVisible = View.GONE,
             refreshButtonVisible = refreshButtonVisible
         )
     }
 
     fun showLoading() {
         applyVisibility(
-            placeholderVisible = false,
-            recyclerVisible = false,
-            progressBarVisible = true,
-            historyTitleVisible = false,
-            clearHistoryVisible = false
+            placeholderVisible = View.GONE,
+            recyclerVisible = View.GONE,
+            progressBarVisible = View.VISIBLE,
+            historyTitleVisible = View.GONE,
+            clearHistoryVisible = View.GONE
         )
 
     }
@@ -219,40 +218,40 @@ class SearchFragment : Fragment() {
         Log.i("TracksSearchController", tracks.toString())
         if (tracks.isNotEmpty()){
             applyVisibility(
-                placeholderVisible = false,
-                recyclerVisible = true,
-                progressBarVisible = false,
-                historyTitleVisible = true,
-                clearHistoryVisible = true
+                placeholderVisible = View.GONE,
+                recyclerVisible = View.VISIBLE,
+                progressBarVisible = View.GONE,
+                historyTitleVisible = View.VISIBLE,
+                clearHistoryVisible = View.VISIBLE
             )
             Log.i("SearchActivity", "trackhistory = $tracks")
             adapter?.items = tracks
             adapter?.notifyDataSetChanged()
         } else {
             applyVisibility(
-                placeholderVisible = false,
-                recyclerVisible = true,
-                progressBarVisible = false,
-                historyTitleVisible = false,
-                clearHistoryVisible = false
+                placeholderVisible = View.GONE,
+                recyclerVisible = View.GONE,
+                progressBarVisible = View.GONE,
+                historyTitleVisible = View.GONE,
+                clearHistoryVisible = View.GONE
             )
         }
     }
 
     private fun applyVisibility(
-        placeholderVisible: Boolean,
-        recyclerVisible: Boolean,
-        progressBarVisible: Boolean,
-        historyTitleVisible: Boolean,
-        clearHistoryVisible: Boolean,
-        refreshButtonVisible: Boolean = false
+        placeholderVisible: Int,
+        recyclerVisible: Int,
+        progressBarVisible: Int,
+        historyTitleVisible: Int,
+        clearHistoryVisible: Int,
+        refreshButtonVisible: Int = View.GONE
     ) {
-        binding.placeholderView.isVisible = placeholderVisible
-        binding.trackListRecycler.isVisible = recyclerVisible
-        binding.searchProgressBar.isVisible = progressBarVisible
-        binding.searchHistoryTitle.isVisible = historyTitleVisible
-        binding.clearHistoryButton.isVisible = clearHistoryVisible
-        binding.refreshButton.isVisible = refreshButtonVisible
+        binding.placeholderView.visibility = placeholderVisible
+        binding.trackListRecycler.visibility = recyclerVisible
+        binding.searchProgressBar.visibility = progressBarVisible
+        binding.searchHistoryTitle.visibility = historyTitleVisible
+        binding.clearHistoryButton.visibility = clearHistoryVisible
+        binding.refreshButton.visibility = refreshButtonVisible
     }
 
 
@@ -266,14 +265,14 @@ class SearchFragment : Fragment() {
             is TracksState.Error -> showError(
                 messageId = R.string.network_error_text,
                 iconId = R.drawable.internet_error,
-                refreshButtonVisible = true
+                refreshButtonVisible = View.VISIBLE
             )
 
             is TracksState.Content -> showContent(state.tracks)
             is TracksState.Empty -> showError(
                 messageId = R.string.empty_song_list_error_text,
                 iconId = R.drawable.empty_results_error,
-                refreshButtonVisible = false
+                refreshButtonVisible = View.GONE
             )
 
             is TracksState.UnknownErrorState -> showUnknownError()

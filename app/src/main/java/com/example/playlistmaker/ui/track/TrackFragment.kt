@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
-import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
@@ -28,7 +27,6 @@ class TrackFragment : Fragment() {
 
     private val playlistInteractor: PlaylistInteractor by inject()
 
-    private var liked: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +34,6 @@ class TrackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel.onCreate()
-        liked = viewModel.getIsTrackFavorite()
         binding = FragmentMediaBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -46,6 +43,10 @@ class TrackFragment : Fragment() {
 
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
+        }
+
+        viewModel.isFavorite.observe(viewLifecycleOwner) { liked ->
+            setLikeButton(liked)
         }
 
         binding.mediaTrackTitle.text = viewModel.currentTrack.trackName
@@ -60,12 +61,9 @@ class TrackFragment : Fragment() {
             Log.i("TrackFragment","play/stop button clicked")
             viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
         }
-        setLikeButton()
 
         binding.mediaButtonLike.setOnClickListener {
-            liked = !liked
-            setLikeButton()
-            viewModel.onLikeButtonClicked(liked)
+            viewModel.onLikeButtonClicked()
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
@@ -94,7 +92,7 @@ class TrackFragment : Fragment() {
             .into(binding.mediaTrackCover)
     }
 
-    fun setLikeButton() {
+    fun setLikeButton(liked: Boolean) {
         if (liked) {
             binding.mediaButtonLike.setBackgroundResource (R.drawable.media_liked)
             Log.i("TrackFragment","track is favorite")

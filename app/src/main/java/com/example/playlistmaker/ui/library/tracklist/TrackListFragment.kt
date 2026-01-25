@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import org.koin.android.ext.android.inject
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
-import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.presentation.library.TrackListState
@@ -75,6 +74,8 @@ class TrackListFragment : Fragment() {
         adapter = TrackListAdapter { track ->
             onTrackClickDebounce(track)
         }
+        binding.trackLibraryListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.trackLibraryListRecycler.adapter = adapter
         return binding.root
     }
 
@@ -87,9 +88,10 @@ class TrackListFragment : Fragment() {
         libraryViewModel.getTrackList()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(TRACK_LIST, trackList.toString())
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter = null
+        binding.trackLibraryListRecycler.adapter = null
     }
 
     fun getErrorFragment(
@@ -129,6 +131,8 @@ class TrackListFragment : Fragment() {
                     R.id.fragment_library_content,
                     createArgs(state.trackList)
                 )
+                adapter?.items = trackList
+                adapter?.notifyDataSetChanged()
             }
         }
     }

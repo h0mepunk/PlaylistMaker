@@ -25,20 +25,18 @@ class PlaylistRepositoryImpl(
         emit(convertFromTracksEntity(tracks))
     }
 
-    override fun addTrackToPlaylist(track: Track): Flow<Track> = flow {
-        appDatabase.trackDao().insertTrack(track.toTrackEntity())
+    override suspend fun addTrackToPlaylist(track: Track) {
+        val trackEntity = trackDbConvertor.map(track)
+        appDatabase.trackDao().insertTrack(trackEntity)
     }
 
-    override fun removeTrackFromPlaylist(track: Track): Flow<Track> = flow {
-        appDatabase.trackDao().deleteTrack(track.toTrackEntity())
+    override suspend fun removeTrackFromPlaylist(track: Track) {
+        val trackEntity = trackDbConvertor.map(track)
+        appDatabase.trackDao().deleteTrack(trackEntity)
     }
 
     private fun convertFromTracksEntity(tracks: List<TrackEntity>): List<Track> {
         return tracks.map { track -> trackDbConvertor.map(track) }
-    }
-
-    private fun convertFromTrackEntity(track: TrackEntity): Track {
-        return trackDbConvertor.map(track)
     }
 
     private fun convertFromPlaylistsEntity(playlists: List<PlaylistEntity>): List<Playlist> {
@@ -49,20 +47,5 @@ class PlaylistRepositoryImpl(
             emptyList(),
             playlist.previewUrl
             ) }
-    }
-
-    private fun Track.toTrackEntity(): TrackEntity {
-        return TrackEntity(
-            artistName = this.artistName,
-            trackId = this.trackId,
-            trackName = this.trackName,
-            collectionName = this.collectionName,
-            artworkUrl100 = this.artworkUrl100,
-            releaseDate = this.releaseDate,
-            primaryGenreName = this.primaryGenreName,
-            country = this.country,
-            previewUrl = this.previewUrl,
-            trackTime = this.trackTime
-        )
     }
 }

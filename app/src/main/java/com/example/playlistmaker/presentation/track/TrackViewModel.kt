@@ -23,6 +23,9 @@ class TrackViewModel(
     private val playlistInteractor: PlaylistInteractor,
     private val mediaPlayer: MediaPlayer
 ): ViewModel() {
+
+    private var isFavoriteLiveData = MutableLiveData<Boolean>()
+    var isFavorite: LiveData<Boolean> = isFavoriteLiveData
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observeState(): LiveData<TrackState> = stateLiveData
     lateinit var currentTrack: Track
@@ -39,18 +42,13 @@ class TrackViewModel(
         }
     }
 
-    fun getIsTrackFavorite(): Boolean {
-        var isFavorite = false
+    fun getIsTrackFavorite() {
         viewModelScope.launch {
             playlistInteractor.getTracks().collect { tracks ->
-                tracks.forEach { track ->
-                    if (track.trackId == currentTrack.trackId) {
-                        isFavorite = true
-                    }
-                }
+                val isFound = tracks.any { it.trackId == currentTrack.trackId }
+                isFavoriteLiveData.postValue(isFound)
             }
         }
-        return isFavorite
     }
 
     private fun getCurrentPlayerPosition(): String {
@@ -108,18 +106,24 @@ class TrackViewModel(
         }
     }
 
-    fun onLikeButtonClicked(isFavorite: Boolean) {
-        if (isFavorite) {
-            playlistInteractor.addTrackToPlaylist(currentTrack)
-            Log.i("TrackViewModel","track removed from playlist: ${currentTrack.trackName}")
-        } else {
-            playlistInteractor.removeTrackFromPlaylist(currentTrack)
-            Log.i("TrackViewModel","track added to playlist: ${currentTrack.trackName}")
+    fun onLikeButtonClicked() {
+        val currentlyFavorite = isFavorite.value ?: false
+        viewModelScope.launch {
+            if (currentlyFavorite) {
+                playlistInteractor.removeTrackFromPlaylist(currentTrack)
+                Log.i("TrackViewModel","track removed from playlist: ${currentTrack.trackName}")
+            } else {
+                playlistInteractor.addTrackToPlaylist(currentTrack)
+                Log.i("TrackViewModel","track added to playlist: ${currentTrack.trackName}")
+            }
+            isFavoriteLiveData.postValue(!currentlyFavorite)
         }
     }
 
     fun onCreate() {
         currentTrack = tracksHistoryInteractor.getCurrentTrack()
+
+        getIsTrackFavorite()
 
         preparePlayer(currentTrack.previewUrl)
 

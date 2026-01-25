@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.library
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,8 +13,6 @@ import kotlinx.coroutines.launch
 class LibraryViewModel(
     val playlistRepository: PlaylistRepository
 ): ViewModel() {
-
-    val playlistsLiveData = MutableLiveData<List<Playlist>>()
     private val playlistsStateLiveData = MutableLiveData<PlaylistsState>()
 
     fun observePlaylistsState(): LiveData<PlaylistsState> = playlistsStateLiveData
@@ -42,8 +41,10 @@ class LibraryViewModel(
 
     private fun processTracks(tracks: List<Track>) {
         if (tracks.isEmpty()) {
+            Log.i("TrackListFragment","TracksEmpty state")
             renderTrackListState(TrackListState.TracksEmpty)
         } else {
+            Log.i("TrackListFragment","TracksContent state with ${tracks.size} tracks")
             renderTrackListState(TrackListState.TracksContent(tracks))
         }
     }

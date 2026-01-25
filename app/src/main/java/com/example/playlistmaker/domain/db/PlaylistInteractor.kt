@@ -5,9 +5,9 @@ import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {
-    fun addTrackToPlaylist(track: Track): Flow<Track>
+    suspend fun addTrackToPlaylist(track: Track)
 
-    fun removeTrackFromPlaylist(track: Track): Flow<Track>
+    suspend fun removeTrackFromPlaylist(track: Track)
 
     fun getTracks(): Flow<List<Track>>
 
