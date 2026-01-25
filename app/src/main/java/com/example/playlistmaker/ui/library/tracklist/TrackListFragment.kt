@@ -12,12 +12,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.presentation.library.TrackListState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
 import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import com.example.playlistmaker.util.debounce
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.getValue
 
@@ -26,6 +29,8 @@ class TrackListFragment : Fragment() {
     private lateinit var trackList: List<Track>
 
     private var adapter: TrackListAdapter? = null
+
+    private val currentTrackInteractor: CurrentTrackInteractor by inject()
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
     companion object {
@@ -38,14 +43,6 @@ class TrackListFragment : Fragment() {
 
         fun newInstance(trackList: List<Track>) = TrackListFragment().apply {
             arguments = createArgs(trackList)
-        }
-
-        fun setErrorArgs(
-            errorText: String,
-            buttonVisibility: Boolean
-        ) = Bundle().apply {
-            putString("error_text", errorText)
-            putBoolean("button_visible", buttonVisibility)
         }
     }
 
@@ -67,11 +64,11 @@ class TrackListFragment : Fragment() {
         ) { track ->
             findNavController().navigate(R.id.action_library_fragment_to_track_fragment,
                 Bundle().apply {
-                    putString("track", track.toString()) // Simplified
+                    putString("track", track.toString())
                 }
             )
         }
-        adapter = TrackListAdapter { track ->
+        adapter = TrackListAdapter(currentTrackInteractor) { track ->
             onTrackClickDebounce(track)
         }
         binding.trackLibraryListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -127,10 +124,6 @@ class TrackListFragment : Fragment() {
             is TrackListState.TracksContent -> {
                 Log.i("TrackListFragment","trackList ${state.trackList}")
                 trackList = state.trackList
-                findNavController().navigate(
-                    R.id.fragment_library_content,
-                    createArgs(state.trackList)
-                )
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
             }

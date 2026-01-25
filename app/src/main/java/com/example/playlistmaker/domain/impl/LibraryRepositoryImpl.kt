@@ -4,16 +4,16 @@ import com.example.playlistmaker.data.converters.TrackDbConvertor
 import com.example.playlistmaker.data.db.entity.AppDatabase
 import com.example.playlistmaker.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.data.db.entity.TrackEntity
-import com.example.playlistmaker.domain.db.PlaylistRepository
+import com.example.playlistmaker.domain.db.LibraryRepository
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class PlaylistRepositoryImpl(
+class LibraryRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val trackDbConvertor: TrackDbConvertor,
-) : PlaylistRepository {
+) : LibraryRepository {
 
     override fun getPlaylists(): Flow<List<Playlist>> = flow {
         val playlists = appDatabase.playlistDao().getPlaylists()

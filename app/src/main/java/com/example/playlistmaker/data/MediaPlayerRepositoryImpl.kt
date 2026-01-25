@@ -82,7 +82,6 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlay
 
     override fun clickLike(currentTrack: Track) {
         Log.i("MediaPlayer","like clicked for track: ${currentTrack.trackName}")
-
     }
 
     companion object {

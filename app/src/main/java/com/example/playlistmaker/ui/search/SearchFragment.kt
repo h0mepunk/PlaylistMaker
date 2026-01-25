@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
@@ -35,6 +36,8 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
 
+    private val currentTrackInteractor: CurrentTrackInteractor by inject()
+
     private val trackHistoryInteractor: TracksHistoryInteractor by inject()
     private var textWatcher: TextWatcher? = null
 
@@ -46,7 +49,28 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSearchBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter = null
+        binding.trackListRecycler.adapter = null
+        textWatcher?.let { binding.searchText.removeTextChangedListener(it) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (binding.searchText.text.isNotEmpty()) {
+           viewModel.searchRequest(binding.searchText.text.toString())
+        } else {
+            viewModel.showHistory()
+        }
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
@@ -54,12 +78,12 @@ class SearchFragment : Fragment() {
         ) { track ->
             findNavController().navigate(R.id.action_search_fragment_to_track_fragment,
                 Bundle().apply {
-                    putString("track", track.toString()) // Simplified
+                    putString("track", track.toString())
                 }
             )
         }
 
-        adapter = TrackAdapter(trackHistoryInteractor) { track ->
+        adapter = TrackAdapter(currentTrackInteractor,trackHistoryInteractor) { track ->
             (activity as MainActivity).animateBottomNavigationView(View.GONE)
             onTrackClickDebounce(track)
         }
@@ -69,18 +93,6 @@ class SearchFragment : Fragment() {
         binding.placeholderView.visibility = View.GONE
         binding.clearIcon.visibility = View.GONE
 
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        adapter = null
-        binding.trackListRecycler.adapter = null
-        textWatcher?.let { binding.searchText.removeTextChangedListener(it) }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
@@ -100,7 +112,7 @@ class SearchFragment : Fragment() {
             viewModel.searchRequest(viewModel.lastSearchText.toString())
         }
 
-        viewModel.showHistory()
+       // viewModel.showHistory()
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
@@ -224,10 +236,11 @@ class SearchFragment : Fragment() {
                 historyTitleVisible = View.VISIBLE,
                 clearHistoryVisible = View.VISIBLE
             )
-            Log.i("SearchActivity", "trackhistory = $tracks")
+            Log.i("SearchActivity", "track history = $tracks")
             adapter?.items = tracks
             adapter?.notifyDataSetChanged()
         } else {
+            Log.i("SearchActivity", "track history empty")
             applyVisibility(
                 placeholderVisible = View.GONE,
                 recyclerVisible = View.GONE,

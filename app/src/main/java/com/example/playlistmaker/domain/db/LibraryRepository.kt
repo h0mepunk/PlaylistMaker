@@ -4,7 +4,7 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
-interface PlaylistRepository {
+interface LibraryRepository {
 
     suspend fun addTrackToPlaylist(track: Track)
 

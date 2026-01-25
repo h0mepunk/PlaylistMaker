@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(
+    private val currentTrackInteractor: CurrentTrackInteractor,
     private val tracksHistoryInteractor: TracksHistoryInteractor,
     private val onTrackClick: (Track) -> Unit
 ): RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
@@ -53,7 +55,7 @@ class TrackAdapter(
                     trackHistory.add(0, track)
                 }
                 tracksHistoryInteractor.saveTracksHistory(trackHistory)
-                tracksHistoryInteractor.saveCurrentTrack(track)
+                currentTrackInteractor.saveCurrentTrack(track)
 
                 onTrackClick(track)
         }

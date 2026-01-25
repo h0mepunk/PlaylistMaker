@@ -13,12 +13,4 @@ class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepositor
     override fun saveTracksHistory(tracks: ArrayList<Track>) {
         repository.saveTracksHistory(tracks)
     }
-
-    override fun saveCurrentTrack(track: Track) {
-        repository.saveCurrentTrack(track)
-    }
-
-    override fun getCurrentTrack(): Track {
-       return  repository.getCurrentTrack()
-    }
 }

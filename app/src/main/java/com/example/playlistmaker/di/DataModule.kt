@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.Const
+import com.example.playlistmaker.data.CurrentTrackRepositoryImpl
 import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.ThemeRepositoryImpl
@@ -12,6 +13,7 @@ import com.example.playlistmaker.data.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.data.TracksRepositoryImpl
 import com.example.playlistmaker.data.db.entity.AppDatabase
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.domain.api.CurrentTrackRepository
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.ThemeRepository
 import com.example.playlistmaker.domain.api.TrackApiService
@@ -78,5 +80,9 @@ val dataModule = module {
 
     single <MediaPlayerRepository> {
         MediaPlayerRepositoryImpl(get())
+    }
+
+    single < CurrentTrackRepository> {
+        CurrentTrackRepositoryImpl(get(), get())
     }
 }

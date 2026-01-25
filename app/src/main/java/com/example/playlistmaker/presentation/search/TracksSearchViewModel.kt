@@ -45,6 +45,7 @@ class TracksSearchViewModel(
     }
 
     fun showHistory() {
+        Log.i("TracksSearchViewModel", "showHistory called")
         renderState(
             TracksState.History(trackHistoryInteractor.getTracksHistory())
         )

@@ -12,10 +12,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
-import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -24,8 +22,6 @@ class TrackFragment : Fragment() {
     private val viewModel by viewModel<TrackViewModel>()
 
     private lateinit var binding: FragmentMediaBinding
-
-    private val playlistInteractor: PlaylistInteractor by inject()
 
 
     override fun onCreateView(
@@ -67,8 +63,13 @@ class TrackFragment : Fragment() {
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.search_fragment)
+            findNavController().popBackStack()
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
 
     }
 
