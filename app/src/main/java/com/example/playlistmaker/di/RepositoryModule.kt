@@ -5,7 +5,11 @@ import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.ThemeRepositoryImpl
 import com.example.playlistmaker.data.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.data.TracksRepositoryImpl
+import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.TrackDbConvertor
+import com.example.playlistmaker.data.db.dao.PlaylistDao
+import com.example.playlistmaker.data.db.dao.TrackDao
+import com.example.playlistmaker.data.db.entity.AppDatabase
 import com.example.playlistmaker.domain.api.CurrentTrackRepository
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.ThemeRepository
@@ -36,6 +40,11 @@ val repositoryModule = module {
     }
 
     factory { TrackDbConvertor() }
+
+    factory { PlaylistDbConverter() }
+    single<PlaylistDao> { get<AppDatabase>().playlistDao() }
+    single<TrackDao> { get<AppDatabase>().trackDao() }
+
 
     single<LibraryRepository> {
         LibraryRepositoryImpl(get(), get())
