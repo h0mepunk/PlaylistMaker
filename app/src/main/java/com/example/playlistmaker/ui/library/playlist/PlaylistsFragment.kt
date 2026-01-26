@@ -11,11 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
-import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
 
@@ -41,7 +39,7 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    val libraryViewModel by activityViewModel<LibraryViewModel>()
+    val playlistViewModel by activityViewModel<PlaylistViewModel>()
 
     private lateinit var binding: FragmentPlaylistsBinding
 
@@ -53,11 +51,11 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        libraryViewModel.observePlaylistsState().observe(viewLifecycleOwner) {
+        playlistViewModel.observePlaylistsState().observe(viewLifecycleOwner) {
             renderState(it)
         }
 
-        libraryViewModel.getPlaylists()
+        playlistViewModel.getPlaylists()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

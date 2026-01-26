@@ -4,8 +4,7 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
-interface LibraryRepository {
-
+interface LibraryInteractor {
     suspend fun addTrackToPlaylist(track: Track)
 
     suspend fun removeTrackFromPlaylist(track: Track)

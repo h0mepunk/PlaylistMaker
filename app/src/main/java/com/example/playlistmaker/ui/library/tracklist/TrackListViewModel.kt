@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.library
+package com.example.playlistmaker.ui.library.tracklist
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -6,29 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.LibraryRepository
-import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.library.TrackListState
 import kotlinx.coroutines.launch
 
-class LibraryViewModel(
-    val libraryRepository: LibraryRepository
-): ViewModel() {
-    private val playlistsStateLiveData = MutableLiveData<PlaylistsState>()
-
-    fun observePlaylistsState(): LiveData<PlaylistsState> = playlistsStateLiveData
+class TrackListViewModel(private val libraryRepository: LibraryRepository): ViewModel() {
 
     private val tracksStateLiveData = MutableLiveData<TrackListState>()
 
     fun observeTracksState(): LiveData<TrackListState> = tracksStateLiveData
 
-    fun getPlaylists() {
-        viewModelScope.launch {
-             libraryRepository.getPlaylists()
-                .collect { playlists ->
-                    processPlaylists(playlists)
-            }
-        }
-    }
 
     fun getTrackList() {
         viewModelScope.launch {
@@ -49,19 +36,9 @@ class LibraryViewModel(
         }
     }
 
-    private fun processPlaylists(playlists: List<Playlist>) {
-        if (playlists.isEmpty()) {
-            renderPlaylistsState(PlaylistsState.PlaylistsEmpty)
-        } else {
-            renderPlaylistsState(PlaylistsState.PlaylistsContent(playlists))
-        }
-    }
 
     private fun renderTrackListState(state: TrackListState) {
         tracksStateLiveData.postValue(state)
     }
 
-    private fun renderPlaylistsState(state: PlaylistsState) {
-        playlistsStateLiveData.postValue(state)
-    }
 }

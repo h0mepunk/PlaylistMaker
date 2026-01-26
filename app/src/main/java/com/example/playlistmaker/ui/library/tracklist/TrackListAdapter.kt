@@ -21,13 +21,11 @@ class TrackListAdapter(
     private val onTrackClick: (Track) -> Unit
 ): RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder> () {
 
-    private lateinit var sharedPreferences : SharedPreferences
     private lateinit var context: Context
     var items: List<Track> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
-        sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         context = parent.context
         return TrackListViewHolder(view)
     }

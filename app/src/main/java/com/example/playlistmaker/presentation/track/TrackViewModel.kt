@@ -8,12 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
-import com.example.playlistmaker.domain.api.TracksHistoryInteractor
-import com.example.playlistmaker.domain.db.PlaylistInteractor
+import com.example.playlistmaker.domain.db.LibraryInteractor
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -21,7 +19,7 @@ import java.util.Locale
 class TrackViewModel(
     private val currentTrackInteractor: CurrentTrackInteractor,
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val playlistInteractor: PlaylistInteractor,
+    private val libraryInteractor: LibraryInteractor,
     private val mediaPlayer: MediaPlayer
 ): ViewModel() {
 
@@ -45,7 +43,7 @@ class TrackViewModel(
 
     fun getIsTrackFavorite() {
         viewModelScope.launch {
-            playlistInteractor.getTracks().collect { tracks ->
+            libraryInteractor.getTracks().collect { tracks ->
                 val isFound = tracks.any { it.trackId == currentTrack.trackId }
                 isFavoriteLiveData.postValue(isFound)
             }
@@ -111,10 +109,10 @@ class TrackViewModel(
         val currentlyFavorite = isFavorite.value ?: false
         viewModelScope.launch {
             if (currentlyFavorite) {
-                playlistInteractor.removeTrackFromPlaylist(currentTrack)
+                libraryInteractor.removeTrackFromPlaylist(currentTrack)
                 Log.i("TrackViewModel","track removed from playlist: ${currentTrack.trackName}")
             } else {
-                playlistInteractor.addTrackToPlaylist(currentTrack)
+                libraryInteractor.addTrackToPlaylist(currentTrack)
                 Log.i("TrackViewModel","track added to playlist: ${currentTrack.trackName}")
             }
             isFavoriteLiveData.postValue(!currentlyFavorite)

@@ -1,10 +1,11 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.presentation.main.MainViewModel
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
 import com.example.playlistmaker.presentation.track.TrackViewModel
+import com.example.playlistmaker.ui.library.playlist.PlaylistViewModel
+import com.example.playlistmaker.ui.library.tracklist.TrackListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -25,7 +26,11 @@ val viewModelModule = module {
         TracksSearchViewModel(get(), get())
     }
 
-    viewModel{
-        LibraryViewModel(get())
+    viewModel {
+        PlaylistViewModel(get())
+    }
+
+    viewModel {
+        TrackListViewModel(get())
     }
 }

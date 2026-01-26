@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentLibraryContentBinding
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
-import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.library.LibraryViewModel
 import com.example.playlistmaker.presentation.library.TrackListState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
 import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
@@ -46,7 +44,7 @@ class TrackListFragment : Fragment() {
         }
     }
 
-    val libraryViewModel by activityViewModel<LibraryViewModel>()
+    val libraryViewModel by activityViewModel<TrackListViewModel>()
 
     private lateinit var binding : FragmentLibraryContentBinding
 
@@ -116,11 +114,22 @@ class TrackListFragment : Fragment() {
         }
     }
 
+    private fun removeErrorFragment() {
+        val errorFragment = childFragmentManager.findFragmentById(R.id.fragment_library_content)
+        if (errorFragment is ErrorFragment) {
+            childFragmentManager.commit {
+                remove(errorFragment)
+            }
+        }
+    }
+
     fun renderState(state: TrackListState) {
         when(state) {
             is TrackListState.TracksEmpty -> {
                 Log.i("TrackListFragment","TracksEmpty state")
                 trackList = emptyList()
+                adapter?.items = trackList
+                adapter?.notifyDataSetChanged()
                 showError(
                     getString(R.string.placeholder_fav_message),
                     false
@@ -131,6 +140,7 @@ class TrackListFragment : Fragment() {
                 trackList = state.trackList
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
+                removeErrorFragment()
             }
         }
     }

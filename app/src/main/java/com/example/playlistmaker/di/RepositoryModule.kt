@@ -12,7 +12,9 @@ import com.example.playlistmaker.domain.api.ThemeRepository
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.db.LibraryRepository
+import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.impl.LibraryRepositoryImpl
+import com.example.playlistmaker.domain.impl.PlaylistRepositoryImpl
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -37,6 +39,10 @@ val repositoryModule = module {
 
     single<LibraryRepository> {
         LibraryRepositoryImpl(get(), get())
+    }
+
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(get(), get())
     }
 
     single < CurrentTrackRepository > {
