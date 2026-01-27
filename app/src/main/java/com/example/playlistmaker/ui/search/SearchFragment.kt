@@ -63,10 +63,7 @@ class SearchFragment : Fragment() {
         super.onResume()
         if (binding.searchText.text.isNotEmpty()) {
            viewModel.searchRequest(binding.searchText.text.toString())
-        } else {
-            viewModel.showHistory()
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,15 +101,13 @@ class SearchFragment : Fragment() {
         binding.refreshButton.setOnClickListener {
             applyVisibility(
                 placeholderVisible = View.GONE,
-                recyclerVisible = View.VISIBLE,
+                recyclerVisible = View.GONE,
                 progressBarVisible = View.VISIBLE,
                 historyTitleVisible = View.GONE,
                 clearHistoryVisible = View.GONE
             )
             viewModel.searchRequest(viewModel.lastSearchText.toString())
         }
-
-       // viewModel.showHistory()
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
@@ -152,17 +147,12 @@ class SearchFragment : Fragment() {
                 )
                 if (!s.isNullOrEmpty()) {
                     binding.clearIcon.visibility = View.VISIBLE
-                }
-                if (s.isNullOrEmpty()) {
+                } else {
                     binding.clearIcon.visibility = View.GONE
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    Log.e("TracksSearchController", "all callbacks removed")
-                    viewModel.showHistory()
-                }
                 if((binding.searchText.hasFocus()) && s.isNullOrEmpty()) {
                     viewModel.showHistory()
                 }
@@ -227,7 +217,7 @@ class SearchFragment : Fragment() {
     }
 
     fun showHistory(tracks: List<Track>) {
-        Log.i("TracksSearchController", tracks.toString())
+        Log.i("SearchActivity", tracks.toString())
         if (tracks.isNotEmpty()){
             applyVisibility(
                 placeholderVisible = View.GONE,
@@ -290,6 +280,7 @@ class SearchFragment : Fragment() {
 
             is TracksState.UnknownErrorState -> showUnknownError()
             is TracksState.History -> showHistory(state.tracks)
+            is TracksState.Initial -> showHistory(emptyList())
         }
     }
 

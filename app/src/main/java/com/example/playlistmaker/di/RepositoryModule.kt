@@ -42,9 +42,10 @@ val repositoryModule = module {
     factory { TrackDbConvertor() }
 
     factory { PlaylistDbConverter() }
-    single<PlaylistDao> { get<AppDatabase>().playlistDao() }
-    single<TrackDao> { get<AppDatabase>().trackDao() }
 
+    single<PlaylistDao> { get<AppDatabase>().playlistDao() }
+
+    single<TrackDao> { get<AppDatabase>().trackDao() }
 
     single<LibraryRepository> {
         LibraryRepositoryImpl(get(), get())

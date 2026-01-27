@@ -32,22 +32,32 @@ class TracksSearchViewModel(
 
     private var latestSearchText: String? = null
 
+    private var tracksHistory: List<Track> = emptyList()
+
     private var searchJob: Job? = null
 
     fun onRestoreInstanceState(savedInstanceState: Bundle?): String? {
         val restored = savedInstanceState?.getCharSequence(SEARCH_TEXT)
+        tracksHistory = trackHistoryInteractor.getTracksHistory()
+        if (tracksHistory.isNotEmpty()) {
+            renderState(TracksState.History(tracksHistory))
+        } else {
+            renderState(TracksState.Initial)
+        }
         lastSearchText = restored?.toString() ?: EMPTY_SEARCH_TEXT
         return lastSearchText
     }
 
     fun onSaveInstanceState(outState: Bundle) {
+        tracksHistory = trackHistoryInteractor.getTracksHistory()
         outState.putCharSequence(SEARCH_TEXT, lastSearchText)
     }
 
     fun showHistory() {
         Log.i("TracksSearchViewModel", "showHistory called")
+        tracksHistory = trackHistoryInteractor.getTracksHistory()
         renderState(
-            TracksState.History(trackHistoryInteractor.getTracksHistory())
+            TracksState.History(tracksHistory)
         )
     }
 
