@@ -1,8 +1,6 @@
 package com.example.playlistmaker.ui.library.tracklist
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.models.Track
@@ -31,10 +28,10 @@ class TrackListAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
-        Log.i("TrackListViewHolder", "onBindViewHolder")
+        Log.i(LOG_TAG, "onBindViewHolder")
         holder.bind(items[position])
 
-        Log.i("TrackListViewHolder", "onBindViewHolder items ${items}")
+        Log.i(LOG_TAG, "onBindViewHolder items $items")
 
         holder.itemView.setOnClickListener {
             val track = items[position]
@@ -67,5 +64,9 @@ class TrackListAdapter(
             songTitle.text = item.trackName
             songSubtitle.text = item.artistName
         }
+    }
+
+    companion object {
+        private const val LOG_TAG = "TrackListAdapter"
     }
 }

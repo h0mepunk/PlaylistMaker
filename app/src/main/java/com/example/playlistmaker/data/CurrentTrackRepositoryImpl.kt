@@ -12,18 +12,19 @@ class CurrentTrackRepositoryImpl(
     private val sharedPreferences: SharedPreferences,
     private val gson: Gson
 ): CurrentTrackRepository {
+    private val LOG_TAG = "CurrentTrackRepository"
     override fun saveCurrentTrack(track: Track) {
-        Log.i("TracksHistoryRepository track saved", track.toString())
+        Log.i(LOG_TAG, "track saved $track")
         sharedPreferences.edit()
             .putString(CURRENT_TRACK_KEY, trackToJson(track))
             .apply()
     }
 
     override fun getCurrentTrack(): Track {
-        Log.i("TracksHistoryRepository track got", trackFromJson(sharedPreferences.getString(
-            CURRENT_TRACK_KEY, "")).toString())
-        return trackFromJson(sharedPreferences.getString(
+        val track = trackFromJson(sharedPreferences.getString(
             CURRENT_TRACK_KEY, ""))
+        Log.i(LOG_TAG, " track got $track")
+        return track
     }
 
     private fun trackFromJson(json: String?): Track {

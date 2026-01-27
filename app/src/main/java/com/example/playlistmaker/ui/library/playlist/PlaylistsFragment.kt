@@ -22,6 +22,8 @@ class PlaylistsFragment : Fragment() {
     companion object {
         private const val PLAYLISTS_LIST = "playlists_list"
 
+        private const val LOG_TAG = "PlaylistFragment"
+
         fun newInstance(playlistsList: List<Playlist>) = PlaylistsFragment().apply {
             arguments = setPlaylistArg(playlistsList)
         }
@@ -86,7 +88,7 @@ class PlaylistsFragment : Fragment() {
     fun renderState(state: PlaylistsState) {
         when(state) {
             is PlaylistsState.PlaylistsEmpty -> {
-                Log.i("PlaylistFragment","Playlists empty state")
+                Log.i(LOG_TAG,"Playlists empty state")
                 playlistsList = emptyList()
                 showError(
                     getString(R.string.placeholder_playlists_message),
@@ -94,7 +96,7 @@ class PlaylistsFragment : Fragment() {
                 )
             }
             is PlaylistsState.PlaylistsContent -> {
-                Log.i("PlaylistFragment","playlists : ${state.playlistList}")
+                Log.i(LOG_TAG,"playlists : ${state.playlistList}")
                 playlistsList = state.playlistList
                     findNavController().navigate(
                         R.id.fragment_playlists,

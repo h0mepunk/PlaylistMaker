@@ -27,6 +27,7 @@ class TracksSearchViewModel(
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val EMPTY_SEARCH_TEXT = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val LOG_TAG = "TrackSearchViewModel"
     }
     var lastSearchText: String? = ""
 
@@ -54,7 +55,7 @@ class TracksSearchViewModel(
     }
 
     fun showHistory() {
-        Log.i("TracksSearchViewModel", "showHistory called")
+        Log.i(LOG_TAG, "showHistory called")
         tracksHistory = trackHistoryInteractor.getTracksHistory()
         renderState(
             TracksState.History(tracksHistory)
@@ -89,30 +90,30 @@ class TracksSearchViewModel(
     }
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
-        Log.i("TracksSearchViewModel", "foundTracks: $foundTracks")
+        Log.i(LOG_TAG, "foundTracks: $foundTracks")
         try {
             val tracks = mutableListOf<Track>()
             if (foundTracks != null) {
-                Log.i("TracksSearchViewModel", tracks.toString())
+                Log.i(LOG_TAG, tracks.toString())
                 tracks.addAll(foundTracks)
             }
             when {
                 errorMessage != null -> {
-                    Log.i("TracksSearchViewModel", errorMessage)
+                    Log.i(LOG_TAG, errorMessage)
                     renderState(TracksState.Error(errorMessage))
                     showToast.postValue(errorMessage)
                 }
                 tracks.isEmpty() -> {
-                    Log.i("TracksSearchViewModel", "empty track list")
+                    Log.i(LOG_TAG, "empty track list")
                     renderState(TracksState.Empty)
                 }
                 else -> {
-                    Log.i("TracksSearchViewModel", tracks.toString())
+                    Log.i(LOG_TAG, tracks.toString())
                     renderState(TracksState.Content(tracks?: emptyList()))
                 }
             }
         } catch (t: Throwable) {
-            Log.i("TracksSearchViewModel", "Unexpected error")
+            Log.i(LOG_TAG, "Unexpected error")
             renderState(TracksState.UnknownErrorState)
             showToast.postValue(t.message ?: "Unexpected error")
         }

@@ -2,7 +2,6 @@ package com.example.playlistmaker.data
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.playlistmaker.Const.CURRENT_TRACK_KEY
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.models.Track
@@ -14,17 +13,19 @@ class TracksHistoryRepositoryImpl(
     private val gson: Gson
 ): TracksHistoryRepository {
 
+    private val LOG_TAG = "TracksHistoryRepository"
+
     override fun getTracksHistory(): ArrayList<Track> {
         val tracks = tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, ""))
-        Log.i("TracksHistoryRepository track list got ${tracks.size}", tracks.toString())
+        Log.i(LOG_TAG,"track list got ${tracks.size} + $tracks")
         return tracksListFromJson(
             sharedPreferences.getString(TRACK_HISTORY_LIST_KEY, "")
         )
     }
 
     override fun saveTracksHistory(tracks: ArrayList<Track>) {
-        Log.i("TracksHistoryRepository track list saved ${tracks.size}", tracks.toString())
+        Log.i(LOG_TAG, "track list saved ${tracks.size} + $tracks")
         sharedPreferences.edit()
             .putString(
                 TRACK_HISTORY_LIST_KEY,

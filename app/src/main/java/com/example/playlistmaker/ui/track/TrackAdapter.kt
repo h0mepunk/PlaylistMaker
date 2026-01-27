@@ -35,10 +35,10 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        Log.i("????", "onBindViewHolder")
+        Log.i(LOG_TAG, "onBindViewHolder")
         holder.bind(items[position])
 
-        Log.i("????", "onBindViewHolder items ${items}")
+        Log.i(LOG_TAG, "onBindViewHolder items ${items}")
 
         holder.itemView.setOnClickListener {
                 val track = items[position]
@@ -85,5 +85,9 @@ class TrackAdapter(
             songTitle.text = item.trackName
             songSubtitle.text = item.artistName
         }
+    }
+
+    companion object {
+        private const val LOG_TAG = "TrackAdapter"
     }
 }

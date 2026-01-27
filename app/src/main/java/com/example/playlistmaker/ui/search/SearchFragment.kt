@@ -171,7 +171,7 @@ class SearchFragment : Fragment() {
 
     fun showContent(tracks: List<Track>) {
 
-        Log.i("SearchActivity", "trackList = $tracks")
+        Log.i(LOG_TAG, "trackList = $tracks")
         adapter?.items = tracks
         adapter?.notifyDataSetChanged()
 
@@ -189,7 +189,7 @@ class SearchFragment : Fragment() {
         iconId: Int,
         refreshButtonVisible: Int
     ) {
-        Log.i("SearchActivity", "trackList loading error")
+        Log.i(LOG_TAG, "trackList loading error")
         adapter?.items = emptyList()
         adapter?.notifyDataSetChanged()
         binding.placeholderMessageText.text = getString(messageId)
@@ -217,7 +217,7 @@ class SearchFragment : Fragment() {
     }
 
     fun showHistory(tracks: List<Track>) {
-        Log.i("SearchActivity", tracks.toString())
+        Log.i(LOG_TAG, tracks.toString())
         if (tracks.isNotEmpty()){
             applyVisibility(
                 placeholderVisible = View.GONE,
@@ -226,11 +226,11 @@ class SearchFragment : Fragment() {
                 historyTitleVisible = View.VISIBLE,
                 clearHistoryVisible = View.VISIBLE
             )
-            Log.i("SearchActivity", "track history = $tracks")
+            Log.i(LOG_TAG, "track history = $tracks")
             adapter?.items = tracks
             adapter?.notifyDataSetChanged()
         } else {
-            Log.i("SearchActivity", "track history empty")
+            Log.i(LOG_TAG, "track history empty")
             applyVisibility(
                 placeholderVisible = View.GONE,
                 recyclerVisible = View.GONE,
@@ -285,7 +285,7 @@ class SearchFragment : Fragment() {
     }
 
     fun showToast(additionalMessage: String?) {
-        Log.i("SearchActivity", "showToast: $additionalMessage")
+        Log.i(LOG_TAG, "showToast: $additionalMessage")
         requireActivity().runOnUiThread {
             Toast.makeText(requireActivity(), additionalMessage?: "Empty message", Toast.LENGTH_LONG)
                 .show()
@@ -295,5 +295,6 @@ class SearchFragment : Fragment() {
     companion object {
         const val EMPTY_SEARCH_TEXT = ""
         private const val CLICK_DEBOUNCE_DELAY = 300L
+        private const val LOG_TAG = "SearchFragment"
     }
 }

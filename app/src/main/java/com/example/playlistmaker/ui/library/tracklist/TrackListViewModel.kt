@@ -16,7 +16,6 @@ class TrackListViewModel(private val libraryRepository: LibraryRepository): View
 
     fun observeTracksState(): LiveData<TrackListState> = tracksStateLiveData
 
-
     fun getTrackList() {
         viewModelScope.launch {
             libraryRepository.getTracks()
@@ -28,10 +27,10 @@ class TrackListViewModel(private val libraryRepository: LibraryRepository): View
 
     private fun processTracks(tracks: List<Track>) {
         if (tracks.isEmpty()) {
-            Log.i("TrackListFragment","TracksEmpty state")
+            Log.i(LOG_TAG,"TracksEmpty state")
             renderTrackListState(TrackListState.TracksEmpty)
         } else {
-            Log.i("TrackListFragment","TracksContent state with ${tracks.size} tracks")
+            Log.i(LOG_TAG,"TracksContent state with ${tracks.size} tracks")
             renderTrackListState(TrackListState.TracksContent(tracks))
         }
     }
@@ -39,6 +38,10 @@ class TrackListViewModel(private val libraryRepository: LibraryRepository): View
 
     private fun renderTrackListState(state: TrackListState) {
         tracksStateLiveData.postValue(state)
+    }
+
+    companion object {
+        private const val LOG_TAG = "TrackListViewModel"
     }
 
 }

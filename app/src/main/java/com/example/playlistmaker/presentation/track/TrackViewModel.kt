@@ -110,10 +110,10 @@ class TrackViewModel(
         viewModelScope.launch {
             if (currentlyFavorite) {
                 libraryInteractor.removeTrackFromPlaylist(currentTrack)
-                Log.i("TrackViewModel","track removed from playlist: ${currentTrack.trackName}")
+                Log.i(LOG_TAG,"track removed from playlist: ${currentTrack.trackName}")
             } else {
                 libraryInteractor.addTrackToPlaylist(currentTrack)
-                Log.i("TrackViewModel","track added to playlist: ${currentTrack.trackName}")
+                Log.i(LOG_TAG,"track added to playlist: ${currentTrack.trackName}")
             }
             isFavoriteLiveData.postValue(!currentlyFavorite)
         }
@@ -133,7 +133,7 @@ class TrackViewModel(
         )
 
         mediaPlayer.setOnCompletionListener {
-            Log.i("TrackController", "player completed")
+            Log.i(LOG_TAG, "player completed")
             stopPlayer()
         }
     }
@@ -145,5 +145,9 @@ class TrackViewModel(
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.reset()
+    }
+
+    companion object {
+        private const val LOG_TAG = "TrackViewModel"
     }
 }

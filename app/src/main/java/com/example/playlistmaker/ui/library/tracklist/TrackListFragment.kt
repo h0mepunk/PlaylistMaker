@@ -34,6 +34,7 @@ class TrackListFragment : Fragment() {
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 300L
         private const val TRACK_LIST = "track_list"
+        private const val LOG_TAG = "TrackListFragment"
 
         fun createArgs(trackList: List<Track>) = Bundle().apply {
                 putString(TRACK_LIST, trackList.toString())
@@ -126,7 +127,7 @@ class TrackListFragment : Fragment() {
     fun renderState(state: TrackListState) {
         when(state) {
             is TrackListState.TracksEmpty -> {
-                Log.i("TrackListFragment","TracksEmpty state")
+                Log.i(LOG_TAG,"TracksEmpty state")
                 trackList = emptyList()
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
@@ -136,7 +137,7 @@ class TrackListFragment : Fragment() {
                 )
             }
             is TrackListState.TracksContent -> {
-                Log.i("TrackListFragment","trackList ${state.trackList}")
+                Log.i(LOG_TAG,"trackList ${state.trackList}")
                 trackList = state.trackList
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()

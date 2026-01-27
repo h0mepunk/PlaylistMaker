@@ -54,7 +54,7 @@ class TrackFragment : Fragment() {
         binding.mediaInfoCountryValue.text = viewModel.currentTrack.country
 
         binding.mediaButtonPlay.setOnClickListener {
-            Log.i("TrackFragment","play/stop button clicked")
+            Log.i(LOG_TAG,"play/stop button clicked")
             viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
         }
 
@@ -96,10 +96,10 @@ class TrackFragment : Fragment() {
     fun setLikeButton(liked: Boolean) {
         if (liked) {
             binding.mediaButtonLike.setBackgroundResource (R.drawable.media_liked)
-            Log.i("TrackFragment","track is favorite")
+            Log.i(LOG_TAG,"track is favorite")
         } else {
             binding.mediaButtonLike.setBackgroundResource(R.drawable.media_like)
-            Log.i("TrackFragment","track is not favorite")
+            Log.i(LOG_TAG,"track is not favorite")
         }
     }
 
@@ -111,7 +111,7 @@ class TrackFragment : Fragment() {
             is TrackState.Playing -> {
                 binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_stop)
                 binding.mediaTrackTime.text = state.trackTime?: getString(R.string.start_time_zero)
-                Log.i("???????", "time = " + state.trackTime.toString())
+                Log.i(LOG_TAG, "time = " + state.trackTime.toString())
             }
             is TrackState.Stopped -> {
                 binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
@@ -124,5 +124,9 @@ class TrackFragment : Fragment() {
             }
             is TrackState.Prepared -> { binding.mediaButtonPlay.isEnabled = true }
         }
+    }
+
+    companion object {
+        private const val LOG_TAG = "TrackFragment"
     }
 }
