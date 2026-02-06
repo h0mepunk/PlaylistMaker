@@ -33,4 +33,7 @@
     <string name="main_title">Main</string>
     <string name="playlist_toolbar_title_text">Новый плейлист</string>
     <string name="add_to_playlist_bottomsheet_title">Добавить в плейлист</string>
+    <string name="create_playlist_button_text">Создать</string>
+    <string name="playlist_description_hint_text">Описание</string>
+    <string name="playlist_name_hint_text">Название*</string>
 </resources>
