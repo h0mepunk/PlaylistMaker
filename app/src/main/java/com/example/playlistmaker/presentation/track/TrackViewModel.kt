@@ -6,8 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
-import com.example.playlistmaker.domain.api.TracksHistoryInteractor
+import com.example.playlistmaker.domain.db.LibraryInteractor
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,11 +17,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TrackViewModel(
+    private val currentTrackInteractor: CurrentTrackInteractor,
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val tracksHistoryInteractor: TracksHistoryInteractor,
+    private val libraryInteractor: LibraryInteractor,
     private val mediaPlayer: MediaPlayer
 ): ViewModel() {
 
+    private var isFavoriteLiveData = MutableLiveData<Boolean>()
+    var isFavorite: LiveData<Boolean> = isFavoriteLiveData
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observeState(): LiveData<TrackState> = stateLiveData
     lateinit var currentTrack: Track
@@ -33,6 +37,15 @@ class TrackViewModel(
             while (mediaPlayer.isPlaying) {
                 delay(250L)
                 stateLiveData.postValue(TrackState.Playing(getCurrentPlayerPosition()))
+            }
+        }
+    }
+
+    fun getIsTrackFavorite() {
+        viewModelScope.launch {
+            libraryInteractor.getTracks().collect { tracks ->
+                val isFound = tracks.any { it.trackId == currentTrack.trackId }
+                isFavoriteLiveData.postValue(isFound)
             }
         }
     }
@@ -92,8 +105,24 @@ class TrackViewModel(
         }
     }
 
+    fun onLikeButtonClicked() {
+        val currentlyFavorite = isFavorite.value ?: false
+        viewModelScope.launch {
+            if (currentlyFavorite) {
+                libraryInteractor.removeTrackFromPlaylist(currentTrack)
+                Log.i(LOG_TAG,"track removed from playlist: ${currentTrack.trackName}")
+            } else {
+                libraryInteractor.addTrackToPlaylist(currentTrack)
+                Log.i(LOG_TAG,"track added to playlist: ${currentTrack.trackName}")
+            }
+            isFavoriteLiveData.postValue(!currentlyFavorite)
+        }
+    }
+
     fun onCreate() {
-        currentTrack = tracksHistoryInteractor.getCurrentTrack()
+        currentTrack = currentTrackInteractor.getCurrentTrack()
+
+        getIsTrackFavorite()
 
         preparePlayer(currentTrack.previewUrl)
 
@@ -104,7 +133,7 @@ class TrackViewModel(
         )
 
         mediaPlayer.setOnCompletionListener {
-            Log.i("TrackController", "player completed")
+            Log.i(LOG_TAG, "player completed")
             stopPlayer()
         }
     }
@@ -116,5 +145,9 @@ class TrackViewModel(
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.reset()
+    }
+
+    companion object {
+        private const val LOG_TAG = "TrackViewModel"
     }
 }

@@ -1,5 +1,7 @@
 package com.example.playlistmaker.domain.api
 
+import com.example.playlistmaker.domain.models.Track
+
 interface MediaPlayerInteractor {
 
     fun preparePlayer(url: String, onPrepared: () -> Unit, onCompletion: () -> Unit)
@@ -13,4 +15,6 @@ interface MediaPlayerInteractor {
     fun getPlayerState(): Int
 
     fun updateTimer(onUpdate: () -> Unit)
+
+    fun clickLike(track: Track)
 }

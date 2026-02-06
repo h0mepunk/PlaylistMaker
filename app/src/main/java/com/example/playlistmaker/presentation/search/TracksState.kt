@@ -20,5 +20,7 @@ sealed interface TracksState {
 
     data object Empty: TracksState
 
+    data object Initial: TracksState
+
     object UnknownErrorState : TracksState
 }

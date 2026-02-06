@@ -1,28 +1,28 @@
 package com.example.playlistmaker.ui.library.playlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
-import com.example.playlistmaker.presentation.library.LibraryViewModel
+import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
-import com.example.playlistmaker.ui.library.tracklist.TrackListFragment
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
 
-    private lateinit var playlistsList: LiveData<List<Playlist>>
+    private lateinit var playlistsList: List<Playlist>
 
     companion object {
         private const val PLAYLISTS_LIST = "playlists_list"
+
+        private const val LOG_TAG = "PlaylistFragment"
 
         fun newInstance(playlistsList: List<Playlist>) = PlaylistsFragment().apply {
             arguments = setPlaylistArg(playlistsList)
@@ -41,7 +41,7 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    val libraryViewModel by activityViewModel<LibraryViewModel>()
+    val playlistViewModel by activityViewModel<PlaylistViewModel>()
 
     private lateinit var binding: FragmentPlaylistsBinding
 
@@ -53,21 +53,11 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        playlistsList = libraryViewModel.getCurrentPlaylist()
-        libraryViewModel.getCurrentPlaylist().observe(viewLifecycleOwner) {
-            playlistsList ->
-                if (playlistsList.isEmpty()) {
-                    showError(
-                        getString(R.string.placeholder_playlists_message),
-                        true
-                    )
-                } else {
-                    findNavController().navigate(
-                        R.id.fragment_playlists,
-                        setPlaylistArg(playlistsList)
-                    )
-                }
+        playlistViewModel.observePlaylistsState().observe(viewLifecycleOwner) {
+            renderState(it)
         }
+
+        playlistViewModel.getPlaylists()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -92,6 +82,27 @@ class PlaylistsFragment : Fragment() {
                 R.id.fragment_playlists,
                 getErrorFragment(errorText, buttonVisibility)
             )
+        }
+    }
+
+    fun renderState(state: PlaylistsState) {
+        when(state) {
+            is PlaylistsState.PlaylistsEmpty -> {
+                Log.i(LOG_TAG,"Playlists empty state")
+                playlistsList = emptyList()
+                showError(
+                    getString(R.string.placeholder_playlists_message),
+                    true
+                )
+            }
+            is PlaylistsState.PlaylistsContent -> {
+                Log.i(LOG_TAG,"playlists : ${state.playlistList}")
+                playlistsList = state.playlistList
+                    findNavController().navigate(
+                        R.id.fragment_playlists,
+                        setPlaylistArg(playlistsList)
+                    )
+            }
         }
     }
 }

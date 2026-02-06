@@ -1,63 +1,42 @@
-package com.example.playlistmaker.ui.track
+package com.example.playlistmaker.ui.library.tracklist
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.playlistmaker.Const.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
-import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 
-class TrackAdapter(
+class TrackListAdapter(
     private val currentTrackInteractor: CurrentTrackInteractor,
-    private val tracksHistoryInteractor: TracksHistoryInteractor,
     private val onTrackClick: (Track) -> Unit
-): RecyclerView.Adapter<TrackAdapter.TracksViewHolder> () {
+): RecyclerView.Adapter<TrackListAdapter.TrackListViewHolder> () {
 
-    private lateinit var sharedPreferences : SharedPreferences
     private lateinit var context: Context
     var items: List<Track> = emptyList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
-        sharedPreferences = parent.context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         context = parent.context
-        return TracksViewHolder(view)
+        return TrackListViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
         Log.i(LOG_TAG, "onBindViewHolder")
         holder.bind(items[position])
 
-        Log.i(LOG_TAG, "onBindViewHolder items ${items}")
+        Log.i(LOG_TAG, "onBindViewHolder items $items")
 
         holder.itemView.setOnClickListener {
-                val track = items[position]
-                var trackHistory = tracksHistoryInteractor.getTracksHistory()
-                if (trackHistory.size == 10) {
-                    trackHistory.removeAt(9)
-                    trackHistory.add(0, track)
-                }
-                if (trackHistory.contains(track)) {
-                    trackHistory.remove(track)
-                    trackHistory.add(0, track)
-                }
-                else {
-                    trackHistory.add(0, track)
-                }
-                tracksHistoryInteractor.saveTracksHistory(trackHistory)
-                currentTrackInteractor.saveCurrentTrack(track)
-
-                onTrackClick(track)
+            val track = items[position]
+            currentTrackInteractor.saveCurrentTrack(track)
+            onTrackClick(track)
         }
     }
 
@@ -65,7 +44,7 @@ class TrackAdapter(
         return items.size
     }
 
-    class TracksViewHolder(
+    class TrackListViewHolder(
         itemView: View
     )
         : RecyclerView.ViewHolder(itemView) {
@@ -88,6 +67,6 @@ class TrackAdapter(
     }
 
     companion object {
-        private const val LOG_TAG = "TrackAdapter"
+        private const val LOG_TAG = "TrackListAdapter"
     }
 }
