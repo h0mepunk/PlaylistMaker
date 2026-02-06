@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/settings_background_color"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/playlist_toolbar"
+            app:navigationIcon="@drawable/arrow_back"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/header_height"
+            app:title="@string/playlist_toolbar_title_text"
+            android:orientation="horizontal"
+            app:titleTextAppearance="@style/toolbar_title_text">
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/left_border"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/media_horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/right_border"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/media_horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/media_track_cover"
+            android:layout_width="@dimen/player_track_dimension"
+            android:layout_height="@dimen/player_track_dimension"
+            android:background="@drawable/playlist_image_shape"
+            android:layout_marginTop="26dp"
+            app:layout_constraintBottom_toTopOf="@id/media_track_title"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
+            app:layout_constraintStart_toStartOf="@id/left_border"
+            app:layout_constraintTop_toBottomOf="@id/media_toolbar"></ImageView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout >

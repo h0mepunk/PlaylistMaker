@@ -31,4 +31,6 @@
     <string name="playlists_tab_title">Плейлисты</string>
     <string name="fav_tracks_tab_title">Избранные треки</string>
     <string name="main_title">Main</string>
+    <string name="playlist_toolbar_title_text">Новый плейлист</string>
+    <string name="add_to_playlist_bottomsheet_title">Добавить в плейлист</string>
 </resources>

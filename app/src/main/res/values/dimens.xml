@@ -40,4 +40,5 @@
     <dimen name="progressBarSize">44dp</dimen>
     <dimen name="searchPreloaderMarginTop">140dp</dimen>
     <dimen name="section_margin">16dp</dimen>
+    <dimen name="playlist_image_shape_size">312dp</dimen>
 </resources>
