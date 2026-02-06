@@ -71,6 +71,21 @@
             app:layout_constraintTop_toBottomOf="@id/playlist_cover"
             android:background="@drawable/text_edit_shape"
             android:text="@string/playlist_name_hint_text"/>
+        <TextView
+            android:background="@drawable/rectangle_blank"
+            android:id="@+id/edit_playlist_name_title"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/edit_playlist_name"
+            app:layout_constraintBaseline_toTopOf="@id/edit_playlist_name"
+            android:layout_marginStart="8dp"
+            android:textAlignment="center"
+            app:layout_marginBaseline="7dp"
+            android:textColor="@color/grey"
+            android:text="@string/playlist_name_hint_text"
+            android:textFontWeight="400"
+            android:fontFamily="@font/ys_text_regular"
+            android:textSize="12sp"
+            android:layout_height="16dp"></TextView>
 
         <EditText
             android:id="@+id/edit_playlist_description"
@@ -83,21 +98,35 @@
             app:layout_constraintTop_toBottomOf="@id/edit_playlist_name"
             android:background="@drawable/text_edit_shape"
             android:text="@string/playlist_description_hint_text"/>
+        <TextView
+            android:textAlignment="center"
+            android:background="@drawable/rectangle_blank"
+            android:id="@+id/edit_playlist_description_title"
+            android:layout_width="wrap_content"
+            android:text="@string/playlist_description_hint_text"
+            app:layout_constraintStart_toStartOf="@id/edit_playlist_description"
+            app:layout_constraintBaseline_toTopOf="@id/edit_playlist_description"
+            android:layout_marginStart="8dp"
+            app:layout_marginBaseline="7dp"
+            android:textColor="@color/grey"
+            android:textFontWeight="400"
+            android:fontFamily="@font/ys_text_regular"
+            android:textSize="12sp"
+            android:layout_height="16dp"></TextView>
 
         <Button
             android:id="@+id/cereate_playlist_button"
+            style="@style/create_playlist_button"
+            app:backgroundTint="@color/blue"
             android:background="@drawable/create_playlist_button_shape"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/create_playlist_button_text"
-            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@id/edit_playlist_description"
             android:layout_height="wrap_content"></Button>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout >
