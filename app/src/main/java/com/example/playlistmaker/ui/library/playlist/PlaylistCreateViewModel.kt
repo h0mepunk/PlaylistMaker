@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.Const.EMPTY_STRING
 import com.example.playlistmaker.domain.api.PlaylistCreateRepository
+import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistCreateState
 import kotlinx.coroutines.launch
 
 class PlaylistCreateViewModel(
-    val playlistCreateRepository: PlaylistCreateRepository
+    val playlistCreateRepository: PlaylistCreateRepository,
+    val plalistRepository: PlaylistRepository
 ): ViewModel() {
     private val playlistCreateStateLiveData = androidx.lifecycle.MutableLiveData<PlaylistCreateState>()
 
@@ -35,7 +37,23 @@ class PlaylistCreateViewModel(
         }
     }
 
-
+    fun savePlaylist(
+        coverUri: String? = EMPTY_STRING
+    ) {
+        Log.i(LOG_TAG, "savePlaylist called with name $playlistName and description $playlistDescription and coverUri $coverUri")
+        viewModelScope.launch {
+            plalistRepository.insertPlaylist(
+                Playlist(
+                    name = playlistName,
+                    description = playlistDescription,
+                    tracks = EMPTY_STRING,
+                    tracksCount = 0,
+                    id = (1..1000000000).random(),
+                    imgUri = coverUri?: EMPTY_STRING
+                )
+            )
+        }
+    }
 
     fun onSaveInstanceState(outState: Bundle) {
         playlist = playlistCreateRepository.getCurrentPlaylist()

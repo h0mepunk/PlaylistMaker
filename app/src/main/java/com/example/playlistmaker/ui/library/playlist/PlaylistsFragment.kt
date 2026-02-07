@@ -8,16 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import com.example.playlistmaker.ui.library.tracklist.TrackListAdapter
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
 
     private lateinit var playlistsList: List<Playlist>
+
+    private var adapter: PlaylistsAdapter? = null
 
     companion object {
         private const val PLAYLISTS_LIST = "playlists_list"
@@ -33,11 +37,9 @@ class PlaylistsFragment : Fragment() {
             }
 
         fun setErrorArgs(
-            errorText: String,
-            buttonVisibility: Boolean
+            errorText: String
         ) = Bundle().apply {
             putString("error_text", errorText)
-            putBoolean("button_visible", buttonVisibility)
         }
     }
 
@@ -57,6 +59,10 @@ class PlaylistsFragment : Fragment() {
             renderState(it)
         }
 
+        adapter = PlaylistsAdapter()
+        binding.playlistLibraryListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.playlistLibraryListRecycler.adapter = adapter
+
         playlistViewModel.getPlaylists()
     }
 
@@ -66,21 +72,19 @@ class PlaylistsFragment : Fragment() {
     }
 
     fun getErrorFragment(
-        errorText: String,
-        buttonVisibility: Boolean
+        errorText: String
     ) = ErrorFragment().apply {
-        arguments = setErrorArgs(errorText, buttonVisibility)
+        arguments = setErrorArgs(errorText)
     }
 
     fun showError(
         errorText: String,
-        buttonVisibility: Boolean
     ) {
         childFragmentManager.commit {
             setReorderingAllowed(true)
             replace(
                 R.id.fragment_playlists,
-                getErrorFragment(errorText, buttonVisibility)
+                getErrorFragment(errorText)
             )
         }
     }
@@ -90,18 +94,22 @@ class PlaylistsFragment : Fragment() {
             is PlaylistsState.PlaylistsEmpty -> {
                 Log.i(LOG_TAG,"Playlists empty state")
                 playlistsList = emptyList()
-                showError(
-                    getString(R.string.placeholder_playlists_message),
-                    true
-                )
+                showError(getString(R.string.placeholder_playlists_message))
             }
             is PlaylistsState.PlaylistsContent -> {
                 Log.i(LOG_TAG,"playlists : ${state.playlistList}")
+                removeErrorFragment()
                 playlistsList = state.playlistList
-                    findNavController().navigate(
-                        R.id.fragment_playlists,
-                        setPlaylistArg(playlistsList)
-                    )
+
+            }
+        }
+    }
+
+    private fun removeErrorFragment() {
+        val errorFragment = childFragmentManager.findFragmentById(R.id.fragment_library_content)
+        if (errorFragment is ErrorFragment) {
+            childFragmentManager.commit {
+                remove(errorFragment)
             }
         }
     }

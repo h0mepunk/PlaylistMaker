@@ -26,4 +26,13 @@ class PlaylistRepositoryImpl(
         val playlistEntity = playlistDbConverter.map(playlist)
         playlistDao.insertPlaylist(playlistEntity)
     }
+
+    override fun getPlaylistById(playlistId: Int): Flow<Playlist> = flow {
+        val playlistEntity = playlistDao.getPlaylistById(playlistId)
+        emit(playlistEntity.let { playlistDbConverter.map(it) })
+    }
+
+    override suspend fun addTrackToPlaylist(playlistId: Int, trackId: String) {
+        playlistDao.addTrackToPlaylist(playlistId, trackId)
+    }
 }

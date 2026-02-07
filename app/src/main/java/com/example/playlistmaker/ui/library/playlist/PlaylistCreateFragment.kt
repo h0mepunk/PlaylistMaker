@@ -49,9 +49,6 @@ class PlaylistCreateFragment: Fragment() {
 
         private const val PLAYLIST = "playlist"
 
-        private const val PLAYLIST_NAME = "playlist_name"
-        private const val PLAYLIST_DESCRIPTION = "playlist_description"
-
         fun newInstance(playlist: Playlist?) = PlaylistCreateFragment().apply {
             arguments = setPlaylistArg(playlist)
         }
@@ -101,6 +98,14 @@ class PlaylistCreateFragment: Fragment() {
             val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
             val file = File(filePath, "first_cover.jpg")
             binding.playlistCover.setImageURI(file.toUri())
+        }
+
+        binding.cereatePlaylistButton.setOnClickListener {
+            if (binding.editPlaylistName.text.isNotEmpty()) {
+                playlistCreateViewModel.playlistName = binding.editPlaylistName.text.toString()
+                playlistCreateViewModel.playlistDescription = binding.editPlaylistDescription.text.toString()
+                playlistCreateViewModel.savePlaylist()
+            }
         }
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager

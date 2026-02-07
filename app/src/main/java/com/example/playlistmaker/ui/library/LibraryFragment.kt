@@ -42,31 +42,4 @@ class LibraryFragment: Fragment() {
         tabMediator.detach()
         super.onDestroyView()
     }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        tabMediator.detach()
-//    }
-
-    fun setCurrentPlaylist(playlistList: List<Playlist>) {
-        //TODO
-    }
-
-    fun getCurrentPlaylist(): List<Playlist> {
-        //TODO
-        return emptyList()
-    }
-
-    fun setCurrentTrackList(trackList: List<Track>) {
-        //TODO
-    }
-
-    fun getCurrentTrackList(): List<Track> {
-        //TODO
-        return emptyList()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
 }

@@ -4,9 +4,9 @@ import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface LibraryInteractor {
-    suspend fun addTrackToPlaylist(track: Track)
+    suspend fun addTrackToFavorites(track: Track)
 
-    suspend fun removeTrackFromPlaylist(track: Track)
+    suspend fun deleteTrackFromFavorites(track: Track)
 
     fun getTracks(): Flow<List<Track>>
 

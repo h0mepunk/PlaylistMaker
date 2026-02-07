@@ -109,10 +109,10 @@ class TrackViewModel(
         val currentlyFavorite = isFavorite.value ?: false
         viewModelScope.launch {
             if (currentlyFavorite) {
-                libraryInteractor.removeTrackFromPlaylist(currentTrack)
+                libraryInteractor.deleteTrackFromFavorites(currentTrack)
                 Log.i(LOG_TAG,"track removed from playlist: ${currentTrack.trackName}")
             } else {
-                libraryInteractor.addTrackToPlaylist(currentTrack)
+                libraryInteractor.addTrackToFavorites(currentTrack)
                 Log.i(LOG_TAG,"track added to playlist: ${currentTrack.trackName}")
             }
             isFavoriteLiveData.postValue(!currentlyFavorite)
