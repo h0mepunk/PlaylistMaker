@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
@@ -59,9 +60,15 @@ class PlaylistsFragment : Fragment() {
             renderState(it)
         }
 
+        binding.newPlaylistButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_library_fragment_to_playlistCreateFragment
+            )
+        }
         adapter = PlaylistsAdapter()
         binding.playlistLibraryListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistLibraryListRecycler.adapter = adapter
+        binding.playlistLibraryListRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
 
         playlistViewModel.getPlaylists()
     }
@@ -71,45 +78,19 @@ class PlaylistsFragment : Fragment() {
         outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation
     }
 
-    fun getErrorFragment(
-        errorText: String
-    ) = ErrorFragment().apply {
-        arguments = setErrorArgs(errorText)
-    }
-
-    fun showError(
-        errorText: String,
-    ) {
-        childFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(
-                R.id.fragment_playlists,
-                getErrorFragment(errorText)
-            )
-        }
-    }
-
     fun renderState(state: PlaylistsState) {
         when(state) {
             is PlaylistsState.PlaylistsEmpty -> {
                 Log.i(LOG_TAG,"Playlists empty state")
                 playlistsList = emptyList()
-                showError(getString(R.string.placeholder_playlists_message))
+                binding.placeholderView.visibility = View.VISIBLE
             }
             is PlaylistsState.PlaylistsContent -> {
                 Log.i(LOG_TAG,"playlists : ${state.playlistList}")
-                removeErrorFragment()
+                binding.placeholderView.visibility = View.GONE
                 playlistsList = state.playlistList
-
-            }
-        }
-    }
-
-    private fun removeErrorFragment() {
-        val errorFragment = childFragmentManager.findFragmentById(R.id.fragment_library_content)
-        if (errorFragment is ErrorFragment) {
-            childFragmentManager.commit {
-                remove(errorFragment)
+                adapter?.items = playlistsList
+                adapter?.notifyDataSetChanged()
             }
         }
     }

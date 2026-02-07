@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.models.Playlist
 
 class PlaylistsAdapter(
@@ -22,7 +21,7 @@ class PlaylistsAdapter(
     var items: List<Playlist> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item_view, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.playlist_item_view, parent, false)
         context = parent.context
         return PlaylistsViewHolder(view)
     }
@@ -49,10 +48,9 @@ class PlaylistsAdapter(
     )
         : RecyclerView.ViewHolder(itemView) {
 
-        private val playlistTitle: TextView = itemView.findViewById(R.id.song_name)
-        private val playlistSubtitle: TextView = itemView.findViewById(R.id.song_author)
-        private val playlistImage: ImageView = itemView.findViewById(R.id.song_album_cover)
-        private val okaylistSongCount: TextView = itemView.findViewById(R.id.song_time)
+        private val playlistTitle: TextView = itemView.findViewById(R.id.playlist_name)
+        private val playlistSubtitle: TextView = itemView.findViewById(R.id.playlist_tracks_count)
+        private val playlistImage: ImageView = itemView.findViewById(R.id.playlist_cover)
 
         fun bind(item: Playlist) {
             Glide.with(itemView.context)
@@ -60,9 +58,8 @@ class PlaylistsAdapter(
                 .placeholder(R.drawable.placeholder)
                 .into(playlistImage)
 
-            okaylistSongCount.text = item.tracksCount.toString()
             playlistTitle.text = item.name
-            playlistSubtitle.text = item.description
+            playlistSubtitle.text = item.tracksCount.toString() + " треков"
         }
     }
 
