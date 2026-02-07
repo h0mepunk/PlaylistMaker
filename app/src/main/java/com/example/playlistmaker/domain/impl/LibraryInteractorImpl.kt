@@ -19,4 +19,8 @@ class LibraryInteractorImpl (
     override fun getTracks(): Flow<List<Track>> {
         return libraryRepository.getTracks()
     }
+
+    override fun getTrackById(trackId: Int): Flow<Track> {
+        return libraryRepository.getTrackById(trackId)
+    }
 }

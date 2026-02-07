@@ -3,6 +3,7 @@ package com.example.playlistmaker.data
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.playlistmaker.Const.CURRENT_PLAYLIST_KEY
+import com.example.playlistmaker.Const.EMPTY_STRING
 import com.example.playlistmaker.Const.TRACK_HISTORY_LIST_KEY
 import com.example.playlistmaker.domain.api.PlaylistCreateRepository
 import com.example.playlistmaker.domain.models.Playlist
@@ -26,14 +27,24 @@ class PlaylistCreateRepositoryImpl(
         )
     }
 
-    override fun saveCurrentPlaylist(playlist: Playlist) {
+    override fun saveCurrentPlaylist(playlist: Playlist?) {
         Log.i(LOG_TAG, "playlist saved $playlist")
-        sharedPreferences.edit()
-            .putString(
-                TRACK_HISTORY_LIST_KEY,
-                playlistToJson(playlist)
+        if (playlist!= null) {
+            Log.i(LOG_TAG, "playlist is not null")
+            sharedPreferences.edit()
+                .putString(
+                    TRACK_HISTORY_LIST_KEY,
+                    playlistToJson(playlist!!)
             )
             .apply()
+        } else {
+            Log.i(LOG_TAG, "playlist is null")
+            sharedPreferences.edit()
+                .putString(
+                    TRACK_HISTORY_LIST_KEY,
+                    EMPTY_STRING
+                )
+        }
     }
 
     private fun playlistFromJson(json: String?): Playlist? {

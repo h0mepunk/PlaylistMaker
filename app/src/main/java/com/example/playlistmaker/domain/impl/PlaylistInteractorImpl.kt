@@ -13,4 +13,8 @@ class PlaylistInteractorImpl(
 
         return playlistRepository.getPlaylists()
     }
+
+    override suspend fun insertPlaylist(playlist: Playlist) {
+        return playlistRepository.insertPlaylist(playlist)
+    }
 }

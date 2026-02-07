@@ -11,4 +11,6 @@ interface LibraryRepository {
     suspend fun removeTrackFromPlaylist(track: Track)
 
     fun getTracks(): Flow<List<Track>>
+
+    fun getTrackById(trackId: Int): Flow<Track>
 }

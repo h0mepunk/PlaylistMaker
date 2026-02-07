@@ -21,6 +21,11 @@ class LibraryRepositoryImpl(
         emit(convertFromTracksEntity(tracks))
     }
 
+    override fun getTrackById(trackId: Int): Flow<Track> = flow {
+        val trackEntity = trackDao.getTrackById(trackId)
+        trackEntity.let { trackDbConvertor.map(it)}
+    }
+
     override suspend fun addTrackToPlaylist(track: Track) {
         val trackEntity = trackDbConvertor.map(track)
         trackDao.insertTrack(trackEntity)

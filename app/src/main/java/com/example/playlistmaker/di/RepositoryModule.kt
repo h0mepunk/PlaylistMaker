@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import com.example.playlistmaker.data.CurrentTrackRepositoryImpl
 import com.example.playlistmaker.data.MediaPlayerRepositoryImpl
+import com.example.playlistmaker.data.PlaylistCreateRepositoryImpl
 import com.example.playlistmaker.data.ThemeRepositoryImpl
 import com.example.playlistmaker.data.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.data.TracksRepositoryImpl
@@ -41,7 +42,7 @@ val repositoryModule = module {
     }
 
     single<PlaylistCreateRepository> {
-        PlaylistCreateRepositoryImpl(get())
+        PlaylistCreateRepositoryImpl(get(), get())
     }
 
     factory { TrackDbConvertor() }

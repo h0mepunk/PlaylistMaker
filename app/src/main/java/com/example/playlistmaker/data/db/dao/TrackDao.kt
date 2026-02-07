@@ -18,4 +18,7 @@ interface TrackDao {
 
     @Query("SELECT * FROM tracks_table ORDER BY addedAt DESC")
     suspend fun getTracks(): List<TrackEntity>
+
+    @Query("SELECT * FROM tracks_table WHERE trackId = :id LIMIT 1")
+    suspend fun getTrackById(id: Int): TrackEntity
 }

@@ -8,7 +8,8 @@ class PlaylistEntity (
     @PrimaryKey
     val id: Int,
     val name: String,
-    val imgUrl100: String,
+    val description: String,
     val tracks: String,
-    val previewUrl: String
+    val tracksCount: Int,
+    val previewUri: String
 )

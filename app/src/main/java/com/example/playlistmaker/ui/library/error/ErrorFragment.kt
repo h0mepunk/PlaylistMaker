@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentErrorBinding
+import com.example.playlistmaker.ui.library.playlist.PlaylistCreateFragment
 
 class ErrorFragment: Fragment() {
 
@@ -50,7 +51,7 @@ class ErrorFragment: Fragment() {
                 setReorderingAllowed(true)
                 replace(
                     R.id.fragment_playlist_create,
-
+                    PlaylistCreateFragment.newInstance(null)
                 )
             }
         }
