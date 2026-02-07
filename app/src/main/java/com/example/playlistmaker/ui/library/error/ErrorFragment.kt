@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentErrorBinding
 
 class ErrorFragment: Fragment() {
@@ -44,7 +46,13 @@ class ErrorFragment: Fragment() {
         binding.newPlaylistButton.visibility = if(buttonVisibility!!) View.VISIBLE else View.INVISIBLE
 
         binding.newPlaylistButton.setOnClickListener {
-                //TODO implement
+            childFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace(
+                    R.id.fragment_playlist_create,
+
+                )
+            }
         }
 
 

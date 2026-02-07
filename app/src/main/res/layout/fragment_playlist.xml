@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_playlist_create"
     android:background="@color/settings_background_color"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"

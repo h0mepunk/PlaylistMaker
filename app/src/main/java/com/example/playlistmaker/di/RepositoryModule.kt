@@ -12,6 +12,7 @@ import com.example.playlistmaker.data.db.dao.TrackDao
 import com.example.playlistmaker.data.db.entity.AppDatabase
 import com.example.playlistmaker.domain.api.CurrentTrackRepository
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
+import com.example.playlistmaker.domain.api.PlaylistCreateRepository
 import com.example.playlistmaker.domain.api.ThemeRepository
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.api.TracksRepository
@@ -37,6 +38,10 @@ val repositoryModule = module {
 
     single<TracksRepository> {
         TracksRepositoryImpl(get(), get())
+    }
+
+    single<PlaylistCreateRepository> {
+        PlaylistCreateRepositoryImpl(get())
     }
 
     factory { TrackDbConvertor() }
