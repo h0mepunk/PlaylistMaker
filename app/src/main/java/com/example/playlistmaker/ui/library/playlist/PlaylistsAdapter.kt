@@ -13,8 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
 
 class PlaylistsAdapter(
-//    private val currentTrackInteractor: CurrentTrackInteractor,
- //   private val onPlaylistClick: (Playlist) -> Unit
+  //  private val onPlaylistClick: (Playlist) -> Unit
 ): RecyclerView.Adapter<PlaylistsAdapter.PlaylistsViewHolder> () {
 
     private lateinit var context: Context
@@ -33,9 +32,8 @@ class PlaylistsAdapter(
         Log.i(LOG_TAG, "onBindViewHolder items $items")
 
         holder.itemView.setOnClickListener {
-            val track = items[position]
-//            currentTrackInteractor.saveCurrentTrack(playlist)
-//            onPlaylistClick(playlist)
+            val playlist = items[position]
+        //    onPlaylistClick(playlist)
         }
     }
 

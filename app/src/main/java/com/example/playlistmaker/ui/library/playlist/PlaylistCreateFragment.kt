@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -28,8 +29,10 @@ import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistCreateState
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -75,6 +78,16 @@ class PlaylistCreateFragment: Fragment() {
             renderState(it)
         }
 
+        val dialog =  MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Завершить создание плейлиста?")
+            .setMessage("Все несохраненные данные будут потеряны")
+            .setNegativeButton("Отмена") { _, _ ->
+
+            }
+            .setPositiveButton("Завершить") { _, _ ->
+                findNavController().popBackStack()
+            }
+
         playlistCreateViewModel.getPlaylist()
 
         binding.editPlaylistName.setText(playlistCreateViewModel.onRestoreInstanceState(savedInstanceState).substringBefore(","))
@@ -117,6 +130,7 @@ class PlaylistCreateFragment: Fragment() {
                 if (binding.editPlaylistName.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(binding.editPlaylistName.windowToken, 0)
                     playlistCreateViewModel.playlistName = binding.editPlaylistName.text.toString()
+                    Log.i(LOG_TAG,"name set to ${playlistCreateViewModel.playlistName} on done")
                 }
             }
             false
@@ -128,13 +142,54 @@ class PlaylistCreateFragment: Fragment() {
                 if (binding.editPlaylistDescription.text.isNotEmpty()) {
                     inputMethodManager?.hideSoftInputFromWindow(binding.editPlaylistDescription.windowToken, 0)
                     playlistCreateViewModel.playlistDescription = binding.editPlaylistDescription.text.toString()
+                    Log.i(LOG_TAG,"description set to ${playlistCreateViewModel.playlistDescription} on done")
                 }
             }
             false
         }
 
+        textWatcherName = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                playlistCreateViewModel.playlistName = s?.toString() ?: ""
+                binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty()!!
+                Log.i(LOG_TAG,"name set to ${playlistCreateViewModel.playlistName} on text changed")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                playlistCreateViewModel.playlistName = s?.toString() ?: ""
+                binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty()!!
+                Log.i(LOG_TAG,"name set to ${playlistCreateViewModel.playlistName} on after text changed")
+            }
+        }
+
+        textWatcherDescription = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                playlistCreateViewModel.playlistDescription = s?.toString() ?: ""
+                Log.i(LOG_TAG,"description set to ${playlistCreateViewModel.playlistDescription} on text changed")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                playlistCreateViewModel.playlistDescription = s?.toString() ?: ""
+                Log.i(LOG_TAG,"description set to ${playlistCreateViewModel.playlistDescription} on after text changed")
+            }
+        }
+
+        binding.editPlaylistName.addTextChangedListener(textWatcherName)
+        binding.editPlaylistDescription.addTextChangedListener(textWatcherDescription)
+
         binding.playlistToolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            if(playlistCreateViewModel.playlistName.isNotEmpty()) {
+                dialog.show()
+            } else {
+                findNavController().popBackStack()
+            }
         }
     }
 
@@ -152,6 +207,7 @@ class PlaylistCreateFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
+       //дописать заполнение полей при возвращении на экран
     }
 
     fun renderState(state: PlaylistCreateState) {

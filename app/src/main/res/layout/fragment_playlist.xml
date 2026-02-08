@@ -133,7 +133,7 @@
         <Button
             android:id="@+id/cereate_playlist_button"
             style="@style/create_playlist_button"
-            app:backgroundTint="@color/blue"
+            android:enabled="false"
             android:background="@drawable/create_playlist_button_shape"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
