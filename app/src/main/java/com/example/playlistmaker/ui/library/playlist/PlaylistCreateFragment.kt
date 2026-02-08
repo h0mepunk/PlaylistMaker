@@ -174,8 +174,8 @@ class PlaylistCreateFragment: Fragment() {
         binding.editPlaylistName.setText(EMPTY_STRING)
         binding.editPlaylistDescriptionTitle.visibility = View.VISIBLE
         binding.editPlaylistNameTitle.visibility = View.VISIBLE
-        binding.playlistImgPlaceholder.visibility = View.VISIBLE
-        binding.playlistImgPlaceholder.setBackgroundResource(R.drawable.playlist_image_shape)
+        binding.playlistCoverContainer.visibility = View.VISIBLE
+        binding.playlistCoverImage.visibility = View.GONE
     }
 
     fun showPlaylistData(playlist: Playlist) {
@@ -187,9 +187,9 @@ class PlaylistCreateFragment: Fragment() {
     }
 
     fun showCover(path: String) {
+        binding.playlistCoverImage.visibility = View.VISIBLE
         Glide.with(this)
             .load(File(path))
-            .placeholder(R.drawable.playlist_image_shape)
             .apply(
                 RequestOptions().transform(
                     RoundedCorners(
@@ -197,7 +197,7 @@ class PlaylistCreateFragment: Fragment() {
                     )
                 )
             )
-            .into(binding.playlistImgPlaceholder)
+            .into(binding.playlistCoverImage)
     }
 
     private fun saveImageToPrivateStorage(uri: Uri) {

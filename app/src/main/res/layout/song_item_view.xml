@@ -43,6 +43,7 @@
                 android:text="The Beatles"
                 ></TextView>
             <ImageView
+                android:id="@+id/song_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/song_divider_margin"
@@ -62,6 +63,7 @@
 
     </LinearLayout>
     <ImageView
+        android:id="@+id/song_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

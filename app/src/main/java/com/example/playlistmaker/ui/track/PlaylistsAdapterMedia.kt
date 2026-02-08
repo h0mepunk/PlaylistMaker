@@ -52,6 +52,12 @@ class PlaylistsAdapterMedia(
         private val playlistSubtitle: TextView = itemView.findViewById(R.id.song_author)
         private val playlistImage: ImageView = itemView.findViewById(R.id.song_album_cover)
 
+        private val dot: ImageView = itemView.findViewById(R.id.song_dot)
+
+        private val arrow = itemView.findViewById<ImageView>(R.id.song_arrow)
+
+        private val time: TextView = itemView.findViewById(R.id.song_time)
+
         fun bind(item: Playlist) {
             Glide.with(itemView.context)
                 .load(item.imgUri)
@@ -60,6 +66,9 @@ class PlaylistsAdapterMedia(
 
             playlistTitle.text = item.name
             playlistSubtitle.text = item.tracksCount.toString() + " треков"
+            time.visibility = View.INVISIBLE
+            dot.visibility = View.INVISIBLE
+            arrow.visibility = View.INVISIBLE
         }
     }
 

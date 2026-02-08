@@ -246,7 +246,8 @@
             android:layout_marginTop="34dp"
             android:text="@string/add_to_playlist_bottomsheet_title"
             android:textColor="@color/arrow_back_icon"
-            android:textSize="16sp"
+            android:textSize="19sp"
+            android:textFontWeight="500"
             android:textStyle="bold" />
 
         <Button
@@ -254,8 +255,10 @@
             android:textColor="@color/button_text"
             style="@style/new_playlist_button"
             android:id="@+id/new_playlist_button_bottom_sheet"
+            android:layout_gravity="center"
             android:text="@string/new_playlist_button"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/ys_display_medium"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
