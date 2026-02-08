@@ -18,6 +18,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -130,6 +131,10 @@ class PlaylistCreateFragment: Fragment() {
                 }
             }
             false
+        }
+
+        binding.playlistToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
     }
 

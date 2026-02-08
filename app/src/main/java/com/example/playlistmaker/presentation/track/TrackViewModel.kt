@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.db.LibraryInteractor
+import com.example.playlistmaker.domain.db.PlaylistRepository
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,16 +22,33 @@ class TrackViewModel(
     private val currentTrackInteractor: CurrentTrackInteractor,
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val libraryInteractor: LibraryInteractor,
-    private val mediaPlayer: MediaPlayer
+    private val mediaPlayer: MediaPlayer,
+    private var playlistRepository: PlaylistRepository
 ): ViewModel() {
 
     private var isFavoriteLiveData = MutableLiveData<Boolean>()
     var isFavorite: LiveData<Boolean> = isFavoriteLiveData
     private val stateLiveData = MutableLiveData<TrackState>()
+
+    private val playlistsLiveData = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> = playlistsLiveData
+
     fun observeState(): LiveData<TrackState> = stateLiveData
     lateinit var currentTrack: Track
 
     private var timerJob: Job? = null
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistRepository.getPlaylists()
+                .collect { playlistData ->
+                    playlistsLiveData.postValue(playlistData)
+                    if (playlistData.isNotEmpty()) {
+                        Log.i(LOG_TAG, "Playlists loaded and posted to LiveData: $playlistData")
+                    }
+                }
+        }
+    }
 
     private fun startTimer() {
         timerJob?.cancel()

@@ -249,8 +249,22 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <Button
+            app:backgroundTint="@color/button_background"
+            android:textColor="@color/button_text"
+            style="@style/new_playlist_button"
+            android:id="@+id/new_playlist_button_bottom_sheet"
+            android:text="@string/new_playlist_button"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/right_border"
+            app:layout_constraintStart_toStartOf="@id/left_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/playlist_bottomsheet_list_recycler"
+            android:id="@+id/playlist_bottom_sheet_list_recycler"
             android:layout_width="match_parent"
             android:layout_marginTop="24dp"
             android:layout_height="wrap_content">
