@@ -38,6 +38,13 @@ class TrackViewModel(
 
     private var timerJob: Job? = null
 
+    fun addTrackToPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistRepository.addTrackToPlaylist(playlist.id, currentTrack.trackId.toString())
+            Log.i(LOG_TAG,"track ${currentTrack.trackName} added to playlist with Id: ${playlist.name}")
+        }
+    }
+
     fun getPlaylists() {
         viewModelScope.launch {
             playlistRepository.getPlaylists()

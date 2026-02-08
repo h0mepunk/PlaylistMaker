@@ -10,11 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
+import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
 
 class PlaylistsAdapterMedia(
-//    private val currentTrackInteractor: CurrentTrackInteractor,
- //   private val onPlaylistClick: (Playlist) -> Unit
+    private val onPlaylistClick: (Playlist) -> Unit
 ): RecyclerView.Adapter<PlaylistsAdapterMedia.PlaylistsViewHolder> () {
 
     private lateinit var context: Context
@@ -33,9 +34,8 @@ class PlaylistsAdapterMedia(
         Log.i(LOG_TAG, "onBindViewHolder items $items")
 
         holder.itemView.setOnClickListener {
-            val track = items[position]
-//            currentTrackInteractor.saveCurrentTrack(playlist)
-//            onPlaylistClick(playlist)
+            val playlist = items[position]
+            onPlaylistClick(playlist)
         }
     }
 

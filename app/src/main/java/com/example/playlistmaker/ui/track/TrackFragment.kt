@@ -84,7 +84,9 @@ class TrackFragment : Fragment() {
                 findNavController().navigate(R.id.action_track_fragment_to_playlistCreateFragment)
         }
 
-        adapter = PlaylistsAdapterMedia()
+        adapter = PlaylistsAdapterMedia { playlist ->
+            viewModel.addTrackToPlaylist(playlist)
+        }
         binding.playlistBottomSheetListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistBottomSheetListRecycler.adapter = adapter
 
