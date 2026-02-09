@@ -100,7 +100,7 @@ class PlaylistCreateFragment: Fragment() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 //обрабатываем событие выбора пользователем фотографии
                 if (uri != null) {
-                    binding.playlistCover.setImageURI(uri)
+                    binding.playlistCoverImage.setImageURI(uri)
                     saveImageToPrivateStorage(uri)
                 } else {
                     Log.d("PhotoPicker", "No media selected")
@@ -111,7 +111,7 @@ class PlaylistCreateFragment: Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
             val file = File(filePath, "first_cover.jpg")
-            binding.playlistCover.setImageURI(file.toUri())
+            binding.playlistCoverImage.setImageURI(file.toUri())
         }
 
         binding.cereatePlaylistButton.setOnClickListener {
@@ -255,7 +255,7 @@ class PlaylistCreateFragment: Fragment() {
 
     fun showCover(path: String) {
         binding.playlistImgPlaceholder.visibility = View.GONE
-        binding.playlistCover.visibility = View.GONE
+        binding.playlistCoverBorder.visibility = View.GONE
         binding.playlistCoverImage.visibility = View.VISIBLE
         Glide.with(this)
             .load(File(path))

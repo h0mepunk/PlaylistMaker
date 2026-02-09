@@ -49,23 +49,10 @@
             android:id="@+id/playlist_cover_container"
             android:layout_width="@dimen/player_track_dimension"
             android:layout_height="@dimen/player_track_dimension"
-            android:background="@drawable/playlist_image_shape"
             app:layout_constraintBottom_toTopOf="@id/edit_playlist_name"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@id/playlist_toolbar">
-            <ImageView
-                android:id="@+id/playlist_cover_image"
-                android:layout_width="312dp"
-                android:layout_height="312dp"
-                android:background="@drawable/playlist_image_shape">
-            </ImageView>
-            <ImageView
-                android:id="@+id/playlist_cover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/playlist_image_shape">
-            </ImageView>
             <ImageView
                 android:id="@+id/playlist_img_placeholder"
                 android:layout_width="76dp"
@@ -73,6 +60,17 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:background="@drawable/playlist_img_placeholder">
+            </ImageView>
+                <ImageView
+                    android:id="@+id/playlist_cover_border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/playlist_image_shape">
+                </ImageView>
+            <ImageView
+                android:id="@+id/playlist_cover_image"
+                android:layout_width="312dp"
+                android:layout_height="312dp">
             </ImageView>
 
         </FrameLayout>
@@ -135,6 +133,7 @@
             style="@style/create_playlist_button"
             android:enabled="false"
             android:background="@drawable/create_playlist_button_shape"
+            app:backgroundTint="@null"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
