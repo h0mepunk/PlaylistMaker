@@ -220,7 +220,15 @@ class PlaylistCreateFragment: Fragment() {
             is PlaylistCreateState.PlaylistContent -> {
                 Log.i(LOG_TAG,"Playlist is shown: ${state.playlist}")
                 playlist = state.playlist
-                showPlaylistData(playlist!!)
+                if (playlist!!.imgUri != EMPTY_STRING) {
+                    showCover(playlist!!.imgUri)
+                }
+                if (playlist!!.name != EMPTY_STRING) {
+                    showName(playlist!!.name)
+                }
+                if (playlist!!.description != EMPTY_STRING) {
+                    showDescription(playlist!!.description)
+                }
             }
         }
     }
@@ -234,18 +242,24 @@ class PlaylistCreateFragment: Fragment() {
         binding.playlistCoverImage.visibility = View.GONE
     }
 
-    fun showPlaylistData(playlist: Playlist) {
-        binding.editPlaylistDescription.setText(playlist.description)
-        binding.editPlaylistName.setText(playlist.name)
+    fun showDescription(description: String) {
+        binding.editPlaylistDescription.setText(description)
         binding.editPlaylistDescriptionTitle.visibility = View.GONE
+    }
+
+    fun showName(name: String) {
+        binding.editPlaylistName.setText(name)
         binding.editPlaylistNameTitle.visibility = View.GONE
-        showCover(playlist.imgUri)
+        binding.cereatePlaylistButton.isEnabled = true
     }
 
     fun showCover(path: String) {
+        binding.playlistImgPlaceholder.visibility = View.GONE
+        binding.playlistCover.visibility = View.GONE
         binding.playlistCoverImage.visibility = View.VISIBLE
         Glide.with(this)
             .load(File(path))
+            .optionalCenterCrop()
             .apply(
                 RequestOptions().transform(
                     RoundedCorners(
