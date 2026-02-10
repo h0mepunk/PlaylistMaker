@@ -38,10 +38,25 @@ class TrackViewModel(
 
     private var timerJob: Job? = null
 
-    fun addTrackToPlaylist(playlist: Playlist) {
+    fun addTrackToPlaylist(playlist: Playlist): Boolean {
         viewModelScope.launch {
-            playlistRepository.addTrackToPlaylist(playlist.id, currentTrack.trackId.toString())
-            Log.i(LOG_TAG,"track ${currentTrack.trackName} added to playlist with Id: ${playlist.name}")
+            playlistRepository.getPlaylistById(playlist.id)
+        }
+        if (playlist.tracks.contains(currentTrack.trackId.toString())) {
+            Log.i(LOG_TAG,"track ${currentTrack.trackName} already exists in playlist with Id: ${playlist.name}")
+            return false
+        } else {
+            viewModelScope.launch {
+                playlistRepository.addTrackToPlaylist(
+                    playlist.id,
+                    currentTrack.trackId.toString()
+                )
+            }
+            Log.i(
+                LOG_TAG,
+                "track ${currentTrack.trackName} added to playlist with Id: ${playlist.name}"
+            )
+            return true
         }
     }
 

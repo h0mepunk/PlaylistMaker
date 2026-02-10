@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -17,7 +17,6 @@ import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.track.TrackState
 import com.example.playlistmaker.presentation.track.TrackViewModel
-import com.example.playlistmaker.ui.library.playlist.PlaylistsAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
@@ -85,7 +84,12 @@ class TrackFragment : Fragment() {
         }
 
         adapter = PlaylistsAdapterMedia { playlist ->
-            viewModel.addTrackToPlaylist(playlist)
+            if (viewModel.addTrackToPlaylist(playlist)) {
+                showToast("Добавлено в плейлист ${playlist.name}")
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                showToast("Трек уже добавлен в плейлист ${playlist.name}")
+            }
         }
         binding.playlistBottomSheetListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistBottomSheetListRecycler.adapter = adapter
@@ -177,6 +181,14 @@ class TrackFragment : Fragment() {
                 binding.mediaTrackTime.text = getString(R.string.start_time_zero)
             }
             is TrackState.Prepared -> { binding.mediaButtonPlay.isEnabled = true }
+        }
+    }
+
+    fun showToast(additionalMessage: String?) {
+        Log.i(LOG_TAG, "showToast: $additionalMessage")
+        requireActivity().runOnUiThread {
+            Toast.makeText(requireActivity(), additionalMessage?: "Empty message", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
