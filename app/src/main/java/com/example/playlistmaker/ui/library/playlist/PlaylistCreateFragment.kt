@@ -30,13 +30,11 @@ import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistCreateState
-import com.example.playlistmaker.ui.search.SearchFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
-import java.security.Timestamp
 
 class PlaylistCreateFragment: Fragment() {
 
@@ -101,21 +99,10 @@ class PlaylistCreateFragment: Fragment() {
                     val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
                     val file = File(filePath, fileName)
                     playlistCreateViewModel.coverUri = file.absolutePath
-                    Glide.with(this)
-                        .load(file)
-                        .optionalCenterCrop()
-                        .apply(RequestOptions().transform(RoundedCorners(this.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()))
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE))
-                        .into(binding.playlistCoverImage)
-                    binding.playlistImgPlaceholder.visibility = View.GONE
-                    binding.playlistCoverImage.visibility = View.VISIBLE
-                    binding.playlistCoverBorder.visibility = View.GONE
+                    showCover(file.absolutePath)
                 } else {
                     Log.d("PhotoPicker", "No media selected")
-                    binding.playlistImgPlaceholder.visibility = View.VISIBLE
-                    binding.playlistCoverImage.visibility = View.GONE
-                    binding.playlistCoverBorder.visibility = View.VISIBLE
+                    hideCover()
                 }
             }
 
@@ -175,14 +162,19 @@ class PlaylistCreateFragment: Fragment() {
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 playlistCreateViewModel.playlistName = s?.toString() ?: ""
-                binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty()!!
+                binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty() == true
                 Log.i(LOG_TAG,"name set to ${playlistCreateViewModel.playlistName} on text changed")
             }
 
             override fun afterTextChanged(s: Editable?) {
                 playlistCreateViewModel.playlistName = s?.toString() ?: ""
-                binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty()!!
+                binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty() == true
                 Log.i(LOG_TAG,"name set to ${playlistCreateViewModel.playlistName} on after text changed")
+                if (s != null) {
+                    showName()
+                } else {
+                    hideName()
+                }
             }
         }
 
@@ -198,6 +190,11 @@ class PlaylistCreateFragment: Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 playlistCreateViewModel.playlistDescription = s?.toString() ?: ""
                 Log.i(LOG_TAG,"description set to ${playlistCreateViewModel.playlistDescription} on after text changed")
+                if (s != null) {
+                    showDescription()
+                } else {
+                    hideDescription()
+                }
             }
         }
 
@@ -234,9 +231,17 @@ class PlaylistCreateFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        playlistCreateViewModel.coverUri?.let {
-            val file = File(it)
-            if (it.isNotEmpty() && file.exists() && file.length() > 0) showCover(it)
+        if(playlistCreateViewModel.coverUri.isNotEmpty()) {
+            showCover(playlistCreateViewModel.coverUri)
+        }
+
+        if(playlistCreateViewModel.playlistDescription.isNotEmpty()) {
+            binding.editPlaylistDescription.setText(playlistCreateViewModel.playlistDescription)
+            showDescription()
+        }
+        if(playlistCreateViewModel.playlistName.isNotEmpty()) {
+            binding.editPlaylistName.setText(playlistCreateViewModel.playlistName)
+            showName()
         }
     }
 
@@ -259,35 +264,53 @@ class PlaylistCreateFragment: Fragment() {
                 playlist = state.playlist
                 if (playlist!!.imgUri != EMPTY_STRING) {
                     showCover(playlist!!.imgUri)
+                } else {
+                    hideCover()
                 }
                 if (playlist!!.name != EMPTY_STRING) {
-                    showName(playlist!!.name)
+                    showName()
+                } else {
+                    hideName()
                 }
                 if (playlist!!.description != EMPTY_STRING) {
-                    showDescription(playlist!!.description)
+                    showDescription()
+                } else {
+                    hideDescription()
                 }
             }
         }
     }
 
     fun hidePlaylistData() {
-    binding.editPlaylistDescription.setText(EMPTY_STRING)
-        binding.editPlaylistName.setText(EMPTY_STRING)
+        hideName()
+        hideDescription()
+        hideCover()
+    }
+
+    fun showDescription() {
         binding.editPlaylistDescriptionTitle.visibility = View.VISIBLE
-        binding.editPlaylistNameTitle.visibility = View.VISIBLE
-        binding.playlistCoverContainer.visibility = View.VISIBLE
-        binding.playlistCoverImage.visibility = View.GONE
     }
 
-    fun showDescription(description: String) {
-        binding.editPlaylistDescription.setText(description)
+    fun hideDescription() {
         binding.editPlaylistDescriptionTitle.visibility = View.GONE
+        binding.editPlaylistDescription.hint = getString(R.string.playlist_description_hint_text)
     }
 
-    fun showName(name: String) {
-        binding.editPlaylistName.setText(name)
+    fun hideName() {
         binding.editPlaylistNameTitle.visibility = View.GONE
+        binding.editPlaylistName.hint = getString(R.string.playlist_name_hint_text)
+        binding.cereatePlaylistButton.isEnabled = false
+    }
+
+    fun showName() {
+        binding.editPlaylistNameTitle.visibility = View.VISIBLE
         binding.cereatePlaylistButton.isEnabled = true
+    }
+
+    fun hideCover() {
+        binding.playlistImgPlaceholder.visibility = View.VISIBLE
+        binding.playlistCoverImage.visibility = View.GONE
+        binding.playlistCoverBorder.visibility = View.VISIBLE
     }
 
     fun showCover(path: String) {
@@ -312,9 +335,7 @@ class PlaylistCreateFragment: Fragment() {
                 .into(binding.playlistCoverImage)
         } else {
             Log.e(LOG_TAG, "Cover file not found or empty, showing placeholder")
-            binding.playlistImgPlaceholder.visibility = View.VISIBLE
-            binding.playlistCoverImage.visibility = View.GONE
-            binding.playlistCoverBorder.visibility = View.VISIBLE
+            hideCover()
         }
     }
 

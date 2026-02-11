@@ -54,6 +54,12 @@
             app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@id/playlist_toolbar">
             <ImageView
+                android:id="@+id/playlist_cover_border"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/playlist_image_shape"
+                android:scaleType="fitXY"/>
+            <ImageView
                 android:id="@+id/playlist_img_placeholder"
                 android:layout_width="76dp"
                 android:layout_height="76dp"
@@ -66,12 +72,6 @@
                 android:layout_width="312dp"
                 android:layout_height="312dp"
                 android:scaleType="centerCrop"/>
-            <ImageView
-                android:id="@+id/playlist_cover_border"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/playlist_image_shape"
-                android:scaleType="fitXY"/>
         </FrameLayout>
         <EditText
             android:id="@+id/edit_playlist_name"
