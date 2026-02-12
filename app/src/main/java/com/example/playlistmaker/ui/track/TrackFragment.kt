@@ -31,6 +31,8 @@ class TrackFragment : Fragment() {
 
     private lateinit var playlistsList: List<Playlist>
 
+    private var lastClickedPlaylistName: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,13 +86,17 @@ class TrackFragment : Fragment() {
                 findNavController().navigate(R.id.action_track_fragment_to_playlistCreateFragment)
         }
 
-        adapter = PlaylistsAdapterMedia { playlist ->
-            viewModel.trackAddedToPlaylist.observe(viewLifecycleOwner) { added ->
-                playlistAddedToast(added, playlist.name)
-                if (isAdded) {
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                }
+        viewModel.trackAddedToPlaylist.observe(viewLifecycleOwner) { isAdded ->
+            lastClickedPlaylistName?.let { playlistName ->
+                playlistAddedToast(isAdded, playlistName)
+                lastClickedPlaylistName = null
             }
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        adapter = PlaylistsAdapterMedia { playlist ->
+            lastClickedPlaylistName = playlist.name
+            viewModel.addTrackToPlaylist(playlist) // вызовите ваш метод добавления трека
         }
         binding.playlistBottomSheetListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistBottomSheetListRecycler.adapter = adapter

@@ -6,7 +6,7 @@ import android.net.NetworkCapabilities
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.TracksSearchRequest
-import com.example.playlistmaker.domain.api.TrackApiService
+import com.example.playlistmaker.data.network.TrackApiService
 
 class RetrofitNetworkClient(private var trackApiService: TrackApiService,private val context: Context) : NetworkClient {
 
