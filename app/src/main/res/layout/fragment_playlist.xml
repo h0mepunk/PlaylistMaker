@@ -8,13 +8,6 @@
     tools:context=".ui.track.TrackFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
-        android:clipToPadding="false"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        style="@style/background"
-        android:fillViewport="true">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,10 +42,10 @@
             android:id="@+id/playlist_cover_container"
             android:layout_width="@dimen/player_track_dimension"
             android:layout_height="@dimen/player_track_dimension"
-            app:layout_constraintBottom_toTopOf="@id/edit_playlist_name"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
-            app:layout_constraintTop_toBottomOf="@id/playlist_toolbar">
+            app:layout_constraintTop_toBottomOf="@id/playlist_toolbar"
+            android:layout_marginTop="26dp">
             <ImageView
                 android:id="@+id/playlist_cover_border"
                 android:layout_width="match_parent"
@@ -75,15 +68,15 @@
         </FrameLayout>
         <EditText
             android:id="@+id/edit_playlist_name"
-            android:layout_width="wrap_content"
+            android:text="@string/playlist_name_hint_text"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/playlist_text_edit"
-            app:layout_constraintBottom_toTopOf="@id/edit_playlist_description"
+            android:background="@drawable/text_edit_shape"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@id/playlist_cover_container"
-            android:background="@drawable/text_edit_shape"
-            android:text="@string/playlist_name_hint_text"/>
+            android:layout_marginTop="32dp"/>
         <TextView
             android:background="@drawable/rectangle_blank"
             android:id="@+id/edit_playlist_name_title"
@@ -98,18 +91,17 @@
             android:textFontWeight="400"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="12sp"
-            android:layout_height="16dp"></TextView>
-
+            android:layout_height="16dp"/>
         <EditText
             android:id="@+id/edit_playlist_description"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/playlist_text_edit"
-            app:layout_constraintBottom_toTopOf="@id/cereate_playlist_button"
+            android:background="@drawable/text_edit_shape"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@id/edit_playlist_name"
-            android:background="@drawable/text_edit_shape"
+            android:layout_marginTop="16dp"
             android:text="@string/playlist_description_hint_text"/>
         <TextView
             android:textAlignment="center"
@@ -125,23 +117,22 @@
             android:textFontWeight="400"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="12sp"
-            android:layout_height="16dp"></TextView>
-
+            android:layout_height="16dp"/>
         <Button
             android:id="@+id/cereate_playlist_button"
             style="@style/create_playlist_button"
             android:enabled="false"
             android:background="@drawable/create_playlist_button_shape"
             app:backgroundTint="@null"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="170dp"
             android:gravity="center"
             android:text="@string/create_playlist_button_text"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/right_border"
             app:layout_constraintStart_toStartOf="@id/left_border"
             app:layout_constraintTop_toBottomOf="@id/edit_playlist_description"
-            android:layout_height="wrap_content"></Button>
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout >

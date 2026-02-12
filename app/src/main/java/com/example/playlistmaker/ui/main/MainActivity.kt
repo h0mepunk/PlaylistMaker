@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.track_fragment ->  animateBottomNavigationView(View.GONE)
+                R.id.track_fragment, R.id.playlistCreateFragment ->  animateBottomNavigationView(View.GONE)
                 else -> animateBottomNavigationView(View.VISIBLE)
             }
         }

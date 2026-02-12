@@ -131,7 +131,11 @@ class PlaylistCreateFragment: Fragment() {
 
         //Если поле ввода названия плейлиста пустое, то пользователь видит текст-подсказку (hint).
 
-        binding.editPlaylistName.setOnFocusChangeListener() { _, hasFocus -> }
+        binding.editPlaylistName.setOnFocusChangeListener() { _, hasFocus ->
+            if (hasFocus) {
+                    binding.editPlaylistName.hint = ""
+                }
+        }
         binding.editPlaylistName.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (binding.editPlaylistName.text.isNotEmpty()) {
@@ -143,7 +147,11 @@ class PlaylistCreateFragment: Fragment() {
             false
         }
 
-        binding.editPlaylistDescription.setOnFocusChangeListener() { _, hasFocus -> }
+        binding.editPlaylistDescription.setOnFocusChangeListener() { _, hasFocus ->
+            if (hasFocus) {
+                    binding.editPlaylistDescription.hint = ""
+                }
+        }
         binding.editPlaylistDescription.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (binding.editPlaylistDescription.text.isNotEmpty()) {
@@ -289,6 +297,7 @@ class PlaylistCreateFragment: Fragment() {
 
     fun showDescription() {
         binding.editPlaylistDescriptionTitle.visibility = View.VISIBLE
+        binding.editPlaylistDescription.hint = ""
     }
 
     fun hideDescription() {
@@ -305,6 +314,7 @@ class PlaylistCreateFragment: Fragment() {
     fun showName() {
         binding.editPlaylistNameTitle.visibility = View.VISIBLE
         binding.cereatePlaylistButton.isEnabled = true
+        binding.editPlaylistName.hint = ""
     }
 
     fun hideCover() {

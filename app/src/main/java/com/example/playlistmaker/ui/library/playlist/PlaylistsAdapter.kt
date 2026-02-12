@@ -9,8 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class PlaylistsAdapter(
   //  private val onPlaylistClick: (Playlist) -> Unit
@@ -53,6 +55,14 @@ class PlaylistsAdapter(
         fun bind(item: Playlist) {
             Glide.with(itemView.context)
                 .load(item.imgUri)
+                .centerCrop()
+                .apply(
+                    RequestOptions().transform(
+                        RoundedCorners(
+                            itemView.context.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()
+                        )
+                    )
+                )
                 .placeholder(R.drawable.placeholder)
                 .into(playlistImage)
 
