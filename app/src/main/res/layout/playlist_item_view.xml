@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="160dp"
-    android:layout_height="196dp"
-    android:orientation="vertical"
-    android:paddingHorizontal="4dp">
-    <ImageView
-        android:id="@+id/playlist_cover"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    card_view:cardElevation="0dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp">
+    <LinearLayout
+        android:background="@color/menu_background_color"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:contentDescription="playlist_cover"
-        android:src="@drawable/placeholder"
-        android:scaleType="centerCrop"
-        android:radius="@dimen/media_cover_corner_radius"/>
-    <TextView
-        android:id="@+id/playlist_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/playlist_title"
-        android:text="Best of The Beatles"/>
-    <TextView
-        android:id="@+id/playlist_tracks_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/playlist_title"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="98 tracks"/>
-</LinearLayout>
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/playlist_cover"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:radius="8dp"/>
+        <TextView
+            android:id="@+id/playlist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/playlist_title"
+            android:text="Best of The Beatles"/>
+        <TextView
+            android:id="@+id/playlist_tracks_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/playlist_title"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="98 tracks"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

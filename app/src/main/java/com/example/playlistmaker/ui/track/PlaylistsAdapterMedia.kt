@@ -9,6 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
@@ -59,9 +62,13 @@ class PlaylistsAdapterMedia(
         private val time: TextView = itemView.findViewById(R.id.song_time)
 
         fun bind(item: Playlist) {
+            val size = itemView.context.resources.getDimensionPixelSize(R.dimen.playlist_cover_size)
             Glide.with(itemView.context)
                 .load(item.imgUri)
                 .placeholder(R.drawable.placeholder)
+                .override(size, size)
+                .centerCrop()
+                .transform(RoundedCorners(itemView.context.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()))
                 .into(playlistImage)
 
             playlistTitle.text = item.name

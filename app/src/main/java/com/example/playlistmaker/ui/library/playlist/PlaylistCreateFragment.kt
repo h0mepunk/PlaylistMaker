@@ -332,7 +332,7 @@ class PlaylistCreateFragment: Fragment() {
             binding.playlistCoverImage.visibility = View.VISIBLE
             Glide.with(this)
                 .load(file)
-                .optionalCenterCrop()
+                .centerCrop()
                 .apply(
                     RequestOptions().transform(
                         RoundedCorners(
@@ -349,6 +349,13 @@ class PlaylistCreateFragment: Fragment() {
         }
     }
 
+    private fun cropCenterSquare(bitmap: Bitmap): Bitmap {
+        val size = minOf(bitmap.width, bitmap.height)
+        val x = (bitmap.width - size) / 2
+        val y = (bitmap.height - size) / 2
+        return Bitmap.createBitmap(bitmap, x, y, size, size)
+    }
+
     private fun saveImageToPrivateStorage(uri: Uri, fileName: String) {
         val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
         if (!filePath.exists()){
@@ -359,7 +366,9 @@ class PlaylistCreateFragment: Fragment() {
         val outputStream = FileOutputStream(file)
         val bitmap = BitmapFactory.decodeStream(inputStream)
         if (bitmap != null) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+            val cropped = cropCenterSquare(bitmap)
+            val scaled = Bitmap.createScaledBitmap(cropped, 500, 500, true)
+            scaled.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             Log.i(LOG_TAG, "Image saved: ${file.absolutePath}, exists: ${file.exists()}, length: ${file.length()}")
         } else {
             Log.e(LOG_TAG, "Bitmap decode failed for uri: $uri")

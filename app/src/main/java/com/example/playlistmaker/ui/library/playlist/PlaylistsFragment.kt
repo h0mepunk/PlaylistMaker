@@ -67,8 +67,8 @@ class PlaylistsFragment : Fragment() {
         }
         adapter = PlaylistsAdapter()
         binding.playlistListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.playlistListRecycler.adapter = adapter
         binding.playlistListRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.playlistListRecycler.adapter = adapter
 
         playlistViewModel.getPlaylists()
     }

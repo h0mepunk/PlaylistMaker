@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context=".ui.track.TrackFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,12 +16,9 @@
             app:navigationIcon="@drawable/arrow_back"
             android:layout_width="match_parent"
             android:layout_height="@dimen/header_height"
-            android:textFontWeight="500"
-            android:fontFamily="@font/ys_text_regular"
-            android:textSize="22sp"
             app:title="@string/playlist_toolbar_title_text"
             android:orientation="horizontal"
-            app:titleTextAppearance="@style/toolbar_title_text">
+            android:titleTextAppearance="@style/toolbar_title_text">
         </com.google.android.material.appbar.MaterialToolbar>
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_border"
