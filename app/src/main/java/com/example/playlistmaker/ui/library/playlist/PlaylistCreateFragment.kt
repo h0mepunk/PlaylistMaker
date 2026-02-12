@@ -131,10 +131,25 @@ class PlaylistCreateFragment: Fragment() {
 
         //Если поле ввода названия плейлиста пустое, то пользователь видит текст-подсказку (hint).
 
-        binding.editPlaylistName.setOnFocusChangeListener() { _, hasFocus ->
+        binding.editPlaylistName.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                    binding.editPlaylistName.hint = ""
+                binding.editPlaylistName.setText("")
+                binding.editPlaylistName.hint = ""
+            } else {
+                if (binding.editPlaylistName.text.isEmpty()) {
+                    binding.editPlaylistName.hint = getString(R.string.playlist_name_hint_text)
                 }
+            }
+        }
+        binding.editPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.editPlaylistDescription.setText("")
+                binding.editPlaylistDescription.hint = ""
+            } else {
+                if (binding.editPlaylistDescription.text.isEmpty()) {
+                    binding.editPlaylistDescription.hint = getString(R.string.playlist_description_hint_text)
+                }
+            }
         }
         binding.editPlaylistName.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -147,11 +162,6 @@ class PlaylistCreateFragment: Fragment() {
             false
         }
 
-        binding.editPlaylistDescription.setOnFocusChangeListener() { _, hasFocus ->
-            if (hasFocus) {
-                    binding.editPlaylistDescription.hint = ""
-                }
-        }
         binding.editPlaylistDescription.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (binding.editPlaylistDescription.text.isNotEmpty()) {

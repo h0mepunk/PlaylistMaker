@@ -52,6 +52,11 @@ class TrackFragment : Fragment() {
             setLikeButton(liked)
         }
 
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+
         binding.mediaTrackTitle.text = viewModel.currentTrack.trackName
         binding.mediaTrackArtist.text = viewModel.currentTrack.artistName
         binding.mediaInfoAlbumValue .text = viewModel.currentTrack.collectionName
@@ -74,21 +79,17 @@ class TrackFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
-
         binding.newPlaylistButtonBottomSheet.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 findNavController().navigate(R.id.action_track_fragment_to_playlistCreateFragment)
         }
 
         adapter = PlaylistsAdapterMedia { playlist ->
-            if (viewModel.addTrackToPlaylist(playlist)) {
-                showToast("Добавлено в плейлист ${playlist.name}")
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            } else {
-                showToast("Трек уже добавлен в плейлист ${playlist.name}")
+            viewModel.trackAddedToPlaylist.observe(viewLifecycleOwner) { added ->
+                playlistAddedToast(added, playlist.name)
+                if (isAdded) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
             }
         }
         binding.playlistBottomSheetListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -111,7 +112,6 @@ class TrackFragment : Fragment() {
                         viewModel.pausePlayer(viewModel.currentTrack.trackTime)
                     }
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
                     }
                     else -> {}
                 }
@@ -128,7 +128,7 @@ class TrackFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
+        viewModel.getPlaylists()
     }
 
     override fun onPause() {
@@ -184,11 +184,19 @@ class TrackFragment : Fragment() {
         }
     }
 
-    fun showToast(additionalMessage: String?) {
-        Log.i(LOG_TAG, "showToast: $additionalMessage")
+    fun showToast(message: String?) {
+        Log.i(LOG_TAG, "showToast: $message")
         requireActivity().runOnUiThread {
-            Toast.makeText(requireActivity(), additionalMessage?: "Empty message", Toast.LENGTH_LONG)
+            Toast.makeText(requireActivity(), message?: "Empty message", Toast.LENGTH_LONG)
                 .show()
+        }
+    }
+
+    fun playlistAddedToast(isAdded: Boolean, playlistName: String) {
+        if (isAdded) {
+            showToast("Добавлено в плейлист $playlistName")
+        } else {
+            showToast("Трек уже добавлен в плейлист $playlistName")
         }
     }
 

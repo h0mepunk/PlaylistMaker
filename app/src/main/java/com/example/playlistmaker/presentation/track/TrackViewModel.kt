@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.db.LibraryInteractor
-import com.example.playlistmaker.domain.db.PlaylistRepository
+import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
@@ -23,7 +23,7 @@ class TrackViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val libraryInteractor: LibraryInteractor,
     private val mediaPlayer: MediaPlayer,
-    private var playlistRepository: PlaylistRepository
+    private var playlistInteractor: PlaylistInteractor,
 ): ViewModel() {
 
     private var isFavoriteLiveData = MutableLiveData<Boolean>()
@@ -33,36 +33,41 @@ class TrackViewModel(
     private val playlistsLiveData = MutableLiveData<List<Playlist>>()
     val playlists: LiveData<List<Playlist>> = playlistsLiveData
 
+    private val trackAdded = MutableLiveData<Boolean>()
+    val trackAddedToPlaylist: LiveData<Boolean> = trackAdded
+
     fun observeState(): LiveData<TrackState> = stateLiveData
     lateinit var currentTrack: Track
 
     private var timerJob: Job? = null
 
-    fun addTrackToPlaylist(playlist: Playlist): Boolean {
+    fun addTrackToPlaylist(playlist: Playlist) {
         viewModelScope.launch {
-            playlistRepository.getPlaylistById(playlist.id)
+            playlistInteractor.getPlaylistById(playlist.id)
         }
+
         if (playlist.tracks.contains(currentTrack.trackId.toString())) {
             Log.i(LOG_TAG,"track ${currentTrack.trackName} already exists in playlist with Id: ${playlist.name}")
-            return false
+            trackAdded.postValue(false)
         } else {
             viewModelScope.launch {
-                playlistRepository.addTrackToPlaylist(
+                playlistInteractor.addTrackToPlaylist(
                     playlist.id,
                     currentTrack.trackId.toString()
                 )
+                playlistInteractor.insertTrack(currentTrack)
             }
             Log.i(
                 LOG_TAG,
                 "track ${currentTrack.trackName} added to playlist with Id: ${playlist.name}"
             )
-            return true
+            trackAdded.postValue(true)
         }
     }
 
     fun getPlaylists() {
         viewModelScope.launch {
-            playlistRepository.getPlaylists()
+            playlistInteractor.getPlaylists()
                 .collect { playlistData ->
                     playlistsLiveData.postValue(playlistData)
                     if (playlistData.isNotEmpty()) {

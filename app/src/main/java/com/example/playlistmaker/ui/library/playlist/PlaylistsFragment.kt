@@ -73,6 +73,11 @@ class PlaylistsFragment : Fragment() {
         playlistViewModel.getPlaylists()
     }
 
+    override fun onResume() {
+        super.onResume()
+        playlistViewModel.getPlaylists()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation

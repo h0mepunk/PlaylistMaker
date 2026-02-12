@@ -12,4 +12,8 @@ interface PlaylistRepository {
     fun getPlaylistById(playlistId: Int): Flow<Playlist>
 
     suspend fun addTrackToPlaylist(playlistId: Int, trackId: String)
+
+    suspend fun insertTrack(track: Track)
+
+    fun getTrackById(id: Int): Flow<Track>
 }

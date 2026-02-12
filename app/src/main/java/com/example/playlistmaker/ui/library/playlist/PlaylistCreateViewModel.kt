@@ -7,15 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.Const.EMPTY_STRING
-import com.example.playlistmaker.domain.api.PlaylistCreateRepository
-import com.example.playlistmaker.domain.db.PlaylistRepository
+import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
+import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistCreateState
 import kotlinx.coroutines.launch
 
 class PlaylistCreateViewModel(
-    val playlistCreateRepository: PlaylistCreateRepository,
-    val plalistRepository: PlaylistRepository
+    val playlistCreateInteractor: PlaylistCreateInteractor,
+    val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
     private val playlistCreateStateLiveData = MutableLiveData<PlaylistCreateState>()
 
@@ -39,7 +39,7 @@ class PlaylistCreateViewModel(
 
     fun getPlaylist() {
         viewModelScope.launch {
-            playlistCreateRepository.getCurrentPlaylist()
+            playlistCreateInteractor.getCurrentPlaylist()
         }
     }
 
@@ -51,7 +51,7 @@ class PlaylistCreateViewModel(
         Log.i(LOG_TAG, "savePlaylist called with name $playlistName and description $playlistDescription and coverUri $coverUri")
         this.coverUri = coverUri
         viewModelScope.launch {
-            plalistRepository.insertPlaylist(
+            playlistInteractor.insertPlaylist(
                 Playlist(
                     name = playlistName,
                     description = playlistDescription,
@@ -65,7 +65,7 @@ class PlaylistCreateViewModel(
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-        playlist = playlistCreateRepository.getCurrentPlaylist()
+        playlist = playlistCreateInteractor.getCurrentPlaylist()
         outState.putString(PLAYLIST_NAME, playlist?.name?: EMPTY_STRING)
         outState.putString(PLAYLIST_DESCRIPTION, playlist?.description?: EMPTY_STRING)
         outState.putString(COVER_URI, coverUri)
@@ -75,7 +75,7 @@ class PlaylistCreateViewModel(
         val restoredName = savedInstanceState?.getCharSequence(PLAYLIST_NAME)?.toString() ?: EMPTY_STRING
         val restoredDescription = savedInstanceState?.getCharSequence(PLAYLIST_DESCRIPTION)?.toString() ?: EMPTY_STRING
         coverUri = savedInstanceState?.getString(COVER_URI)?: EMPTY_STRING
-        playlist = playlistCreateRepository.getCurrentPlaylist()
+        playlist = playlistCreateInteractor.getCurrentPlaylist()
         processPlaylist(playlist)
         return "$restoredName,$restoredDescription"
     }
