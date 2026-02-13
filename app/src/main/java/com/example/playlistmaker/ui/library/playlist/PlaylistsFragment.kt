@@ -88,11 +88,15 @@ class PlaylistsFragment : Fragment() {
             is PlaylistsState.PlaylistsEmpty -> {
                 Log.i(LOG_TAG,"Playlists empty state")
                 playlistsList = emptyList()
+                adapter?.items = playlistsList
+                adapter?.notifyDataSetChanged()
+                binding.playlistListRecycler.visibility = View.GONE
                 binding.placeholderView.visibility = View.VISIBLE
             }
             is PlaylistsState.PlaylistsContent -> {
                 Log.i(LOG_TAG,"playlists : ${state.playlistList}")
                 binding.placeholderView.visibility = View.GONE
+                binding.playlistListRecycler.visibility = View.VISIBLE
                 playlistsList = state.playlistList
                 adapter?.items = playlistsList
                 adapter?.notifyDataSetChanged()

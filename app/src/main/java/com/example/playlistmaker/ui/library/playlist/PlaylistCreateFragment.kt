@@ -17,7 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -77,12 +77,13 @@ class PlaylistCreateFragment: Fragment() {
         }
 
         val dialog =  MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNegativeButton("Отмена") { _, _ ->
+            .setTitle(getString(R.string.playlit_editing_dialog_title))
+            .setMessage(getString(R.string.playlist_save_dialog_subtitle))
+            .setNegativeButton(getString(R.string.cancel)
+            ) { _, _ ->
 
             }
-            .setPositiveButton("Завершить") { _, _ ->
+            .setPositiveButton(getString(R.string.finish)) { _, _ ->
                 findNavController().popBackStack()
             }
 
@@ -120,6 +121,13 @@ class PlaylistCreateFragment: Fragment() {
                     playlistDescription = binding.editPlaylistDescription.text.toString()
                 )
                 showToast("Плейлист ${binding.editPlaylistName.text} сохранён")
+                Log.i(LOG_TAG, "Clear all playlist data in view model")
+                playlistCreateViewModel.playlistName = ""
+                playlistCreateViewModel.playlistDescription = ""
+                playlistCreateViewModel.coverUri = ""
+                binding.editPlaylistName.setText("")
+                binding.editPlaylistDescription.setText("")
+                hidePlaylistData()
                 Log.i(LOG_TAG, "Closing fragment after save")
                 findNavController().popBackStack()
             } else {
@@ -128,8 +136,6 @@ class PlaylistCreateFragment: Fragment() {
         }
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-
-        //Если поле ввода названия плейлиста пустое, то пользователь видит текст-подсказку (hint).
 
         binding.editPlaylistName.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {

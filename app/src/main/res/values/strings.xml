@@ -36,4 +36,8 @@
     <string name="create_playlist_button_text">Создать</string>
     <string name="playlist_description_hint_text">Описание</string>
     <string name="playlist_name_hint_text">Название*</string>
+    <string name="playlit_editing_dialog_title">Завершить создание плейлиста?</string>
+    <string name="playlist_save_dialog_subtitle">Все несохраненные данные будут потеряны</string>
+    <string name="cancel">Отмена</string>
+    <string name="finish">Завершить</string>
 </resources>
