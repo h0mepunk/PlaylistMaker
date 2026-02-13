@@ -56,6 +56,7 @@ class PlaylistsAdapter(
             Glide.with(itemView.context)
                 .load(item.imgUri)
                 .centerCrop()
+                .override(160, 160)
                 .apply(
                     RequestOptions().transform(
                         RoundedCorners(
