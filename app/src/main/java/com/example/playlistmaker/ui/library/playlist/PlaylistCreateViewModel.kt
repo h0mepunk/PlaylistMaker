@@ -71,13 +71,10 @@ class PlaylistCreateViewModel(
         outState.putString(COVER_URI, coverUri)
     }
 
-    fun onRestoreInstanceState(savedInstanceState: Bundle?): String {
-        val restoredName = savedInstanceState?.getCharSequence(PLAYLIST_NAME)?.toString() ?: EMPTY_STRING
-        val restoredDescription = savedInstanceState?.getCharSequence(PLAYLIST_DESCRIPTION)?.toString() ?: EMPTY_STRING
+    fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         coverUri = savedInstanceState?.getString(COVER_URI)?: EMPTY_STRING
         playlist = playlistCreateInteractor.getCurrentPlaylist()
         processPlaylist(playlist)
-        return "$restoredName,$restoredDescription"
     }
 
     private fun processPlaylist(playlist: Playlist?) {

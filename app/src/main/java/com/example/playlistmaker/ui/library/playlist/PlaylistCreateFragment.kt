@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -27,12 +26,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.Const.EMPTY_STRING
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
-import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistCreateState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
 
@@ -41,8 +38,6 @@ class PlaylistCreateFragment: Fragment() {
     private var playlist: Playlist? = null
     private var textWatcherName: TextWatcher? = null
     private var textWatcherDescription: TextWatcher? = null
-
-    private val playlistCreateInteractor: PlaylistCreateInteractor by inject()
 
     private var fileName = ""
 
