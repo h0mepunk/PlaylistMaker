@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.Const.EMPTY_STRING
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
@@ -160,7 +161,7 @@ class SearchFragment : Fragment() {
 
         }
 
-        binding.searchText.setText(viewModel.onRestoreInstanceState(savedInstanceState)?:"")
+        binding.searchText.setText(viewModel.onRestoreInstanceState(savedInstanceState)?:EMPTY_STRING)
         textWatcher?.let { binding.searchText.addTextChangedListener(it) }
     }
 

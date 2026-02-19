@@ -2,8 +2,9 @@ package com.example.playlistmaker.domain.models
 
 data class Playlist(
     val name: String,
-    val imgUrl100: String,
+    val description: String,
+    val imgUri: String,
     val id: Int,
-    val tracks: List<Track>,
-    val previewUrl: String
+    val tracksCount: Int = tracks.split(",").size,
+    val tracks: String,
 )

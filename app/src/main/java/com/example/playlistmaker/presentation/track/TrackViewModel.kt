@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.db.LibraryInteractor
+import com.example.playlistmaker.domain.db.PlaylistInteractor
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,16 +22,60 @@ class TrackViewModel(
     private val currentTrackInteractor: CurrentTrackInteractor,
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val libraryInteractor: LibraryInteractor,
-    private val mediaPlayer: MediaPlayer
+    private val mediaPlayer: MediaPlayer,
+    private var playlistInteractor: PlaylistInteractor,
 ): ViewModel() {
 
     private var isFavoriteLiveData = MutableLiveData<Boolean>()
     var isFavorite: LiveData<Boolean> = isFavoriteLiveData
     private val stateLiveData = MutableLiveData<TrackState>()
+
+    private val playlistsLiveData = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> = playlistsLiveData
+
+    private val trackAdded = MutableLiveData<Boolean>()
+    val trackAddedToPlaylist: LiveData<Boolean> = trackAdded
+
     fun observeState(): LiveData<TrackState> = stateLiveData
     lateinit var currentTrack: Track
 
     private var timerJob: Job? = null
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylistById(playlist.id)
+        }
+
+        if (playlist.tracks.contains(currentTrack.trackId.toString())) {
+            Log.i(LOG_TAG,"track ${currentTrack.trackName} already exists in playlist with Id: ${playlist.name}")
+            trackAdded.postValue(false)
+        } else {
+            viewModelScope.launch {
+                playlistInteractor.addTrackToPlaylist(
+                    playlist.id,
+                    currentTrack.trackId.toString()
+                )
+                playlistInteractor.insertTrack(currentTrack)
+            }
+            Log.i(
+                LOG_TAG,
+                "track ${currentTrack.trackName} added to playlist with Id: ${playlist.name}"
+            )
+            trackAdded.postValue(true)
+        }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists()
+                .collect { playlistData ->
+                    playlistsLiveData.postValue(playlistData)
+                    if (playlistData.isNotEmpty()) {
+                        Log.i(LOG_TAG, "Playlists loaded and posted to LiveData: $playlistData")
+                    }
+                }
+        }
+    }
 
     private fun startTimer() {
         timerJob?.cancel()
@@ -109,10 +155,10 @@ class TrackViewModel(
         val currentlyFavorite = isFavorite.value ?: false
         viewModelScope.launch {
             if (currentlyFavorite) {
-                libraryInteractor.removeTrackFromPlaylist(currentTrack)
+                libraryInteractor.deleteTrackFromFavorites(currentTrack)
                 Log.i(LOG_TAG,"track removed from playlist: ${currentTrack.trackName}")
             } else {
-                libraryInteractor.addTrackToPlaylist(currentTrack)
+                libraryInteractor.addTrackToFavorites(currentTrack)
                 Log.i(LOG_TAG,"track added to playlist: ${currentTrack.trackName}")
             }
             isFavoriteLiveData.postValue(!currentlyFavorite)

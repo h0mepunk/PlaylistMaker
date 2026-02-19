@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
@@ -10,6 +11,7 @@ import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.impl.CurrentTrackInteractorImpl
 import com.example.playlistmaker.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.domain.impl.LibraryInteractorImpl
+import com.example.playlistmaker.domain.impl.PlaylistCreateInteractorImpl
 import com.example.playlistmaker.domain.impl.PlaylistInteractorImpl
 import com.example.playlistmaker.domain.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksHistoryInteractorImpl
@@ -28,6 +30,10 @@ val interactorModule = module {
 
     single<TracksHistoryInteractor> {
         TracksHistoryInteractorImpl(get())
+    }
+
+    single<PlaylistCreateInteractor> {
+        PlaylistCreateInteractorImpl(get())
     }
 
     single<TracksInteractor>{

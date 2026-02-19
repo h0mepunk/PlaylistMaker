@@ -8,16 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
+import com.example.playlistmaker.ui.library.tracklist.TrackListAdapter
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
 
     private lateinit var playlistsList: List<Playlist>
+
+    private var adapter: PlaylistsAdapter? = null
 
     companion object {
         private const val PLAYLISTS_LIST = "playlists_list"
@@ -33,11 +38,9 @@ class PlaylistsFragment : Fragment() {
             }
 
         fun setErrorArgs(
-            errorText: String,
-            buttonVisibility: Boolean
+            errorText: String
         ) = Bundle().apply {
             putString("error_text", errorText)
-            putBoolean("button_visible", buttonVisibility)
         }
     }
 
@@ -57,6 +60,21 @@ class PlaylistsFragment : Fragment() {
             renderState(it)
         }
 
+        binding.newPlaylistButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_library_fragment_to_playlistCreateFragment
+            )
+        }
+        adapter = PlaylistsAdapter()
+        binding.playlistListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.playlistListRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.playlistListRecycler.adapter = adapter
+
+        playlistViewModel.getPlaylists()
+    }
+
+    override fun onResume() {
+        super.onResume()
         playlistViewModel.getPlaylists()
     }
 
@@ -65,43 +83,23 @@ class PlaylistsFragment : Fragment() {
         outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation
     }
 
-    fun getErrorFragment(
-        errorText: String,
-        buttonVisibility: Boolean
-    ) = ErrorFragment().apply {
-        arguments = setErrorArgs(errorText, buttonVisibility)
-    }
-
-    fun showError(
-        errorText: String,
-        buttonVisibility: Boolean
-    ) {
-        childFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(
-                R.id.fragment_playlists,
-                getErrorFragment(errorText, buttonVisibility)
-            )
-        }
-    }
-
     fun renderState(state: PlaylistsState) {
         when(state) {
             is PlaylistsState.PlaylistsEmpty -> {
                 Log.i(LOG_TAG,"Playlists empty state")
                 playlistsList = emptyList()
-                showError(
-                    getString(R.string.placeholder_playlists_message),
-                    true
-                )
+                adapter?.items = playlistsList
+                adapter?.notifyDataSetChanged()
+                binding.playlistListRecycler.visibility = View.GONE
+                binding.placeholderView.visibility = View.VISIBLE
             }
             is PlaylistsState.PlaylistsContent -> {
                 Log.i(LOG_TAG,"playlists : ${state.playlistList}")
+                binding.placeholderView.visibility = View.GONE
+                binding.playlistListRecycler.visibility = View.VISIBLE
                 playlistsList = state.playlistList
-                    findNavController().navigate(
-                        R.id.fragment_playlists,
-                        setPlaylistArg(playlistsList)
-                    )
+                adapter?.items = playlistsList
+                adapter?.notifyDataSetChanged()
             }
         }
     }

@@ -16,7 +16,7 @@ import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.domain.api.CurrentTrackRepository
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.api.ThemeRepository
-import com.example.playlistmaker.domain.api.TrackApiService
+import com.example.playlistmaker.data.network.TrackApiService
 import com.example.playlistmaker.domain.api.TracksHistoryRepository
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.google.gson.Gson

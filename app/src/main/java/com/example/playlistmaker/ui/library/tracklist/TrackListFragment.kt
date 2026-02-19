@@ -96,21 +96,19 @@ class TrackListFragment : Fragment() {
     }
 
     fun getErrorFragment(
-        errorText: String,
-        buttonVisibility: Boolean
+        errorText: String
     ) = ErrorFragment().apply {
-        arguments = PlaylistsFragment.Companion.setErrorArgs(errorText, buttonVisibility)
+        arguments = PlaylistsFragment.Companion.setErrorArgs(errorText)
     }
 
     fun showError(
-        errorText: String,
-        buttonVisibility: Boolean
+        errorText: String
     ) {
         childFragmentManager.commit {
             setReorderingAllowed(true)
             replace(
                 R.id.fragment_library_content,
-                getErrorFragment(errorText, buttonVisibility)
+                getErrorFragment(errorText)
             )
         }
     }
@@ -131,10 +129,7 @@ class TrackListFragment : Fragment() {
                 trackList = emptyList()
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
-                showError(
-                    getString(R.string.placeholder_fav_message),
-                    false
-                )
+                showError(getString(R.string.placeholder_fav_message))
             }
             is TrackListState.TracksContent -> {
                 Log.i(LOG_TAG,"trackList ${state.trackList}")
