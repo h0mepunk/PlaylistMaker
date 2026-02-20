@@ -8,11 +8,19 @@ class PlaylistCreateInteractorImpl(
     private val repository: PlaylistCreateRepository
 ) : PlaylistCreateInteractor {
 
+    override fun getCurrentCreatingPlaylist(): Playlist? {
+        return repository.getCurrentCreatingPlaylist()
+    }
+
+    override fun saveCurrentCreatingPlaylist(playlist: Playlist?) {
+        repository.saveCurrentCreatingPlaylist(playlist)
+    }
+
     override fun getCurrentPlaylist(): Playlist? {
         return repository.getCurrentPlaylist()
     }
 
     override fun saveCurrentPlaylist(playlist: Playlist?) {
-        repository.saveCurrentPlaylist(playlist)
+        return repository.saveCurrentPlaylist(playlist)
     }
 }

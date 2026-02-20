@@ -39,7 +39,7 @@ class PlaylistCreateViewModel(
 
     fun getPlaylist() {
         viewModelScope.launch {
-            playlistCreateInteractor.getCurrentPlaylist()
+            playlistCreateInteractor.getCurrentCreatingPlaylist()
         }
     }
 
@@ -65,7 +65,7 @@ class PlaylistCreateViewModel(
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-        playlist = playlistCreateInteractor.getCurrentPlaylist()
+        playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
         outState.putString(PLAYLIST_NAME, playlist?.name?: EMPTY_STRING)
         outState.putString(PLAYLIST_DESCRIPTION, playlist?.description?: EMPTY_STRING)
         outState.putString(COVER_URI, coverUri)
@@ -73,7 +73,7 @@ class PlaylistCreateViewModel(
 
     fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         coverUri = savedInstanceState?.getString(COVER_URI)?: EMPTY_STRING
-        playlist = playlistCreateInteractor.getCurrentPlaylist()
+        playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
         processPlaylist(playlist)
     }
 

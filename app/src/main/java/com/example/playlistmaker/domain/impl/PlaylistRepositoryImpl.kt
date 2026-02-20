@@ -41,6 +41,14 @@ class PlaylistRepositoryImpl(
         playlistDao.addTrackToPlaylist(playlistId, trackId)
     }
 
+    override fun getTracksFromPlaylist(playlistId: Int): Flow<List<Track>> = flow {
+        var trackList = emptyList<Track>()
+        playlistDao.getPlaylistById(playlistId).tracks.split(",").forEach { trackId ->
+            trackList.plus(playlistsTracksDao.getTrackById(trackId.toInt()))
+        }
+        emit(trackList)
+    }
+
     override suspend fun insertTrack(track: Track) {
         val entity = dbConverter.map(track)
         playlistsTracksDao.insertTrack(entity)

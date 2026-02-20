@@ -6,16 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.ui.library.error.ErrorFragment
 import com.example.playlistmaker.ui.library.tracklist.TrackListAdapter
+import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistsFragment : Fragment() {
@@ -24,7 +26,11 @@ class PlaylistsFragment : Fragment() {
 
     private var adapter: PlaylistsAdapter? = null
 
+    private lateinit var onPlaylistClickDebounce: (Playlist) -> Unit
+
     companion object {
+
+        private const val CLICK_DEBOUNCE_DELAY = 300L
         private const val PLAYLISTS_LIST = "playlists_list"
 
         private const val LOG_TAG = "PlaylistFragment"
@@ -60,12 +66,29 @@ class PlaylistsFragment : Fragment() {
             renderState(it)
         }
 
+        onPlaylistClickDebounce = debounce<Playlist>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { playlist ->
+            findNavController().navigate(R.id.action_playlistsFragment_to_playlistPageFragment,
+                Bundle().apply {
+                    putString("playlist", playlist.toString())
+                }
+            )
+        }
+//        adapter = TrackListAdapter(currentTrackInteractor) { track ->
+//            onTrackClickDebounce(track)
+//        }
+
         binding.newPlaylistButton.setOnClickListener {
             findNavController().navigate(
                 R.id.action_library_fragment_to_playlistCreateFragment
             )
         }
-        adapter = PlaylistsAdapter()
+        adapter = PlaylistsAdapter { playlist ->
+            onPlaylistClickDebounce(playlist)
+        }
         binding.playlistListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistListRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.playlistListRecycler.adapter = adapter

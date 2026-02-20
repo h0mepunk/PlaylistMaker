@@ -14,7 +14,9 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
-class PlaylistsAdapter(): RecyclerView.Adapter<PlaylistsAdapter.PlaylistsViewHolder> () {
+class PlaylistsAdapter(
+    private val onPlaylistClick: (Playlist) -> Unit
+): RecyclerView.Adapter<PlaylistsAdapter.PlaylistsViewHolder> () {
 
     private lateinit var context: Context
     var items: List<Playlist> = emptyList()
@@ -33,7 +35,7 @@ class PlaylistsAdapter(): RecyclerView.Adapter<PlaylistsAdapter.PlaylistsViewHol
 
         holder.itemView.setOnClickListener {
             val playlist = items[position]
-        //    onPlaylistClick(playlist)
+            onPlaylistClick(playlist)
         }
     }
 
