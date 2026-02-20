@@ -13,9 +13,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 
 class PlaylistsAdapter(
-    private val onPlaylistClick: (Playlist) -> Unit
+    private val playlistCreateInteractor : PlaylistCreateInteractor,
+    private val onPlaylistClick: (Playlist) -> Unit,
 ): RecyclerView.Adapter<PlaylistsAdapter.PlaylistsViewHolder> () {
 
     private lateinit var context: Context
@@ -35,6 +37,7 @@ class PlaylistsAdapter(
 
         holder.itemView.setOnClickListener {
             val playlist = items[position]
+            playlistCreateInteractor.saveCurrentPlaylist(playlist)
             onPlaylistClick(playlist)
         }
     }
@@ -73,6 +76,6 @@ class PlaylistsAdapter(
     }
 
     companion object {
-        private const val LOG_TAG = "TrackListAdapter"
+        private const val LOG_TAG = "PlylistsAdapter"
     }
 }

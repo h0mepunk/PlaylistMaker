@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
 import kotlinx.coroutines.launch
@@ -20,19 +21,30 @@ class PlaylistPageViewModel(
         private const val LOG_TAG = "PlaylistPageViewModel"
     }
 
+    lateinit var currentPlaylist: Playlist
+
     private val tracksStateLiveData = MutableLiveData< PlaylistPageState>()
 
     fun observeTracksState(): LiveData<PlaylistPageState> = tracksStateLiveData
 
-    fun getTracks() {
+    fun onCreate() {
+        getCurrentPlaylist()
+        getTracks()
+    }
+
+    fun getCurrentPlaylist() {
         val playlist = playlistCreateInteractor.getCurrentPlaylist()
         if (playlist == null) {
-            Log.i(LOG_TAG, "getTracks: playlist is null")
+            Log.i(LOG_TAG, "getCurrentPlaylist: playlist is null")
             renderPlaylistPageState(PlaylistPageState.Empty)
-            return
+        } else {
+            currentPlaylist = playlist
         }
+    }
+
+    fun getTracks() {
         viewModelScope.launch {
-            playlistInteractor.getTracksFromPlaylist(playlist.id)
+            playlistInteractor.getTracksFromPlaylist(currentPlaylist.id)
                 .collect { tracks ->
                     processTracks(tracks)
                 }
@@ -43,7 +55,7 @@ class PlaylistPageViewModel(
         if (tracks.isEmpty()) {
             renderPlaylistPageState(PlaylistPageState.Empty)
         } else {
-            renderPlaylistPageState(PlaylistPageState.Tracks(tracks))
+            renderPlaylistPageState(PlaylistPageState.Tracks(currentPlaylist, tracks))
         }
     }
 

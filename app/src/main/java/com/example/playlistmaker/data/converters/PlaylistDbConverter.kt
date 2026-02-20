@@ -23,7 +23,9 @@ class PlaylistDbConverter {
             playlist.previewUri,
             playlist.id,
             playlist.tracksCount,
-            playlist.tracks
+            playlist.tracks,
+            playlist.timestamp,
+            playlist.timeTotal
         )
     }
 }

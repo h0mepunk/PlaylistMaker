@@ -7,4 +7,6 @@ data class Playlist(
     val id: Int,
     val tracksCount: Int = tracks.split(",").size,
     val tracks: String,
+    val timestamp: Long,
+    val timeTotal: Long
 )

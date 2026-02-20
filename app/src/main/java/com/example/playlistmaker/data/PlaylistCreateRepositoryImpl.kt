@@ -54,24 +54,23 @@ class PlaylistCreateRepositoryImpl(
     }
 
     private fun savePlaylistToSharedPrefs(key: String, playlist: Playlist?) {
-        {
-            Log.i(LOG_TAG, "playlist saved $playlist")
-            if (playlist!= null) {
-                Log.i(LOG_TAG, "playlist is not null")
-                sharedPreferences.edit()
-                    .putString(
-                        key,
-                        playlistToJson(playlist!!)
-                    )
-                    .apply()
-            } else {
-                Log.i(LOG_TAG, "playlist is null")
-                sharedPreferences.edit()
-                    .putString(
-                        key,
-                        EMPTY_STRING
-                    )
-            }
+        Log.i(LOG_TAG, "playlist saved $playlist")
+        if (playlist != null) {
+            Log.i(LOG_TAG, "playlist is not null")
+            sharedPreferences.edit()
+                .putString(
+                    key,
+                    playlistToJson(playlist)
+                )
+                .apply()
+        } else {
+            Log.i(LOG_TAG, "playlist is null")
+            sharedPreferences.edit()
+                .putString(
+                    key,
+                    EMPTY_STRING
+                )
+                .apply()
         }
     }
 }

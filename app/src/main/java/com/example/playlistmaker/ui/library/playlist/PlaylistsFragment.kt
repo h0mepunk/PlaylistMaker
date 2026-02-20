@@ -12,13 +12,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.models.Playlist
-import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.PlaylistsState
-import com.example.playlistmaker.ui.library.error.ErrorFragment
-import com.example.playlistmaker.ui.library.tracklist.TrackListAdapter
 import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.android.ext.android.inject
 
 class PlaylistsFragment : Fragment() {
 
@@ -52,6 +51,8 @@ class PlaylistsFragment : Fragment() {
 
     val playlistViewModel by activityViewModel<PlaylistViewModel>()
 
+    private val playlistCreateInteractor: PlaylistCreateInteractor by inject()
+
     private lateinit var binding: FragmentPlaylistsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +74,7 @@ class PlaylistsFragment : Fragment() {
         ) { playlist ->
             findNavController().navigate(R.id.action_library_fragment_to_playlistPageFragment,
                 Bundle().apply {
-                    putString("playlist", playlist.toString())
+                    putString("playlist_current", playlist.toString())
                 }
             )
         }
@@ -86,7 +87,7 @@ class PlaylistsFragment : Fragment() {
                 R.id.action_library_fragment_to_playlistCreateFragment
             )
         }
-        adapter = PlaylistsAdapter { playlist ->
+        adapter = PlaylistsAdapter(playlistCreateInteractor) { playlist ->
             onPlaylistClickDebounce(playlist)
         }
         binding.playlistListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

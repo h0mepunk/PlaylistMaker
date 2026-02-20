@@ -1,15 +1,20 @@
 package com.example.playlistmaker.ui.playlist
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistPageBinding
 import com.example.playlistmaker.domain.models.Playlist
@@ -20,6 +25,10 @@ import com.example.playlistmaker.ui.library.playlist.PlaylistsAdapter
 import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PlaylistPageFragment: Fragment() {
 
@@ -56,9 +65,16 @@ class PlaylistPageFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.onCreate()
         viewModel.observeTracksState().observe(viewLifecycleOwner) {
             renderState(it)
         }
+
+        binding.playlistPageTitle.text = viewModel.currentPlaylist.name
+        binding.playlistPageYear.text = formatYear(viewModel.currentPlaylist.timestamp)
+        binding.playlistPageTimeCount.text = formatterTime(viewModel.currentPlaylist.timeTotal)
+        binding.playlistPageTracksCount.text = viewModel.currentPlaylist.tracks.length.toString()
 
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
@@ -96,6 +112,20 @@ class PlaylistPageFragment: Fragment() {
         viewModel.getTracks()
     }
 
+    fun showCover(uri: Uri) {
+        Glide.with(this)
+            .load(uri)
+            .placeholder(R.drawable.playlist_page_image_placeholder)
+            .apply(
+                RequestOptions().transform(
+                    RoundedCorners(
+                        this.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()
+                    )
+                )
+            )
+            .into(binding.playlistPageCover)
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.getTracks()
@@ -120,8 +150,19 @@ class PlaylistPageFragment: Fragment() {
                 trackList = state.tracks
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
+                showCover(state.playlist.imgUri.toUri())
             }
         }
+    }
+
+    private fun formatYear(timestamp: Long): String {
+        return SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(timestamp))
+    }
+
+    private fun formatterTime(time: Long): String {
+        val minutes = time / 60000
+        val seconds = (time % 60000) / 1000
+        return String.format("%d:%02d", minutes, seconds)
     }
 
 }

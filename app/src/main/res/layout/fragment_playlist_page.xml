@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ScrollView
+        android:background="@color/menu_background_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -20,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.appbar.MaterialToolbar
+                android:backgroundTint="@null"
                 android:id="@+id/playlist_page_toolbar"
                 app:navigationIcon="@drawable/arrow_back"
                 android:layout_width="match_parent"
@@ -33,14 +35,37 @@
                 app:layout_constraintGuide_begin="@dimen/media_horizontal_guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
-            <ImageView
-                android:id="@+id/playlist_page_cover"
-                android:layout_width="match_parent"
-                android:layout_height="360dp"
-                android:background="@drawable/media_cover_background"
-                app:layout_constraintBottom_toTopOf="@id/playlist_page_title"
-                app:layout_constraintTop_toTopOf="parent"></ImageView>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_border_border"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/media_horizontal_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/playlist_page_cover_box"
+    app:layout_constraintTop_toTopOf="@id/playlist_page_toolbar"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent">
+    <ImageView
+        android:backgroundTint="@color/menu_background_color"
+        android:id="@+id/playlist_page_cover"
+        android:layout_width="360dp"
+        android:layout_height="360dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <ImageView
+        android:id="@+id/playlist_page_placeholder"
+        android:layout_width="312dp"
+        android:layout_height="312dp"
+        android:background="@drawable/playlist_page_image_placeholder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/playlist_page_title"
@@ -50,7 +75,7 @@
                 android:layout_marginTop="24dp"
                 style="@style/playlist_page_title"
                 app:layout_constraintStart_toStartOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/playlist_page_cover"></TextView>
+                app:layout_constraintTop_toBottomOf="@id/playlist_page_cover_box"></TextView>
 
             <TextView
                 android:id="@+id/playlist_page_year"
@@ -103,7 +128,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:id="@+id/playlist_page_button_share"
-                    app:icon="@drawable/ic_share_playlist"
+                    app:background="@drawable/ic_share_playlist"
                     android:scaleType="centerInside"
                     app:layout_constraintStart_toStartOf="@id/left_border"
                     app:layout_constraintEnd_toStartOf="@id/playlist_page_button_more"
@@ -124,10 +149,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
     <LinearLayout
+        android:layout_marginTop="24dp"
         android:id="@+id/playlist_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/settings_background_color"
+        android:layout_height="wrap_content"
+        android:maxHeight="266dp"
+        android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         app:behavior_hideable="true"
@@ -139,14 +166,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bottomsheet_strike"></ImageView>
+            android:background="@drawable/bottomsheet_strike"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlist_bottom_sheet_list_recycler"
             android:layout_width="match_parent"
             android:layout_marginTop="24dp"
-            android:layout_height="wrap_content">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout >

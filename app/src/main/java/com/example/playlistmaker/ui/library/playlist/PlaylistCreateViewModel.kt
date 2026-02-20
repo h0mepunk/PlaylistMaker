@@ -58,7 +58,9 @@ class PlaylistCreateViewModel(
                     tracks = EMPTY_STRING,
                     tracksCount = 0,
                     id = (1..1000000000).random(),
-                    imgUri = coverUri?: EMPTY_STRING
+                    imgUri = coverUri?: EMPTY_STRING,
+                    timestamp = System.currentTimeMillis(),
+                    timeTotal = 0L
                 )
             )
         }
