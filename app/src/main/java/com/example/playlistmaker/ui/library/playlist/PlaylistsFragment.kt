@@ -71,7 +71,7 @@ class PlaylistsFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope,
             false
         ) { playlist ->
-            findNavController().navigate(R.id.action_playlistsFragment_to_playlistPageFragment,
+            findNavController().navigate(R.id.action_library_fragment_to_playlistPageFragment,
                 Bundle().apply {
                     putString("playlist", playlist.toString())
                 }

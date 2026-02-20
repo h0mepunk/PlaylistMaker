@@ -89,6 +89,10 @@ class PlaylistPageFragment: Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.playlistBottomSheetListRecycler.adapter = adapter
 
+        binding.playlistPageToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
         viewModel.getTracks()
     }
 
