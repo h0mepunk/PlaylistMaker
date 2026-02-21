@@ -72,7 +72,7 @@ class PlaylistPageFragment: Fragment() {
         }
 
         binding.playlistPageTitle.text = viewModel.currentPlaylist.name
-        binding.playlistPageYear.text = formatYear(viewModel.currentPlaylist.timestamp)
+        binding.playlistPageYear.text = viewModel.currentPlaylist.description
         binding.playlistPageTimeCount.text = formatterTime(viewModel.currentPlaylist.timeTotal)
         binding.playlistPageTracksCount.text = viewModel.currentPlaylist.tracks.length.toString()
 
@@ -110,6 +110,7 @@ class PlaylistPageFragment: Fragment() {
         }
 
         viewModel.getTracks()
+        showTracks(viewModel.trackList)
     }
 
     fun showCover(uri: Uri) {
@@ -153,6 +154,12 @@ class PlaylistPageFragment: Fragment() {
                 showCover(state.playlist.imgUri.toUri())
             }
         }
+    }
+
+    fun showTracks(tracks: List<Track>) {
+        trackList = tracks
+        adapter?.items = trackList
+        adapter?.notifyDataSetChanged()
     }
 
     private fun formatYear(timestamp: Long): String {

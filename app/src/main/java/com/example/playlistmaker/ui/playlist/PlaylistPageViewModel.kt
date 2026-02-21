@@ -23,6 +23,8 @@ class PlaylistPageViewModel(
 
     lateinit var currentPlaylist: Playlist
 
+    lateinit var trackList: List<Track>
+
     private val tracksStateLiveData = MutableLiveData< PlaylistPageState>()
 
     fun observeTracksState(): LiveData<PlaylistPageState> = tracksStateLiveData
