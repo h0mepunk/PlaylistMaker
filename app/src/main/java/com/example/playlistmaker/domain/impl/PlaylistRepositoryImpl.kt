@@ -1,5 +1,6 @@
 package com.example.playlistmaker.domain.impl
 
+import android.util.Log
 import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.PlaylistTrackDbConverter
 import com.example.playlistmaker.data.db.dao.PlaylistDao
@@ -44,7 +45,8 @@ class PlaylistRepositoryImpl(
     override fun getTracksFromPlaylist(playlistId: Int): Flow<List<Track>> = flow {
         var trackList = emptyList<Track>()
         playlistDao.getPlaylistById(playlistId).tracks.split(",").forEach { trackId ->
-            trackList.plus(playlistsTracksDao.getTrackById(trackId.toInt()))
+            Log.i("PlaylistRepositoryImpl", "search track by id: $trackId")
+            trackList = trackList.plus(dbConverter.map(playlistsTracksDao.getTrackById(trackId.toInt())))
         }
         emit(trackList)
     }

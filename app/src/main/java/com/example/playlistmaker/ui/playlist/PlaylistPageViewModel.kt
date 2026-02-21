@@ -23,7 +23,7 @@ class PlaylistPageViewModel(
 
     lateinit var currentPlaylist: Playlist
 
-    lateinit var trackList: List<Track>
+    var trackList: List<Track> = emptyList()
 
     private val tracksStateLiveData = MutableLiveData< PlaylistPageState>()
 
@@ -49,6 +49,8 @@ class PlaylistPageViewModel(
             playlistInteractor.getTracksFromPlaylist(currentPlaylist.id)
                 .collect { tracks ->
                     processTracks(tracks)
+                    Log.i(LOG_TAG, "getTracks: tracks received ${tracks.size} for playlist ${currentPlaylist.name}")
+                    trackList = tracks
                 }
         }
     }

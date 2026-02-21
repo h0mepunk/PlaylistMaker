@@ -57,14 +57,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-    <ImageView
-        android:id="@+id/playlist_page_placeholder"
-        android:layout_width="312dp"
-        android:layout_height="312dp"
-        android:background="@drawable/playlist_page_image_placeholder"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -128,21 +120,21 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:id="@+id/playlist_page_button_share"
-                    app:background="@drawable/ic_share_playlist"
+                    app:srcCompat="@drawable/ic_share_playlist"
+                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     app:layout_constraintStart_toStartOf="@id/left_border"
-                    app:layout_constraintEnd_toStartOf="@id/playlist_page_button_more"
-                    ></androidx.appcompat.widget.AppCompatImageButton>
+                    app:layout_constraintEnd_toStartOf="@id/playlist_page_button_more" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:id="@+id/playlist_page_button_more"
-                    app:icon="@drawable/ic_more_playlist"
+                    app:srcCompat="@drawable/ic_more_playlist"
+                    android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:layout_marginStart="16dp"
-                    app:layout_constraintStart_toStartOf="@id/playlist_page_button_share"
-                    ></androidx.appcompat.widget.AppCompatImageButton>
+                    app:layout_constraintStart_toStartOf="@id/playlist_page_button_share" />
             </LinearLayout>
 
 

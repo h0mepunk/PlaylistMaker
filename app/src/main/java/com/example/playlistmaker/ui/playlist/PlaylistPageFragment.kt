@@ -24,6 +24,7 @@ import com.example.playlistmaker.presentation.playlist.PlaylistPageState
 import com.example.playlistmaker.ui.library.playlist.PlaylistsAdapter
 import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import com.example.playlistmaker.util.debounce
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -91,6 +92,10 @@ class PlaylistPageFragment: Fragment() {
 
         adapter = TracksPlaylistPageAdapter { track ->
             onTrackClickDebounce(track)
+        }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
 
