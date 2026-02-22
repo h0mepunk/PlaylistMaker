@@ -56,6 +56,10 @@ class PlaylistRepositoryImpl(
         playlistDao.deleteTrackFromPlaylist(playlistId, track.trackId, track.trackTime.trackTimeToLong())
     }
 
+    override suspend fun deletePlaylist(playlistId: Int) {
+        playlistDao.deletePlaylist(playlistId)
+    }
+
     override suspend fun insertTrack(track: Track) {
         val entity = dbConverter.map(track)
         playlistsTracksDao.insertTrack(entity)

@@ -227,4 +227,10 @@
         <item name="android:maxLines">1</item>
         <item name="android:maxLength">30</item>
     </style>
+    <style name="playlist_bottomsheet_menu_text">
+        <item name="android:textFontWeight">400</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
 </resources>

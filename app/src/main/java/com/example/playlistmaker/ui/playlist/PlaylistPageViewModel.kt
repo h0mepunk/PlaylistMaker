@@ -36,6 +36,12 @@ class PlaylistPageViewModel(
         getTracks()
     }
 
+    fun deletePlaylist() {
+        viewModelScope.launch {
+            playlistInteractor.deletePlaylist(currentPlaylist.id)
+        }
+    }
+
     fun deleteTrackFromPlaylist(track: Track) {
         viewModelScope.launch {
             playlistInteractor.deleteTrackFromPlaylist(currentPlaylist.id, track)

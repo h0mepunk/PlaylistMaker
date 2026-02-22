@@ -33,6 +33,9 @@ interface PlaylistDao {
         trackTime: Long
     )
 
+    @Query("""DELETE FROM playlists_table WHERE id = :id""")
+    suspend fun deletePlaylist(id: Int)
+
     @Query("""
         UPDATE playlists_table
         SET tracks = 

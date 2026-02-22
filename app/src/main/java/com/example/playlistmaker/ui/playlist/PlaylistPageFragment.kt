@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistPageBinding
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
 import com.example.playlistmaker.ui.track.TrackFragment
@@ -136,15 +137,15 @@ class PlaylistPageFragment: Fragment() {
             }
         )
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
+        val bottomSheetBehaviorMenu = BottomSheetBehavior.from(binding.playlistBottomSheetMenu).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehaviorMenu.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                        bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {}
                     else -> {}
@@ -154,38 +155,53 @@ class PlaylistPageFragment: Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {}
+                    else -> {}
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        binding.playlistBottomsheetMenuShare.setOnClickListener {
+            share(dialogShare)
+        }
+
+        binding.playlistBottomsheetMenuDelete.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Хотите удалить плейлист?")
+                .setMessage("При удалении плейлиста удалится вся информация о добавленных в него треках")
+                .setNegativeButton("НЕТ"
+                ) { _, _ -> }
+                .setPositiveButton("ДА") { _, _ ->
+                    viewModel.deletePlaylist()
+                    findNavController().popBackStack()
+                }
+                .show()
+        }
+
 
         binding.playlistPageButtonMore.setOnClickListener {
-            //При нажатии на кнопку «Меню» (три точки)
-        // пользователь должен видеть всплывающее меню (Bottom Sheet)
-        // с краткой информацией о текущем плейлисте и списком дополнительных возможностей:
-
-           // Пользователь может жестом скрыть меню с экрана.
-            //Нажатие на пункт «Поделиться» в списке меню работает аналогично нажатию на кнопку «Поделиться» на экране плейлиста.
-           // При нажатии на пункт «Удалить плейлист»
-        // всплывающее меню исчезает и пользователь видит диалог подтверждения с заголовком
-        // «Удалить плейлист», текстом «Хотите удалить плейлист?» и кнопками «Нет» и «Да»:
-           // При нажатии на кнопку «Нет» диалог закрывается и пользователь остаётся на экране плейлиста.
-        // При нажатии на кнопку «Да» текущий плейлист со всей информацией о добавленных в него треках удаляется,
-        // пользователь возвращается на экран «Медиатека» и больше не должен видеть удалённый плейлист в разделе «Плейлисты».
-        }
-        binding.playlistPageButtonShare.setOnClickListener {
-            if (viewModel.currentPlaylist.tracksCount == 0) {
-                dialogShare.show()
-            } else {
-                val intent = Intent(Intent.ACTION_SEND)
-                intent.type = "text/plain"
-                intent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    getString(R.string.share_url_value)
-                )
-                startActivity(intent)
-            //Сообщение для получателя должно содержать простой текст со списком треков плейлиста
-            // с названием плейлиста, описанием на следующей строке, количеством треков в формате
-            // «[xx] треков», где «[xx]» — количество треков на следующей строке,
-            // пронумерованным списком треков плейлиста в формате:
-            // «[номер]. [имя исполнителя] - [название трека] ([продолжительность трека])».
+            showCoverBottomsheet(viewModel.currentPlaylist.imgUri)
+            binding.playlistNameBottomsheetMenu.text = viewModel.currentPlaylist.name
+            binding.playlistTracksCountBottomsheetMenu.text = buildString {
+                append(viewModel.currentPlaylist.tracksCount)
+                append(" треков")
             }
+            bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.playlistPageButtonShare.setOnClickListener {
+            share(dialogShare)
         }
 
         binding.playlistBottomSheetListRecycler.layoutManager =
@@ -207,6 +223,17 @@ class PlaylistPageFragment: Fragment() {
                 .load(path)
                 .placeholder(R.drawable.playlist_page_image_placeholder)
                 .into(binding.playlistPageCover)
+        }
+    }
+
+    fun showCoverBottomsheet(path: String) {
+        val file = File(path)
+        Log.i(LOG_TAG, "showCover path: $path, exists: ${file.exists()}, length: ${file.length()}")
+        if (file.exists() && file.length() > 0) {
+            Glide.with(this)
+                .load(path)
+                .placeholder(R.drawable.placeholder)
+                .into(binding.playlistCoverBottomsheetMenu)
         }
     }
 
@@ -266,11 +293,33 @@ class PlaylistPageFragment: Fragment() {
         return String.format("%d", minutes)
     }
 
+    private fun getPlaylistShareText(playlist: Playlist, tracks: List<Track>): String {
+        val header = "${playlist.name}\n${playlist.description}\n${playlist.tracksCount} треков\n"
+        val trackList = tracks.mapIndexed { index, track ->
+            "${index + 1}. ${track.artistName} - ${track.trackName} (${track.trackTime})"
+        }.joinToString("\n")
+        return header + trackList
+    }
+
     fun showToast(message: String?) {
         Log.i(LOG_TAG, "showToast: $message")
         requireActivity().runOnUiThread {
             Toast.makeText(requireActivity(), message?: "Empty message", Toast.LENGTH_LONG)
                 .show()
+        }
+    }
+
+    private fun share(dialogShare: MaterialAlertDialogBuilder) {
+        if (viewModel.currentPlaylist.tracksCount == 0) {
+            dialogShare.show()
+        } else {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(
+                Intent.EXTRA_TEXT,
+                getPlaylistShareText(viewModel.currentPlaylist,viewModel.trackList)
+            )
+            startActivity(intent)
         }
     }
 }
