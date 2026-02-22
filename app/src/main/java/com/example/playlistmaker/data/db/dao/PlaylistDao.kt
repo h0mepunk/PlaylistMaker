@@ -20,13 +20,16 @@ interface PlaylistDao {
     suspend fun getPlaylistById(id: Int): PlaylistEntity
 
     @Query("""
-        UPDATE playlists_table 
-        SET tracks = :tracks, tracksCount = tracksCount + 1
+        UPDATE playlists_table
+        SET tracks = CASE WHEN tracks = '' THEN :newTrackId ELSE tracks || ',' || :newTrackId END,
+            tracksCount = tracksCount + 1,
+            timeTotal = timeTotal + :trackTime
         WHERE id = :id
     """)
     suspend fun addTrackToPlaylist(
         id: Int,
-        tracks: String
+        newTrackId: String,
+        trackTime: Long
     )
 
     @Query("""

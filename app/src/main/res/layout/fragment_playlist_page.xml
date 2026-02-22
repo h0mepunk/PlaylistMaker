@@ -20,14 +20,6 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <com.google.android.material.appbar.MaterialToolbar
-                android:backgroundTint="@null"
-                android:id="@+id/playlist_page_toolbar"
-                app:navigationIcon="@drawable/arrow_back"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/header_height"
-                android:orientation="horizontal">
-            </com.google.android.material.appbar.MaterialToolbar>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/left_border"
@@ -51,13 +43,23 @@
     app:layout_constraintEnd_toEndOf="parent">
     <ImageView
         android:backgroundTint="@color/menu_background_color"
+        android:layout_marginTop="48dp"
         android:id="@+id/playlist_page_cover"
-        android:layout_width="360dp"
-        android:layout_height="360dp"
+        android:layout_width="312dp"
+        android:layout_height="312dp"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:backgroundTint="@null"
+                android:id="@+id/playlist_page_toolbar"
+                app:navigationIcon="@drawable/arrow_back"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header_height"
+                android:orientation="horizontal">
+            </com.google.android.material.appbar.MaterialToolbar>
 
             <TextView
                 android:id="@+id/playlist_page_title"

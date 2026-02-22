@@ -1,32 +1,23 @@
 package com.example.playlistmaker.ui.playlist
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistPageBinding
-import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.library.PlaylistsState
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
-import com.example.playlistmaker.ui.library.playlist.PlaylistsAdapter
-import com.example.playlistmaker.ui.library.playlist.PlaylistsFragment
 import com.example.playlistmaker.util.debounce
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import java.sql.Timestamp
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -74,8 +65,14 @@ class PlaylistPageFragment: Fragment() {
 
         binding.playlistPageTitle.text = viewModel.currentPlaylist.name
         binding.playlistPageYear.text = viewModel.currentPlaylist.description
-        binding.playlistPageTimeCount.text = formatterTime(viewModel.currentPlaylist.timeTotal)
-        binding.playlistPageTracksCount.text = viewModel.currentPlaylist.tracks.length.toString()
+        binding.playlistPageTimeCount.text = buildString {
+            append(formatterTimeMinutes(viewModel.currentPlaylist.timeTotal))
+            append(" минут")
+        }
+        binding.playlistPageTracksCount.text = buildString {
+            append(viewModel.currentPlaylist.tracksCount)
+            append(" треков")
+        }
 
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
@@ -95,7 +92,7 @@ class PlaylistPageFragment: Fragment() {
         }
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
 
@@ -114,27 +111,24 @@ class PlaylistPageFragment: Fragment() {
             findNavController().popBackStack()
         }
 
-        viewModel.getTracks()
         showTracks(viewModel.trackList)
     }
 
-    fun showCover(uri: Uri) {
-        Glide.with(this)
-            .load(uri)
-            .placeholder(R.drawable.playlist_page_image_placeholder)
-            .apply(
-                RequestOptions().transform(
-                    RoundedCorners(
-                        this.resources.getDimension(R.dimen.media_cover_corner_radius).toInt()
-                    )
-                )
-            )
-            .into(binding.playlistPageCover)
+    fun showCover(path: String) {
+        val file = File(path)
+        Log.i(LOG_TAG, "showCover path: $path, exists: ${file.exists()}, length: ${file.length()}")
+        if (file.exists() && file.length() > 0) {
+            Glide.with(this)
+                .load(path)
+                .placeholder(R.drawable.playlist_page_image_placeholder)
+                .into(binding.playlistPageCover)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.getTracks()
+        viewModel.getCurrentPlaylist()
+        showTracks(viewModel.trackList)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -156,25 +150,21 @@ class PlaylistPageFragment: Fragment() {
                 trackList = state.tracks
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
-                showCover(state.playlist.imgUri.toUri())
+                showCover(state.playlist.imgUri)
             }
         }
     }
 
     fun showTracks(tracks: List<Track>) {
+        viewModel.getTracks()
         trackList = tracks
         adapter?.items = trackList
         adapter?.notifyDataSetChanged()
     }
 
-    private fun formatYear(timestamp: Long): String {
-        return SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(timestamp))
-    }
-
-    private fun formatterTime(time: Long): String {
+    private fun formatterTimeMinutes(time: Long): String {
         val minutes = time / 60000
-        val seconds = (time % 60000) / 1000
-        return String.format("%d:%02d", minutes, seconds)
+        return String.format("%d", minutes)
     }
 
 }

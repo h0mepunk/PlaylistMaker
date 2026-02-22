@@ -38,8 +38,8 @@ class PlaylistRepositoryImpl(
         emit(playlistEntity.let { playlistDbConverter.map(it) })
     }
 
-    override suspend fun addTrackToPlaylist(playlistId: Int, trackId: String) {
-        playlistDao.addTrackToPlaylist(playlistId, trackId)
+    override suspend fun addTrackToPlaylist(playlistId: Int, trackId: String, trackTime: Long) {
+        playlistDao.addTrackToPlaylist(playlistId, trackId, trackTime)
     }
 
     override fun getTracksFromPlaylist(playlistId: Int): Flow<List<Track>> = flow {
