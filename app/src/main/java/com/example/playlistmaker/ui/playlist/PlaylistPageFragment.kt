@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistPageBinding
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
+import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
@@ -57,7 +59,12 @@ class PlaylistPageFragment: Fragment() {
     val viewModel by activityViewModel<PlaylistPageViewModel>()
     private val currentTrackInteractor: CurrentTrackInteractor by inject()
 
+    private val playlistCreateInteractor: PlaylistCreateInteractor by inject()
+
     private lateinit var binding: FragmentPlaylistPageBinding
+
+    private lateinit var bottomSheetBehaviorMenu: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -73,16 +80,7 @@ class PlaylistPageFragment: Fragment() {
             renderState(it)
         }
 
-        binding.playlistPageTitle.text = viewModel.currentPlaylist.name
-        binding.playlistPageYear.text = viewModel.currentPlaylist.description
-        binding.playlistPageTimeCount.text = buildString {
-            append(formatterTimeMinutes(viewModel.currentPlaylist.timeTotal))
-            append(" минут")
-        }
-        binding.playlistPageTracksCount.text = buildString {
-            append(viewModel.currentPlaylist.tracksCount)
-            append(" треков")
-        }
+        showPlaylistData()
 
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
@@ -137,16 +135,13 @@ class PlaylistPageFragment: Fragment() {
             }
         )
 
-        val bottomSheetBehaviorMenu = BottomSheetBehavior.from(binding.playlistBottomSheetMenu).apply {
+        bottomSheetBehaviorMenu = BottomSheetBehavior.from(binding.playlistBottomSheetMenu).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         bottomSheetBehaviorMenu.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                    }
                     BottomSheetBehavior.STATE_EXPANDED -> {}
                     else -> {}
                 }
@@ -155,14 +150,15 @@ class PlaylistPageFragment: Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    BottomSheetBehavior.STATE_HIDDEN-> {
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {}
                     else -> {}
@@ -187,6 +183,18 @@ class PlaylistPageFragment: Fragment() {
                     findNavController().popBackStack()
                 }
                 .show()
+        }
+
+        binding.playlistBottomsheetMenuEdit.setOnClickListener {
+            bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
+            playlistCreateInteractor.saveCurrentCreatingPlaylist(viewModel.currentPlaylist)
+            playlistCreateInteractor.setIsEditedFlag(true)
+            findNavController().navigate(
+                R.id.action_playlistPageFragment_to_playlistCreateFragment,
+                Bundle().apply {
+                    putInt("playlistId", viewModel.currentPlaylist.id)
+                }
+            )
         }
 
 
@@ -215,6 +223,10 @@ class PlaylistPageFragment: Fragment() {
         showTracks(viewModel.trackList)
     }
 
+    fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
+
     fun showCover(path: String) {
         val file = File(path)
         Log.i(LOG_TAG, "showCover path: $path, exists: ${file.exists()}, length: ${file.length()}")
@@ -239,8 +251,14 @@ class PlaylistPageFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
+        bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         viewModel.getCurrentPlaylist()
+        showPlaylistData()
+        showCover(viewModel.currentPlaylist.imgUri)
         showTracks(viewModel.trackList)
+        showCoverBottomsheet(viewModel.currentPlaylist.imgUri)
+        updateBottomsheetPlaylistData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -262,6 +280,7 @@ class PlaylistPageFragment: Fragment() {
                 trackList = state.tracks
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
+                showPlaylistData()
                 showCover(state.playlist.imgUri)
             }
         }
@@ -306,6 +325,28 @@ class PlaylistPageFragment: Fragment() {
         requireActivity().runOnUiThread {
             Toast.makeText(requireActivity(), message?: "Empty message", Toast.LENGTH_LONG)
                 .show()
+        }
+    }
+
+    private fun updateBottomsheetPlaylistData() {
+        showCoverBottomsheet(viewModel.currentPlaylist.imgUri)
+        binding.playlistNameBottomsheetMenu.text = viewModel.currentPlaylist.name
+        binding.playlistTracksCountBottomsheetMenu.text = buildString {
+            append(viewModel.currentPlaylist.tracksCount)
+            append(" треков")
+        }
+    }
+
+    private fun showPlaylistData() {
+        binding.playlistPageTitle.text = viewModel.currentPlaylist.name
+        binding.playlistPageYear.text = viewModel.currentPlaylist.description
+        binding.playlistPageTimeCount.text = buildString {
+            append(formatterTimeMinutes(viewModel.currentPlaylist.timeTotal))
+            append(" минут")
+        }
+        binding.playlistPageTracksCount.text = buildString {
+            append(viewModel.currentPlaylist.tracksCount)
+            append(" треков")
         }
     }
 

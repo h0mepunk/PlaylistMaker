@@ -146,13 +146,13 @@
         android:layout_marginTop="24dp"
         android:id="@+id/playlist_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:maxHeight="266dp"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="240dp"
+        app:behavior_peekHeight="0dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView

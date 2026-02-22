@@ -23,4 +23,12 @@ class PlaylistCreateInteractorImpl(
     override fun saveCurrentPlaylist(playlist: Playlist?) {
         return repository.saveCurrentPlaylist(playlist)
     }
+
+    override fun getIsEditedFlag(): Boolean {
+        return repository.getIsEditedFlag()
+    }
+
+    override fun setIsEditedFlag(isEdited: Boolean) {
+        return repository.setIsEditedFlag(isEdited)
+    }
 }

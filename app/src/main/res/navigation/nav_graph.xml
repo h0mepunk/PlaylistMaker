@@ -113,6 +113,9 @@
         <action
             android:id="@+id/action_playlistCreateFragment_to_track_fragment"
             app:destination="@id/track_fragment" />
+        <action
+            android:id="@+id/action_playlistCreateFragment_to_playlistPageFragment"
+            app:destination="@id/playlistPageFragment" />
     </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
@@ -140,5 +143,8 @@
         <action
             android:id="@+id/action_playlistPageFragment_to_library_fragment"
             app:destination="@id/library_fragment" />
+        <action
+            android:id="@+id/action_playlistPageFragment_to_playlistCreateFragment"
+            app:destination="@id/playlistCreateFragment" />
     </fragment>
 </navigation>

@@ -43,4 +43,7 @@
     <string name="edit_playlist_info_text">Редактировать информацию</string>
     <string name="share_text">Поделиться</string>
     <string name="delete_playlist_text">Удалить плейлист</string>
+    <string name="edit_playlist_title_text">Редактировать</string>
+    <string name="save_common_text">Сохранить</string>
+    <string name="playlist_name_cannot_be_empty_text">Название плейлиста не может быть пустым</string>
 </resources>

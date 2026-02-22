@@ -10,4 +10,8 @@ interface PlaylistCreateInteractor {
     fun getCurrentPlaylist() : Playlist?
 
     fun saveCurrentPlaylist(playlist: Playlist?)
+
+    fun getIsEditedFlag(): Boolean
+
+     fun setIsEditedFlag(isEdited: Boolean)
 }

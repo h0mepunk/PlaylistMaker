@@ -30,6 +30,7 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.library.PlaylistCreateState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -79,10 +80,33 @@ class PlaylistCreateFragment: Fragment() {
 
             }
             .setPositiveButton(getString(R.string.finish)) { _, _ ->
+                playlistCreateViewModel.clearCurrentCreatingPlaylist()
+                clearPlaylistDataAfterSave()
                 findNavController().popBackStack()
             }
 
-        playlistCreateViewModel.getPlaylist()
+        playlistCreateViewModel.getIsEditedFlag()
+        // Если это создание нового плейлиста — очистить ViewModel и не загружать плейлист
+        if (playlistCreateViewModel.isEdited == false && (arguments == null || arguments?.isEmpty == true)) {
+            playlistCreateViewModel.clearCurrentCreatingPlaylist()
+            clearPlaylistDataAfterSave()
+            // НЕ вызываем getPlaylist()
+        } else {
+            playlistCreateViewModel.getPlaylist()
+        }
+
+        if(playlistCreateViewModel.coverUri.isNotEmpty()) {
+            showCover(playlistCreateViewModel.coverUri)
+        }
+
+        if(playlistCreateViewModel.playlistDescription.isNotEmpty()) {
+            binding.editPlaylistDescription.setText(playlistCreateViewModel.playlistDescription)
+            showDescription()
+        }
+        if(playlistCreateViewModel.playlistName.isNotEmpty()) {
+            binding.editPlaylistName.setText(playlistCreateViewModel.playlistName)
+            showName()
+        }
 
         textWatcherName?.let { binding.editPlaylistName.addTextChangedListener(it) }
         textWatcherDescription?.let { binding.editPlaylistDescription.addTextChangedListener(it) }
@@ -110,22 +134,32 @@ class PlaylistCreateFragment: Fragment() {
             Log.i(LOG_TAG, "Create button clicked, text: '${binding.editPlaylistName.text}'")
             if (binding.editPlaylistName.text.toString().trim().isNotEmpty()) {
                 Log.i(LOG_TAG,"Playlist name is not empty, saving")
-                playlistCreateViewModel.savePlaylist(
-                    coverUri = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum/$fileName").toString(),
-                    playlistName =  binding.editPlaylistName.text.toString(),
-                    playlistDescription = binding.editPlaylistDescription.text.toString()
-                )
+                if (playlistCreateViewModel.isEdited == true) {
+                    Log.i(LOG_TAG, "Saving edited playlist with name '${binding.editPlaylistName.text}' and description '${binding.editPlaylistDescription.text}' and coverUri '${playlist!!.imgUri}'")
+                    playlistCreateViewModel.savePlaylist(
+                        coverUri = if (fileName.isNotEmpty()) { File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum/$fileName").toString()} else {playlist!!.imgUri},
+                        playlistName =  binding.editPlaylistName.text.toString(),
+                        playlistDescription = binding.editPlaylistDescription.text.toString(),
+                    )
+                    playlistCreateViewModel.setIsEditedFlag(false)
+                } else {
+                    Log.i(LOG_TAG, "Saving new playlist with name '${binding.editPlaylistName.text}' and description '${binding.editPlaylistDescription.text}' and coverUri '${fileName}'")
+                    playlistCreateViewModel.savePlaylist(
+                        coverUri = if (fileName.isNotEmpty()) {File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum/$fileName").toString()} else {""},
+                        playlistName =  binding.editPlaylistName.text.toString(),
+                        playlistDescription = binding.editPlaylistDescription.text.toString(),
+                    )
+
+                }
                 showToast("Плейлист ${binding.editPlaylistName.text} сохранён")
-                Log.i(LOG_TAG, "Clear all playlist data in view model")
-                playlistCreateViewModel.playlistName = ""
-                playlistCreateViewModel.playlistDescription = ""
-                playlistCreateViewModel.coverUri = ""
-                binding.editPlaylistName.setText("")
-                binding.editPlaylistDescription.setText("")
+                clearPlaylistDataAfterSave()
+                playlistCreateViewModel.setIsEditedFlag(false)
                 hidePlaylistData()
                 Log.i(LOG_TAG, "Closing fragment after save")
+                playlistCreateViewModel.clearCurrentCreatingPlaylist()
                 findNavController().popBackStack()
             } else {
+                showToast(getString(R.string.playlist_name_cannot_be_empty_text))
                 Log.i(LOG_TAG,"Playlist name is empty, not saving")
             }
         }
@@ -174,9 +208,13 @@ class PlaylistCreateFragment: Fragment() {
             false
         }
 
+        // Сначала устанавливаем текст (или очищаем)
+        binding.editPlaylistName.setText(playlistCreateViewModel.playlistName)
+        binding.editPlaylistDescription.setText(playlistCreateViewModel.playlistDescription)
+
+        // Затем добавляем TextWatcher
         textWatcherName = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -196,7 +234,6 @@ class PlaylistCreateFragment: Fragment() {
                 }
             }
         }
-
         textWatcherDescription = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -216,23 +253,40 @@ class PlaylistCreateFragment: Fragment() {
                 }
             }
         }
-
         binding.editPlaylistName.addTextChangedListener(textWatcherName)
         binding.editPlaylistDescription.addTextChangedListener(textWatcherDescription)
 
         binding.playlistToolbar.setNavigationOnClickListener {
-            Log.i(LOG_TAG,"Checking unsaved data")
-                if(
+            Log.i(LOG_TAG, "Checking unsaved data")
+            if (playlistCreateViewModel.isEdited == null || playlistCreateViewModel.isEdited == false) {
+                if (
                     playlistCreateViewModel.playlistDescription.isNotEmpty() ||
                     playlistCreateViewModel.playlistName.isNotEmpty() ||
-                    playlistCreateViewModel.coverUri.isNotEmpty()) {
-                    Log.i(LOG_TAG,"Playlist has unsaved data, showing dialog")
+                    playlistCreateViewModel.coverUri.isNotEmpty()
+                ) {
+                    Log.i(LOG_TAG, "Playlist has unsaved data, showing dialog")
                     dialog.show()
                 } else {
-                    Log.i(LOG_TAG,"No unsaved data, navigating back")
+                    Log.i(LOG_TAG, "No unsaved data, navigating back")
+                    playlistCreateViewModel.setIsEditedFlag(false)
+                    playlistCreateViewModel.clearCurrentCreatingPlaylist()
+                    clearPlaylistDataAfterSave()
                     findNavController().popBackStack()
                 }
+            } else {
+                Log.i(LOG_TAG, "Playlist is edited, navigating back without saving")
+                playlistCreateViewModel.setIsEditedFlag(false)
+                playlistCreateViewModel.clearCurrentCreatingPlaylist()
+                clearPlaylistDataAfterSave()
+                findNavController().popBackStack()
             }
+        }
+
+        // Если это создание нового плейлиста (нет аргументов и не редактирование) — очистить все
+        if (playlistCreateViewModel.isEdited == false && (arguments == null || arguments?.isEmpty == true)) {
+            clearPlaylistDataAfterSave()
+            playlistCreateViewModel.clearCurrentCreatingPlaylist()
+        }
 
         playlistCreateViewModel.onRestoreInstanceState(savedInstanceState)
     }
@@ -250,6 +304,7 @@ class PlaylistCreateFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
+        playlistCreateViewModel.getIsEditedFlag()
         if(playlistCreateViewModel.coverUri.isNotEmpty()) {
             showCover(playlistCreateViewModel.coverUri)
         }
@@ -279,22 +334,56 @@ class PlaylistCreateFragment: Fragment() {
             }
 
             is PlaylistCreateState.PlaylistContent -> {
-                Log.i(LOG_TAG,"Playlist is shown: ${state.playlist}")
                 playlist = state.playlist
+                // Если это создание нового плейлиста — использовать только значения из ViewModel
+                if (playlistCreateViewModel.isEdited == false) {
+                    if (playlistCreateViewModel.playlistName.isNotEmpty()) {
+                        binding.editPlaylistName.setText(playlistCreateViewModel.playlistName)
+                        showName()
+                    } else {
+                        hideName()
+                    }
+                    if (playlistCreateViewModel.playlistDescription.isNotEmpty()) {
+                        binding.editPlaylistDescription.setText(playlistCreateViewModel.playlistDescription)
+                        showDescription()
+                    } else {
+                        hideDescription()
+                    }
+                    hideCover()
+                    binding.cereatePlaylistButton.text = getString(R.string.create_playlist_button_text)
+                    binding.playlistToolbar.title = getString(R.string.playlist_toolbar_title_text)
+                    return
+                }
+                // Если это редактирование существующего плейлиста
                 if (playlist!!.imgUri != EMPTY_STRING) {
                     showCover(playlist!!.imgUri)
                 } else {
                     hideCover()
                 }
-                if (playlist!!.name != EMPTY_STRING) {
+                if (playlistCreateViewModel.playlistName.isNotEmpty()) {
+                    binding.editPlaylistName.setText(playlistCreateViewModel.playlistName)
+                    showName()
+                } else if (playlist!!.name != EMPTY_STRING) {
+                    binding.editPlaylistName.setText(playlist!!.name)
                     showName()
                 } else {
                     hideName()
                 }
-                if (playlist!!.description != EMPTY_STRING) {
+                if (playlistCreateViewModel.playlistDescription.isNotEmpty()) {
+                    binding.editPlaylistDescription.setText(playlistCreateViewModel.playlistDescription)
+                    showDescription()
+                } else if (playlist!!.description != EMPTY_STRING) {
+                    binding.editPlaylistDescription.setText(playlist!!.description)
                     showDescription()
                 } else {
                     hideDescription()
+                }
+                if(playlistCreateViewModel.isEdited == null || playlistCreateViewModel.isEdited == false) {
+                    binding.cereatePlaylistButton.text = getString(R.string.create_playlist_button_text)
+                    binding.playlistToolbar.title = getString(R.string.playlist_toolbar_title_text)
+                } else {
+                    binding.cereatePlaylistButton.text = getString(R.string.save_common_text)
+                    binding.playlistToolbar.title = getString(R.string.edit_playlist_title_text)
                 }
             }
         }
@@ -384,6 +473,15 @@ class PlaylistCreateFragment: Fragment() {
         } else {
             Log.e(LOG_TAG, "Bitmap decode failed for uri: $uri")
         }
+    }
+
+    private fun clearPlaylistDataAfterSave() {
+        Log.i(LOG_TAG, "Clear all playlist data in view model")
+        playlistCreateViewModel.playlistName = ""
+        playlistCreateViewModel.playlistDescription = ""
+        playlistCreateViewModel.coverUri = ""
+        binding.editPlaylistName.setText("")
+        binding.editPlaylistDescription.setText("")
     }
 
     private fun showToast(message: String?) {
