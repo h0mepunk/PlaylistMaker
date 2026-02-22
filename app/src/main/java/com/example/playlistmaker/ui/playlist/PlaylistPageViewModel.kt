@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.playlist
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
+import com.example.playlistmaker.ui.track.TrackFragment
 import kotlinx.coroutines.launch
 
 class PlaylistPageViewModel(
@@ -32,6 +34,12 @@ class PlaylistPageViewModel(
     fun onCreate() {
         getCurrentPlaylist()
         getTracks()
+    }
+
+    fun deleteTrackFromPlaylist(track: Track) {
+        viewModelScope.launch {
+            playlistInteractor.deleteTrackFromPlaylist(currentPlaylist.id, track)
+        }
     }
 
     fun getCurrentPlaylist() {

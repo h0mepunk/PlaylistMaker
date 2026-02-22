@@ -1,10 +1,12 @@
 package com.example.playlistmaker.ui.playlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -12,10 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistPageBinding
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
+import com.example.playlistmaker.ui.track.TrackFragment
 import com.example.playlistmaker.util.debounce
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -29,6 +35,8 @@ class PlaylistPageFragment: Fragment() {
     private var adapter: TracksPlaylistPageAdapter? = null
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
+
+    private lateinit var onTrackClickDebounceDelete: (Track) -> Unit
 
     companion object {
 
@@ -46,6 +54,7 @@ class PlaylistPageFragment: Fragment() {
         }
     }
     val viewModel by activityViewModel<PlaylistPageViewModel>()
+    private val currentTrackInteractor: CurrentTrackInteractor by inject()
 
     private lateinit var binding: FragmentPlaylistPageBinding
 
@@ -87,20 +96,96 @@ class PlaylistPageFragment: Fragment() {
             )
         }
 
-        adapter = TracksPlaylistPageAdapter { track ->
-            onTrackClickDebounce(track)
+        fun dialog(track: Track) =  MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Хотите удалить трек?")
+            .setNegativeButton("НЕТ"
+            ) { _, _ -> }
+            .setPositiveButton("ДА") { _, _ ->
+                if (viewModel.currentPlaylist.tracksCount == 1) {
+                    showToast("Нельзя удалить последний трек из плейлиста")
+                }
+                else {
+                    viewModel.deleteTrackFromPlaylist(track)
+                    viewModel.getCurrentPlaylist()
+                    viewModel.getTracks()
+                    showTracksCount(viewModel.currentPlaylist.tracksCount)
+                    showTimeTotal(viewModel.currentPlaylist.timeTotal)
+                }
+            }
+
+        val dialogShare =  MaterialAlertDialogBuilder(requireContext())
+            .setTitle("В этом плейлисте нет списка треков, которым можно поделиться")
+            .setPositiveButton("Ок") { _, _ ->
+            }
+
+        onTrackClickDebounceDelete = debounce<Track>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { track ->
+            dialog(track).show()
         }
+
+        adapter = TracksPlaylistPageAdapter(
+            currentTrackInteractor,
+             onTrackClick = { track ->
+                onTrackClickDebounce(track)
+            },
+            onTrackLongClick = { track ->
+                onTrackClickDebounceDelete(track)
+            }
+        )
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {}
+                    else -> {}
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
 
         binding.playlistPageButtonMore.setOnClickListener {
-            TODO()
+            //При нажатии на кнопку «Меню» (три точки)
+        // пользователь должен видеть всплывающее меню (Bottom Sheet)
+        // с краткой информацией о текущем плейлисте и списком дополнительных возможностей:
+
+           // Пользователь может жестом скрыть меню с экрана.
+            //Нажатие на пункт «Поделиться» в списке меню работает аналогично нажатию на кнопку «Поделиться» на экране плейлиста.
+           // При нажатии на пункт «Удалить плейлист»
+        // всплывающее меню исчезает и пользователь видит диалог подтверждения с заголовком
+        // «Удалить плейлист», текстом «Хотите удалить плейлист?» и кнопками «Нет» и «Да»:
+           // При нажатии на кнопку «Нет» диалог закрывается и пользователь остаётся на экране плейлиста.
+        // При нажатии на кнопку «Да» текущий плейлист со всей информацией о добавленных в него треках удаляется,
+        // пользователь возвращается на экран «Медиатека» и больше не должен видеть удалённый плейлист в разделе «Плейлисты».
         }
         binding.playlistPageButtonShare.setOnClickListener {
-            TODO()
+            if (viewModel.currentPlaylist.tracksCount == 0) {
+                dialogShare.show()
+            } else {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(R.string.share_url_value)
+                )
+                startActivity(intent)
+            //Сообщение для получателя должно содержать простой текст со списком треков плейлиста
+            // с названием плейлиста, описанием на следующей строке, количеством треков в формате
+            // «[xx] треков», где «[xx]» — количество треков на следующей строке,
+            // пронумерованным списком треков плейлиста в формате:
+            // «[номер]. [имя исполнителя] - [название трека] ([продолжительность трека])».
+            }
         }
 
         binding.playlistBottomSheetListRecycler.layoutManager =
@@ -155,6 +240,20 @@ class PlaylistPageFragment: Fragment() {
         }
     }
 
+    fun showTracksCount(count: Int) {
+        binding.playlistPageTracksCount.text = buildString {
+            append(count)
+            append(" треков")
+        }
+    }
+
+    fun showTimeTotal(time: Long) {
+        binding.playlistPageTimeCount.text = buildString {
+            append(formatterTimeMinutes(time))
+            append(" минут")
+        }
+    }
+
     fun showTracks(tracks: List<Track>) {
         viewModel.getTracks()
         trackList = tracks
@@ -167,4 +266,11 @@ class PlaylistPageFragment: Fragment() {
         return String.format("%d", minutes)
     }
 
+    fun showToast(message: String?) {
+        Log.i(LOG_TAG, "showToast: $message")
+        requireActivity().runOnUiThread {
+            Toast.makeText(requireActivity(), message?: "Empty message", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
 }

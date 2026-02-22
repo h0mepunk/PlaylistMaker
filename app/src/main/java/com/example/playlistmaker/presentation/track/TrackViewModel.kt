@@ -53,8 +53,7 @@ class TrackViewModel(
             viewModelScope.launch {
                 playlistInteractor.addTrackToPlaylist(
                     playlist.id,
-                    currentTrack.trackId.toString(),
-                    trackTimeToMillis(currentTrack.trackTime)
+                    currentTrack
                 )
                 playlistInteractor.insertTrack(currentTrack)
             }

@@ -8,6 +8,7 @@ import com.example.playlistmaker.data.db.dao.PlaylistTracksDao
 import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.playlist.PlaylistPageState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -38,8 +39,8 @@ class PlaylistRepositoryImpl(
         emit(playlistEntity.let { playlistDbConverter.map(it) })
     }
 
-    override suspend fun addTrackToPlaylist(playlistId: Int, trackId: String, trackTime: Long) {
-        playlistDao.addTrackToPlaylist(playlistId, trackId, trackTime)
+    override suspend fun addTrackToPlaylist(playlistId: Int, track: Track) {
+        playlistDao.addTrackToPlaylist(playlistId, track.trackId.toString(), track.trackTime.trackTimeToLong())
     }
 
     override fun getTracksFromPlaylist(playlistId: Int): Flow<List<Track>> = flow {
@@ -51,6 +52,10 @@ class PlaylistRepositoryImpl(
         emit(trackList)
     }
 
+    override suspend fun deleteTrackFromPlaylist(playlistId: Int, track: Track) {
+        playlistDao.deleteTrackFromPlaylist(playlistId, track.trackId, track.trackTime.trackTimeToLong())
+    }
+
     override suspend fun insertTrack(track: Track) {
         val entity = dbConverter.map(track)
         playlistsTracksDao.insertTrack(entity)
@@ -59,5 +64,18 @@ class PlaylistRepositoryImpl(
     override fun getTrackById(id: Int): Flow<Track> = flow {
         val entity = playlistsTracksDao.getTrackById(id)
         emit(entity.let { dbConverter.map(it) })
+    }
+
+    private fun trackTimeToString(trackTime: Long): String {
+        val minutes = trackTime / 60000
+        val seconds = (trackTime % 60000) / 1000
+        return String.format("%d:%02d", minutes, seconds)
+    }
+
+    private fun String.trackTimeToLong(): Long {
+        val parts = this.split(":")
+        val minutes = parts[0].toLong()
+        val seconds = parts[1].toLong()
+        return minutes * 60000 + seconds * 1000
     }
 }

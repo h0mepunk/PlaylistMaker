@@ -10,10 +10,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.models.Track
 
 class TracksPlaylistPageAdapter(
-    private val onTrackClick: (Track) -> Unit
+    private val currentTrackInteractor: CurrentTrackInteractor,
+    private val onTrackClick: (Track) -> Unit,
+    private val onTrackLongClick: (Track) -> Unit
 ): RecyclerView.Adapter<TracksPlaylistPageAdapter.PlaylistPageViewHolder> () {
 
     private lateinit var context: Context
@@ -34,7 +37,14 @@ class TracksPlaylistPageAdapter(
 
         holder.itemView.setOnClickListener {
             val track = items[position]
-                onTrackClick(track)
+            currentTrackInteractor.saveCurrentTrack(track)
+            onTrackClick(track)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            val track = items[position]
+            onTrackLongClick(track)
+            true
         }
     }
 
