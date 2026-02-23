@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.playlist
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
-import com.example.playlistmaker.ui.track.TrackFragment
 import kotlinx.coroutines.launch
 
 class PlaylistPageViewModel(
@@ -32,7 +30,7 @@ class PlaylistPageViewModel(
     fun observeTracksState(): LiveData<PlaylistPageState> = tracksStateLiveData
 
     fun onCreate() {
-        getCurrentPlaylist()
+        getCurrentPlaylistFromSharedPrefs()
         getTracks()
     }
 
@@ -43,17 +41,31 @@ class PlaylistPageViewModel(
     }
 
     fun deleteTrackFromPlaylist(track: Track) {
+        Log.i(LOG_TAG, "deleteTrackFromPlaylist: track ${track.trackName} from playlist ${currentPlaylist.name}")
         viewModelScope.launch {
             playlistInteractor.deleteTrackFromPlaylist(currentPlaylist.id, track)
+            var playlist: Playlist? = null
+                playlistInteractor.getPlaylistById(currentPlaylist.id).collect {
+                    playlist = it
+                }
+                if (playlist != null) {
+                    currentPlaylist = playlist
+                } else {
+                    Log.i(LOG_TAG, "setCurrentPlaylist: playlist is null, cannot save to shared prefs")
+                }
+                playlistCreateInteractor.saveCurrentPlaylist(currentPlaylist)
+                Log.i(LOG_TAG, "setCurrentPlaylist: playlist saved $currentPlaylist")
+                getTracks()
         }
     }
 
-    fun getCurrentPlaylist() {
+    fun getCurrentPlaylistFromSharedPrefs() {
         val playlist = playlistCreateInteractor.getCurrentPlaylist()
         if (playlist == null) {
             Log.i(LOG_TAG, "getCurrentPlaylist: playlist is null")
             renderPlaylistPageState(PlaylistPageState.Empty)
         } else {
+            Log.i(LOG_TAG, "getCurrentPlaylist: playlist received ${playlist.name}")
             currentPlaylist = playlist
         }
     }

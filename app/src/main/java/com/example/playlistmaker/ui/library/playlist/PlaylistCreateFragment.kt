@@ -86,11 +86,10 @@ class PlaylistCreateFragment: Fragment() {
             }
 
         playlistCreateViewModel.getIsEditedFlag()
-        // Если это создание нового плейлиста — очистить ViewModel и не загружать плейлист
         if (playlistCreateViewModel.isEdited == false && (arguments == null || arguments?.isEmpty == true)) {
             playlistCreateViewModel.clearCurrentCreatingPlaylist()
+            playlistCreateViewModel.saveCurrentPlaylist()
             clearPlaylistDataAfterSave()
-            // НЕ вызываем getPlaylist()
         } else {
             playlistCreateViewModel.getPlaylist()
         }

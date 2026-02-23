@@ -20,16 +20,12 @@ import com.example.playlistmaker.domain.api.PlaylistCreateInteractor
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.playlist.PlaylistPageState
-import com.example.playlistmaker.ui.track.TrackFragment
 import com.example.playlistmaker.util.debounce
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class PlaylistPageFragment: Fragment() {
 
@@ -105,10 +101,9 @@ class PlaylistPageFragment: Fragment() {
                 }
                 else {
                     viewModel.deleteTrackFromPlaylist(track)
-                    viewModel.getCurrentPlaylist()
-                    viewModel.getTracks()
-                    showTracksCount(viewModel.currentPlaylist.tracksCount)
-                    showTimeTotal(viewModel.currentPlaylist.timeTotal)
+                    adapter!!.items = viewModel.trackList
+                    adapter!!.notifyDataSetChanged()
+                    showPlaylistData()
                 }
             }
 
@@ -253,7 +248,7 @@ class PlaylistPageFragment: Fragment() {
         super.onResume()
         bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        viewModel.getCurrentPlaylist()
+        viewModel.getCurrentPlaylistFromSharedPrefs()
         showPlaylistData()
         showCover(viewModel.currentPlaylist.imgUri)
         showTracks(viewModel.trackList)
@@ -287,6 +282,7 @@ class PlaylistPageFragment: Fragment() {
     }
 
     fun showTracksCount(count: Int) {
+        Log.i(LOG_TAG, "showTracksCount: $count")
         binding.playlistPageTracksCount.text = buildString {
             append(count)
             append(" треков")
@@ -294,6 +290,7 @@ class PlaylistPageFragment: Fragment() {
     }
 
     fun showTimeTotal(time: Long) {
+        Log.i(LOG_TAG, "showTimeTotal: $time")
         binding.playlistPageTimeCount.text = buildString {
             append(formatterTimeMinutes(time))
             append(" минут")

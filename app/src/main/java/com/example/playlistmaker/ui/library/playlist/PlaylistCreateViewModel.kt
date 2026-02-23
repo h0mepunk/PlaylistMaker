@@ -21,10 +21,6 @@ class PlaylistCreateViewModel(
 
     fun observePlaylistCreateState(): LiveData<PlaylistCreateState> = playlistCreateStateLiveData
 
-    private val playlistLiveData = MutableLiveData<Playlist>()
-
-    fun observePlaylistLiveData(): LiveData<Playlist> = playlistLiveData
-
     companion object {
         private const val PLAYLIST_NAME = "playlist_name"
         private const val PLAYLIST_DESCRIPTION = "playlist_description"
@@ -39,8 +35,18 @@ class PlaylistCreateViewModel(
     var playlist: Playlist? = null
 
     fun getPlaylist() {
+        Log.i(LOG_TAG, "clear playlist data")
         viewModelScope.launch {
-            val playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
+            if (isEdited == true) {
+                Log.i(LOG_TAG, "getting current playlist for editing")
+                playlist = playlistCreateInteractor.getCurrentPlaylist()
+                playlistName = playlist!!.name
+                playlistDescription = playlist!!.description
+                coverUri = playlist!!.imgUri
+            } else {
+                Log.i(LOG_TAG, "getting current playlist from creation")
+                 playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
+            }
             Log.i(LOG_TAG, "playlist got $playlist")
             processPlaylist(playlist)
         }
