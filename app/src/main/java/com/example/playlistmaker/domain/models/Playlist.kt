@@ -5,8 +5,8 @@ data class Playlist(
     val description: String,
     val imgUri: String,
     val id: Int,
-    val tracksCount: Int = tracks.split(",").size,
-    val tracks: String,
+    val tracks: String?,
+    val tracksCount: Int = tracks?.split(",")?.size ?: 0,
     val timestamp: Long,
     val timeTotal: Long
 )

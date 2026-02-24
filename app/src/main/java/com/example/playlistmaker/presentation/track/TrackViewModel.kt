@@ -46,7 +46,7 @@ class TrackViewModel(
             playlistInteractor.getPlaylistById(playlist.id)
         }
 
-        if (playlist.tracks.contains(currentTrack.trackId.toString())) {
+        if (playlist.tracks?.contains(currentTrack.trackId.toString()) == true) {
             Log.i(LOG_TAG,"track ${currentTrack.trackName} already exists in playlist with Id: ${playlist.name}")
             trackAdded.postValue(false)
         } else {

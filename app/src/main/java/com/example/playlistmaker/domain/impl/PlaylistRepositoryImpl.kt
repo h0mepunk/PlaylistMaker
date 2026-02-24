@@ -49,9 +49,20 @@ class PlaylistRepositoryImpl(
 
     override fun getTracksFromPlaylist(playlistId: Int): Flow<List<Track>> = flow {
         var trackList = emptyList<Track>()
-        playlistDao.getPlaylistById(playlistId).tracks.split(",").forEach { trackId ->
-            Log.i("PlaylistRepositoryImpl", "search track by id: $trackId")
-            trackList = trackList.plus(dbConverter.map(playlistsTracksDao.getTrackById(trackId.toInt())))
+        val playlist = playlistDao.getPlaylistById(playlistId)
+        if (!playlist.tracks.isNullOrEmpty()) {
+            playlistDao.getPlaylistById(playlistId).tracks!!.split(",").forEach {
+                trackId ->
+                Log.i("PlaylistRepositoryImpl", "search track by id: $trackId")
+                trackList =
+                    trackList.plus(
+                        dbConverter.map(
+                            playlistsTracksDao.getTrackById(
+                                trackId.toInt()
+                            )
+                        )
+                    )
+            }
         }
         emit(trackList)
     }

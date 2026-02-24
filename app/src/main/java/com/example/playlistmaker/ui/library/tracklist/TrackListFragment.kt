@@ -89,8 +89,8 @@ class TrackListFragment : Fragment() {
         libraryViewModel.getTrackList()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         adapter = null
         binding.trackLibraryListRecycler.adapter = null
     }
