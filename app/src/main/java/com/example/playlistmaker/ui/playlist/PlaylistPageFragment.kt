@@ -223,12 +223,17 @@ class PlaylistPageFragment: Fragment() {
     fun showCover(path: String) {
         val file = File(path)
         Log.i(LOG_TAG, "showCover path: $path, exists: ${file.exists()}, length: ${file.length()}")
-        if (file.exists() && file.length() > 0) {
+        if (path.isNotEmpty() && file.exists() && file.length() > 0) {
             Glide.with(this)
-                .load(path)
+                .load(file)
                 .placeholder(R.drawable.playlist_page_image_placeholder)
                 .into(binding.playlistPageCover)
+        } else {
+            Glide.with(this)
+                .load(R.drawable.playlist_page_image_placeholder)
+                .into(binding.playlistPageCover)
         }
+        binding.playlistPageCover.visibility = View.VISIBLE
     }
 
     fun showCoverBottomsheet(path: String) {

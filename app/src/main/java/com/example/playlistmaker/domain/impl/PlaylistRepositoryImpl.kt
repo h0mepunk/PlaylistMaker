@@ -64,7 +64,7 @@ class PlaylistRepositoryImpl(
                     )
             }
         }
-        emit(trackList)
+        emit(trackList.reversed())
     }
 
     override suspend fun deleteTrackFromPlaylist(playlistId: Int, track: Track) {
