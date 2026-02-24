@@ -165,26 +165,6 @@ class PlaylistCreateFragment: Fragment() {
 
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
-        binding.editPlaylistName.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.editPlaylistName.setText("")
-                binding.editPlaylistName.hint = ""
-            } else {
-                if (binding.editPlaylistName.text.isEmpty()) {
-                    binding.editPlaylistName.hint = getString(R.string.playlist_name_hint_text)
-                }
-            }
-        }
-        binding.editPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.editPlaylistDescription.setText("")
-                binding.editPlaylistDescription.hint = ""
-            } else {
-                if (binding.editPlaylistDescription.text.isEmpty()) {
-                    binding.editPlaylistDescription.hint = getString(R.string.playlist_description_hint_text)
-                }
-            }
-        }
         binding.editPlaylistName.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (binding.editPlaylistName.text.isNotEmpty()) {
@@ -216,7 +196,6 @@ class PlaylistCreateFragment: Fragment() {
             override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
                 playlistCreateViewModel.playlistName = s?.toString() ?: ""
                 binding.cereatePlaylistButton.isEnabled = s?.isNotEmpty() == true
                 Log.i(LOG_TAG,"name set to ${playlistCreateViewModel.playlistName} on text changed")
@@ -412,7 +391,6 @@ class PlaylistCreateFragment: Fragment() {
 
     fun showName() {
         binding.editPlaylistNameTitle.visibility = View.VISIBLE
-        binding.cereatePlaylistButton.isEnabled = true
         binding.editPlaylistName.hint = ""
     }
 

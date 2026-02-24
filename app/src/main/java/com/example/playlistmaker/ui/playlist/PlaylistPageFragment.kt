@@ -76,8 +76,6 @@ class PlaylistPageFragment: Fragment() {
             renderState(it)
         }
 
-        showPlaylistData()
-
         onTrackClickDebounce = debounce<Track>(
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
@@ -249,7 +247,6 @@ class PlaylistPageFragment: Fragment() {
         bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         viewModel.getCurrentPlaylistFromSharedPrefs()
-        showPlaylistData()
         showCover(viewModel.currentPlaylist.imgUri)
         showTracks(viewModel.trackList)
         showCoverBottomsheet(viewModel.currentPlaylist.imgUri)
@@ -268,6 +265,9 @@ class PlaylistPageFragment: Fragment() {
                 trackList = emptyList()
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
+                showTracksCount(0)
+                showTimeTotal(0)
+                showPlaylistData()
             }
             is PlaylistPageState.Tracks -> {
                 Log.i(LOG_TAG,"tracks : ${state.tracks}")
@@ -276,6 +276,8 @@ class PlaylistPageFragment: Fragment() {
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
                 showPlaylistData()
+                showTracksCount(state.tracks.size)
+                showTimeTotal(state.playlist.timeTotal)
                 showCover(state.playlist.imgUri)
             }
         }

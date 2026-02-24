@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ScrollView
-        android:background="@color/menu_background_color"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -55,7 +55,7 @@
             <com.google.android.material.appbar.MaterialToolbar
                 android:backgroundTint="@null"
                 android:id="@+id/playlist_page_toolbar"
-                app:navigationIcon="@drawable/arrow_back"
+                app:navigationIcon="@drawable/arrow_back_dark"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/header_height"
                 android:orientation="horizontal">
