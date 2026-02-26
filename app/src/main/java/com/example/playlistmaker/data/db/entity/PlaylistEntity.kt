@@ -6,8 +6,8 @@ import java.sql.Timestamp
 
 @Entity(tableName = "playlists_table")
 class PlaylistEntity (
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val name: String,
     val description: String,
     val tracks: String?,

@@ -33,6 +33,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.scale
 
 class PlaylistCreateFragment: Fragment() {
 
@@ -45,15 +46,6 @@ class PlaylistCreateFragment: Fragment() {
     companion object {
         private const val LOG_TAG = "PlaylistCreateFragment"
 
-        private const val PLAYLIST = "playlist"
-
-        fun newInstance(playlist: Playlist?) = PlaylistCreateFragment().apply {
-            arguments = setPlaylistArg(playlist)
-        }
-
-        fun setPlaylistArg(playlist: Playlist?) = Bundle().apply {
-            putString(PLAYLIST, playlist.toString())
-        }
     }
 
     val playlistCreateViewModel by activityViewModel<PlaylistCreateViewModel>()
@@ -187,7 +179,7 @@ class PlaylistCreateFragment: Fragment() {
             false
         }
 
-        // Сначала устанавливаем текст (или очищаем)
+        // Сначала устанавливаем или очищаем текст
         binding.editPlaylistName.setText(playlistCreateViewModel.playlistName)
         binding.editPlaylistDescription.setText(playlistCreateViewModel.playlistDescription)
 
@@ -444,7 +436,7 @@ class PlaylistCreateFragment: Fragment() {
         val bitmap = BitmapFactory.decodeStream(inputStream)
         if (bitmap != null) {
             val cropped = cropCenterSquare(bitmap)
-            val scaled = Bitmap.createScaledBitmap(cropped, 500, 500, true)
+            val scaled = cropped.scale(500, 500)
             scaled.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             Log.i(LOG_TAG, "Image saved: ${file.absolutePath}, exists: ${file.exists()}, length: ${file.length()}")
         } else {

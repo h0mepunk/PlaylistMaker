@@ -40,17 +40,9 @@ class PlaylistPageFragment: Fragment() {
     companion object {
 
         private const val CLICK_DEBOUNCE_DELAY = 300L
-        private const val TRACKS_LIST = "tracks_list_playlist_page"
 
         private const val LOG_TAG = "PlaylistPageFragment"
 
-        fun newInstance(trackList: List<Track>) = PlaylistPageFragment().apply {
-            arguments = setTracksArg(trackList)
-        }
-
-        fun setTracksArg(trackList: List<Track>) = Bundle().apply {
-            putString(TRACKS_LIST, trackList.toString()) // Simplified
-        }
     }
     val viewModel by activityViewModel<PlaylistPageViewModel>()
     private val currentTrackInteractor: CurrentTrackInteractor by inject()
@@ -90,24 +82,20 @@ class PlaylistPageFragment: Fragment() {
         }
 
         fun dialog(track: Track) =  MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Хотите удалить трек?")
-            .setNegativeButton("НЕТ"
+            .setTitle(getString(R.string.wanna_delete_this_track_text))
+            .setNegativeButton(
+                getString(R.string.no_common_text)
             ) { _, _ -> }
-            .setPositiveButton("ДА") { _, _ ->
-                if (viewModel.currentPlaylist.tracksCount == 1) {
-                    showToast("Нельзя удалить последний трек из плейлиста")
-                }
-                else {
+            .setPositiveButton(getString(R.string.yes_common_text)) { _, _ ->
                     viewModel.deleteTrackFromPlaylist(track)
-                    adapter!!.items = viewModel.trackList
+                    adapter!!.items = viewModel.getTrackList()
                     adapter!!.notifyDataSetChanged()
                     showPlaylistData()
-                }
             }
 
         val dialogShare =  MaterialAlertDialogBuilder(requireContext())
-            .setTitle("В этом плейлисте нет списка треков, которым можно поделиться")
-            .setPositiveButton("Ок") { _, _ ->
+            .setTitle(getString(R.string.no_tracks_to_share_text))
+            .setPositiveButton(R.string.ok_common_text) { _, _ ->
             }
 
         onTrackClickDebounceDelete = debounce<Track>(
@@ -213,7 +201,8 @@ class PlaylistPageFragment: Fragment() {
             findNavController().popBackStack()
         }
 
-        showTracks(viewModel.trackList)
+        viewModel.getTracks()
+        showTracks(viewModel.getTrackList())
     }
 
     fun dpToPx(dp: Int): Int {
@@ -252,15 +241,15 @@ class PlaylistPageFragment: Fragment() {
         bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         viewModel.getCurrentPlaylistFromSharedPrefs()
+        // Сбросить адаптер и список треков
+        trackList = emptyList()
+        adapter?.items = trackList
+        adapter?.notifyDataSetChanged()
+        // Получить треки для нового плейлиста
+        viewModel.getTracks()
         showCover(viewModel.currentPlaylist.imgUri)
-        showTracks(viewModel.trackList)
         showCoverBottomsheet(viewModel.currentPlaylist.imgUri)
         updateBottomsheetPlaylistData()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(TRACKS_LIST, trackList.toString())
     }
 
     fun renderState(state: PlaylistPageState) {
@@ -362,7 +351,7 @@ class PlaylistPageFragment: Fragment() {
             intent.type = "text/plain"
             intent.putExtra(
                 Intent.EXTRA_TEXT,
-                getPlaylistShareText(viewModel.currentPlaylist,viewModel.trackList)
+                getPlaylistShareText(viewModel.currentPlaylist,trackList)
             )
             startActivity(intent)
         }

@@ -46,4 +46,9 @@
     <string name="edit_playlist_title_text">Редактировать</string>
     <string name="save_common_text">Сохранить</string>
     <string name="playlist_name_cannot_be_empty_text">Название плейлиста не может быть пустым</string>
+    <string name="yes_common_text">ДА</string>
+    <string name="no_common_text">НЕТ</string>
+    <string name="ok_common_text">Ok</string>
+    <string name="no_tracks_to_share_text">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="wanna_delete_this_track_text">Хотите удалить трек?</string>
 </resources>

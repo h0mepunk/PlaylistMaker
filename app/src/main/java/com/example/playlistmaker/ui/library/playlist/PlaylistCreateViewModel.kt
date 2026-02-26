@@ -85,7 +85,7 @@ class PlaylistCreateViewModel(
                         description = playlistDescription,
                         tracks = EMPTY_STRING,
                         tracksCount = 0,
-                        id = (1..1000000000).random(),
+                        id = 0,
                         imgUri = coverUri ?: EMPTY_STRING,
                         timestamp = System.currentTimeMillis(),
                         timeTotal = 0L

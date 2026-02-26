@@ -23,7 +23,7 @@ class PlaylistPageViewModel(
 
     lateinit var currentPlaylist: Playlist
 
-    var trackList: List<Track> = emptyList()
+    private var trackList: List<Track> = emptyList()
 
     private val tracksStateLiveData = MutableLiveData< PlaylistPageState>()
 
@@ -31,6 +31,7 @@ class PlaylistPageViewModel(
 
     fun onCreate() {
         getCurrentPlaylistFromSharedPrefs()
+        trackList = emptyList()
         getTracks()
     }
 
@@ -63,10 +64,12 @@ class PlaylistPageViewModel(
         val playlist = playlistCreateInteractor.getCurrentPlaylist()
         if (playlist == null) {
             Log.i(LOG_TAG, "getCurrentPlaylist: playlist is null")
+            trackList = emptyList() // Сбросить треки если плейлист null
             renderPlaylistPageState(PlaylistPageState.Empty)
         } else {
             Log.i(LOG_TAG, "getCurrentPlaylist: playlist received ${playlist.name}")
             currentPlaylist = playlist
+            trackList = emptyList() // Сбросить треки при смене плейлиста
         }
     }
 
@@ -74,9 +77,9 @@ class PlaylistPageViewModel(
         viewModelScope.launch {
             playlistInteractor.getTracksFromPlaylist(currentPlaylist.id)
                 .collect { tracks ->
+                    trackList = tracks // Обновлять только тут
                     processTracks(tracks)
                     Log.i(LOG_TAG, "getTracks: tracks received ${tracks.size} for playlist ${currentPlaylist.name}")
-                    trackList = tracks
                 }
         }
     }
@@ -92,4 +95,6 @@ class PlaylistPageViewModel(
     private fun renderPlaylistPageState(state: PlaylistPageState) {
         tracksStateLiveData.postValue(state)
     }
+
+    fun getTrackList(): List<Track> = trackList
 }
