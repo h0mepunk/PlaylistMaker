@@ -241,11 +241,9 @@ class PlaylistPageFragment: Fragment() {
         bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         viewModel.getCurrentPlaylistFromSharedPrefs()
-        // Сбросить адаптер и список треков
         trackList = emptyList()
         adapter?.items = trackList
         adapter?.notifyDataSetChanged()
-        // Получить треки для нового плейлиста
         viewModel.getTracks()
         showCover(viewModel.currentPlaylist.imgUri)
         showCoverBottomsheet(viewModel.currentPlaylist.imgUri)
@@ -259,12 +257,14 @@ class PlaylistPageFragment: Fragment() {
                 trackList = emptyList()
                 adapter?.items = trackList
                 adapter?.notifyDataSetChanged()
+                binding.placeholderView.visibility = View.VISIBLE
                 showTracksCount(0)
                 showTimeTotal(0)
                 showPlaylistData()
             }
             is PlaylistPageState.Tracks -> {
                 Log.i(LOG_TAG,"tracks : ${state.tracks}")
+                binding.placeholderView.visibility = View.GONE
                 binding.playlistBottomSheetListRecycler.visibility = View.VISIBLE
                 trackList = state.tracks
                 adapter?.items = trackList

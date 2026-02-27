@@ -141,6 +141,7 @@
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="24dp"
                     app:layout_constraintStart_toStartOf="@id/playlist_page_button_share" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -148,10 +149,11 @@
     <LinearLayout
         android:id="@+id/playlist_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="323dp"
+        android:layout_height="266dp"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/playlist_page_button_share"
+        app:layout_constraintTop_toBottomOf="@id/playlist_page_button_more"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
@@ -195,7 +197,7 @@
         android:layout_marginTop="24dp"
         android:id="@+id/playlist_bottom_sheet_menu"
         android:layout_width="match_parent"
-        android:layout_height="323dp"
+        android:layout_height="266dp"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
