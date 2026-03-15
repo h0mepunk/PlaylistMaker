@@ -92,12 +92,13 @@
         ></androidx.appcompat.widget.AppCompatButton>
 
     <com.example.playlistmaker.ui.track.ButtonPlay
-        android:layout_height="wrap_content"
         android:id="@+id/media_button_play"
-        app:playButtonState="play"
-        app:layout_constraintTop_toBottomOf="@id/media_top_border_buttons"
         android:layout_width="@dimen/media_round_button_big_button_size"
+        android:layout_height="@dimen/media_round_button_big_button_size"
         android:layout_margin="6dp"
+        app:imageResIdPlay="@drawable/media_play"
+        app:imageResIdPause="@drawable/media_stop"
+        app:layout_constraintTop_toBottomOf="@id/media_top_border_buttons"
         app:layout_constraintStart_toEndOf="@id/media_button_add"
         app:layout_constraintEnd_toStartOf="@id/media_button_like"
         app:layout_constraintHorizontal_chainStyle="spread_inside"/>
