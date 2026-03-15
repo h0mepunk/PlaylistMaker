@@ -46,14 +46,14 @@ class TrackViewModel(
             playlistInteractor.getPlaylistById(playlist.id)
         }
 
-        if (playlist.tracks.contains(currentTrack.trackId.toString())) {
+        if (playlist.tracks?.contains(currentTrack.trackId.toString()) == true) {
             Log.i(LOG_TAG,"track ${currentTrack.trackName} already exists in playlist with Id: ${playlist.name}")
             trackAdded.postValue(false)
         } else {
             viewModelScope.launch {
                 playlistInteractor.addTrackToPlaylist(
                     playlist.id,
-                    currentTrack.trackId.toString()
+                    currentTrack
                 )
                 playlistInteractor.insertTrack(currentTrack)
             }
@@ -191,6 +191,14 @@ class TrackViewModel(
     override fun onCleared() {
         super.onCleared()
         mediaPlayer.reset()
+    }
+
+    private fun trackTimeToMillis(trackTime: String): Long {
+        val parts = trackTime.split(":")
+        if (parts.size != 2) return 0
+        val minutes = parts[0].toIntOrNull() ?: 0
+        val seconds = parts[1].toIntOrNull() ?: 0
+        return (minutes * 60 + seconds) * 1000L
     }
 
     companion object {

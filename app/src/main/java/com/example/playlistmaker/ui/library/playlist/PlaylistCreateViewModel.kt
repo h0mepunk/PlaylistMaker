@@ -21,10 +21,6 @@ class PlaylistCreateViewModel(
 
     fun observePlaylistCreateState(): LiveData<PlaylistCreateState> = playlistCreateStateLiveData
 
-    private val playlistLiveData = MutableLiveData<Playlist>()
-
-    fun observePlaylistLiveData(): LiveData<Playlist> = playlistLiveData
-
     companion object {
         private const val PLAYLIST_NAME = "playlist_name"
         private const val PLAYLIST_DESCRIPTION = "playlist_description"
@@ -32,15 +28,38 @@ class PlaylistCreateViewModel(
         private const val LOG_TAG = "PlaylistCreateViewModel"
     }
 
+    var isEdited: Boolean? = null
     var playlistName: String = ""
     var playlistDescription: String = ""
     var coverUri: String = ""
-    private var playlist: Playlist? = null
+    var playlist: Playlist? = null
 
     fun getPlaylist() {
+        Log.i(LOG_TAG, "clear playlist data")
         viewModelScope.launch {
-            playlistCreateInteractor.getCurrentPlaylist()
+            if (isEdited == true) {
+                Log.i(LOG_TAG, "getting current playlist for editing")
+                playlist = playlistCreateInteractor.getCurrentPlaylist()
+                playlistName = playlist!!.name
+                playlistDescription = playlist!!.description
+                coverUri = playlist!!.imgUri
+            } else {
+                Log.i(LOG_TAG, "getting current playlist from creation")
+                 playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
+            }
+            Log.i(LOG_TAG, "playlist got $playlist")
+            processPlaylist(playlist)
         }
+    }
+
+    fun getIsEditedFlag() {
+        isEdited = playlistCreateInteractor.getIsEditedFlag()
+        Log.i(LOG_TAG, "is edited flag got $isEdited")
+    }
+
+    fun setIsEditedFlag(isEdited: Boolean) {
+        playlistCreateInteractor.setIsEditedFlag(isEdited)
+        Log.i(LOG_TAG, "is edited flag saved $isEdited")
     }
 
     fun savePlaylist(
@@ -49,23 +68,44 @@ class PlaylistCreateViewModel(
         playlistDescription: String
     ) {
         Log.i(LOG_TAG, "savePlaylist called with name $playlistName and description $playlistDescription and coverUri $coverUri")
-        this.coverUri = coverUri
         viewModelScope.launch {
-            playlistInteractor.insertPlaylist(
-                Playlist(
+            if (isEdited == true) {
+                Log.i(LOG_TAG, "updating existing playlist: $playlist with new name $playlistName and description $playlistDescription and coverUri $coverUri")
+                playlist = playlist?.copy(
                     name = playlistName,
                     description = playlistDescription,
-                    tracks = EMPTY_STRING,
-                    tracksCount = 0,
-                    id = (1..1000000000).random(),
-                    imgUri = coverUri?: EMPTY_STRING
+                    imgUri = coverUri
                 )
-            )
+                playlistInteractor.updatePlaylist(playlist!!)
+                playlistCreateInteractor.saveCurrentPlaylist(playlist!!)
+            } else {
+                playlistInteractor.insertPlaylist(
+                    Playlist(
+                        name = playlistName,
+                        description = playlistDescription,
+                        tracks = EMPTY_STRING,
+                        tracksCount = 0,
+                        id = 0,
+                        imgUri = coverUri ?: EMPTY_STRING,
+                        timestamp = System.currentTimeMillis(),
+                        timeTotal = 0L
+                    )
+                )
+            }
         }
     }
 
+    fun saveCurrentPlaylist() {
+        playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
+        playlistCreateInteractor.saveCurrentPlaylist(playlist)
+    }
+
+    fun clearCurrentCreatingPlaylist() {
+        playlistCreateInteractor.saveCurrentCreatingPlaylist(null)
+    }
+
     fun onSaveInstanceState(outState: Bundle) {
-        playlist = playlistCreateInteractor.getCurrentPlaylist()
+        playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
         outState.putString(PLAYLIST_NAME, playlist?.name?: EMPTY_STRING)
         outState.putString(PLAYLIST_DESCRIPTION, playlist?.description?: EMPTY_STRING)
         outState.putString(COVER_URI, coverUri)
@@ -73,7 +113,7 @@ class PlaylistCreateViewModel(
 
     fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         coverUri = savedInstanceState?.getString(COVER_URI)?: EMPTY_STRING
-        playlist = playlistCreateInteractor.getCurrentPlaylist()
+        playlist = playlistCreateInteractor.getCurrentCreatingPlaylist()
         processPlaylist(playlist)
     }
 

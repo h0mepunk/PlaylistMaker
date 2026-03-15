@@ -6,12 +6,26 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.data.db.entity.TrackEntity
+import com.example.playlistmaker.domain.models.Track
 
 @Dao
 interface PlaylistDao {
 
     @Query("SELECT * FROM playlists_table")
     suspend fun getPlaylists(): List<PlaylistEntity>
+
+
+    @Query("""
+        UPDATE playlists_table
+        SET name = :name, description = :description, previewUri = :coverUri
+        WHERE id = :id
+    """)
+    suspend fun updatePlaylist(
+        id: Int,
+        name: String,
+        description: String,
+        coverUri: String
+    )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(track: PlaylistEntity)
@@ -20,22 +34,37 @@ interface PlaylistDao {
     suspend fun getPlaylistById(id: Int): PlaylistEntity
 
     @Query("""
-        UPDATE playlists_table 
-        SET tracks = :tracks, tracksCount = tracksCount + 1
+        UPDATE playlists_table
+        SET tracks = CASE WHEN tracks = '' THEN :newTrackId ELSE tracks || ',' || :newTrackId END,
+            tracksCount = tracksCount + 1,
+            timeTotal = timeTotal + :trackTime
         WHERE id = :id
     """)
     suspend fun addTrackToPlaylist(
         id: Int,
-        tracks: String
+        newTrackId: String,
+        trackTime: Long
     )
 
+    @Query("""DELETE FROM playlists_table WHERE id = :id""")
+    suspend fun deletePlaylist(id: Int)
+
     @Query("""
-        UPDATE playlists_table 
-        SET tracks = tracks - :track, tracksCount = tracksCount - 1
+        UPDATE playlists_table
+        SET tracks = 
+            REPLACE(
+                REPLACE(
+                    REPLACE(tracks, ',' || :trackId, ''), 
+                    :trackId || ',', ''), 
+                :trackId, ''
+            ),
+            tracksCount = tracksCount - 1,
+            timeTotal = timeTotal - :trackTime
         WHERE id = :id
     """)
     suspend fun deleteTrackFromPlaylist(
         id: Int,
-        track: String
+        trackId: Int,
+        trackTime: Long
     )
 }
