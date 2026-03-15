@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ButtonPlay">
+        <attr name="playButtonImage"
+            format="reference" />
+        <attr name="playButtonState"
+            format="enum">
+            <enum name="play" value="1"/>
+            <enum name="pause" value="0"/>
+        </attr>
+
+    </declare-styleable>
+</resources>
