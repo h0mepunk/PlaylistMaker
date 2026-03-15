@@ -181,6 +181,7 @@ class TrackFragment : Fragment() {
             is TrackState.Stopped -> {
               //  binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
                 binding.mediaTrackTime.text = getString(R.string.start_time_zero)
+                binding.mediaButtonPlay.switchState()
             }
             is TrackState.Init -> {
                 showCover(state.previewImgUrl)

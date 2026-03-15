@@ -49,6 +49,17 @@ internal class ButtonPlay @JvmOverloads constructor(
                 recycle()
             }
         }
+
+        isEnabled = false
+    }
+
+    fun switchState() {
+        state = !state
+        setImage(state)
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
     }
 
 
@@ -117,9 +128,13 @@ internal class ButtonPlay @JvmOverloads constructor(
     }
 
     override fun performClick(): Boolean {
-        updateState()
-        invalidate()
-        return super.performClick()
+        if (isEnabled) {
+            updateState()
+            invalidate()
+            return super.performClick()
+        } else {
+            return super.performClick()
+        }
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

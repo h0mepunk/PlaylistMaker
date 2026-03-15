@@ -100,7 +100,7 @@
         android:layout_margin="6dp"
         app:layout_constraintStart_toEndOf="@id/media_button_add"
         app:layout_constraintEnd_toStartOf="@id/media_button_like"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"/>"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
 
     <androidx.appcompat.widget.AppCompatButton
