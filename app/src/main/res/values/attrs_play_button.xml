@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ButtonPlay">
+        <attr name="imageResIdPlay"
+            format="reference" />
+        <attr name="imageResIdPause"
+            format="reference" />
+    </declare-styleable>
+</resources>

@@ -70,6 +70,7 @@ class TrackFragment : Fragment() {
 
         binding.mediaButtonPlay.setOnClickListener {
             Log.i(LOG_TAG,"play/stop button clicked")
+
             viewModel.onPlayButtonClicked(viewModel.currentTrack.trackTime)
         }
 
@@ -170,20 +171,21 @@ class TrackFragment : Fragment() {
     fun render(state: TrackState) {
         when (state) {
             is TrackState.Paused -> {
-                binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
+              //  binding.mediaButtonPlay.playButtonState() //setBackgroundResource(R.drawable.media_play)
             }
             is TrackState.Playing -> {
-                binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_stop)
+              //  binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_stop)
                 binding.mediaTrackTime.text = state.trackTime?: getString(R.string.start_time_zero)
                 Log.i(LOG_TAG, "time = " + state.trackTime.toString())
             }
             is TrackState.Stopped -> {
-                binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
+              //  binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
                 binding.mediaTrackTime.text = getString(R.string.start_time_zero)
+                binding.mediaButtonPlay.switchState()
             }
             is TrackState.Init -> {
                 showCover(state.previewImgUrl)
-                binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
+             //   binding.mediaButtonPlay.setBackgroundResource(R.drawable.media_play)
                 binding.mediaTrackTime.text = getString(R.string.start_time_zero)
             }
             is TrackState.Prepared -> { binding.mediaButtonPlay.isEnabled = true }

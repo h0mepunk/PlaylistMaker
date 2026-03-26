@@ -104,9 +104,11 @@ class TrackViewModel(
         mediaPlayerInteractor.preparePlayer(
             url,
             onPrepared = {
+                Log.d(LOG_TAG, "Player prepared")
                 renderState(TrackState.Prepared)
             },
             onCompletion = {
+                Log.d(LOG_TAG, "Player completed")
                 renderState(TrackState.Playing(null))
             }
         )
@@ -130,6 +132,10 @@ class TrackViewModel(
         )
     }
 
+    fun switchPlayerButtonState() {
+
+    }
+
     fun stopPlayer() {
         mediaPlayerInteractor.stopPlayer(
             onStop = {
@@ -137,6 +143,7 @@ class TrackViewModel(
                 timerJob?.cancel()
             }
         )
+        switchPlayerButtonState()
     }
 
     fun onPlayButtonClicked(trackTime: String) {
