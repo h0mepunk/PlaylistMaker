@@ -4,8 +4,12 @@ import android.media.MediaPlayer
 import android.util.Log
 import com.example.playlistmaker.domain.api.MediaPlayerRepository
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.services.track.MusicService
 
-class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlayerRepository {
+class MediaPlayerRepositoryImpl(
+    private val mediaPlayer: MediaPlayer,
+    private val musicService: MusicService
+): MediaPlayerRepository {
 
     private var playerState = STATE_DEFAULT
 
@@ -42,8 +46,10 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): MediaPlay
     override fun startPlayer(
         onPlaying: () -> Unit
     ) {
-        mediaPlayer.start()
+
+        //mediaPlayer.start()
         onPlaying()
+//        musicService.startForeground(1, null)
         playerState = STATE_PLAYING
         Log.i(LOG_TAG,"player started")
     }
