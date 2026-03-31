@@ -13,15 +13,16 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
+import com.example.playlistmaker.Const.SONG_ARTIST_KEY
+import com.example.playlistmaker.Const.SONG_NAME_KEY
+import com.example.playlistmaker.Const.SONG_URL_KEY
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.track.TrackState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Locale
 
 class MusicService(): Service() {
@@ -37,6 +38,8 @@ class MusicService(): Service() {
     private var playerStateListener: PlayerStateListener? = null
 
     private var songUrl = ""
+    private var songName = ""
+    private var songArtist = ""
 
     private var playerState: TrackState = TrackState.Init(songUrl)
 
@@ -44,25 +47,39 @@ class MusicService(): Service() {
 
     private var timerJob: Job? = null
 
+    private var playerReleased = false
+
+    private var isInForeground = false
+
     private fun startTimer() {
-        timerJob = CoroutineScope(Dispatchers.Default).launch {
-            while (mediaPlayer.isPlaying == true) {
+        timerJob?.cancel()
+        timerJob = CoroutineScope(Dispatchers.Main).launch {
+            while (mediaPlayer.isPlaying) {
                 delay(250L)
                 playerState = TrackState.Playing(getCurrentPlayerPosition())
+                playerStateListener?.onStateChanged(playerState)
             }
         }
+    }
+
+    fun updateTimer() {
+
     }
 
     fun setPlayerStateListener(listener: PlayerStateListener) {
         playerStateListener = listener
     }
 
-    private fun getCurrentPlayerPosition(): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer?.currentPosition) ?: "00:00"
-    }
-
-    fun getMediaPlayer(): MediaPlayer? {
-        return mediaPlayer
+    fun getCurrentPlayerPosition(): String {
+        val ms = try {
+            mediaPlayer.currentPosition
+        } catch (e: IllegalStateException) {
+            0
+        }
+        val totalSeconds = ms / 1000
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
     }
 
     fun preparePlayer(url: String) {
@@ -76,9 +93,10 @@ class MusicService(): Service() {
             Log.i(LOG_TAG,"player prepared, url $url")
         }
         mediaPlayer.setOnCompletionListener {
-            playerState = TrackState.Prepared
+            timerJob?.cancel()
+            playerState = TrackState.Stopped
             playerStateListener?.onStateChanged(playerState)
-            Log.i(LOG_TAG,"player completed")
+            Log.i(LOG_TAG, "player completed")
         }
         mediaPlayer.setOnErrorListener { _, what, extra ->
             Log.i(LOG_TAG, "error: what=$what, extra=$extra")
@@ -95,41 +113,45 @@ class MusicService(): Service() {
     }
 
     fun pausePlayer() {
-        mediaPlayer.pause()
-        timerJob?.cancel()
-        playerState = TrackState.Paused(getCurrentPlayerPosition())
-        playerStateListener?.onStateChanged(playerState)
-        Log.i(LOG_TAG,"player paused")
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+                timerJob?.cancel()
+                playerState = TrackState.Paused(getCurrentPlayerPosition())
+                playerStateListener?.onStateChanged(playerState)
+                Log.i(LOG_TAG,"player paused")
+            }
     }
 
-//    fun stopPlayer(
-//        onStop: () -> Unit
-//    ) {
-//        mediaPlayer.stop()
-//    //    timerJob?.cancel()
-//        onStop()
-//        playerState = TrackState.Prepared
-//        playerStateListener?.onStateChanged(playerState)
-//        Log.i(LOG_TAG,"player stopped")
-//    }
-
-//    fun clickLike(currentTrack: Track) {
-//        Log.i(LOG_TAG,"like clicked for track: ${currentTrack.trackName}")
-//    }
-
     override fun onBind(intent: Intent?): IBinder? {
-        songUrl = intent?.getStringExtra("song_url") ?: ""
+        initPlayer(intent)
 
-        playerState = TrackState.Init(songUrl)
-        preparePlayer(songUrl)
+        return binder
+    }
 
+    fun startForeground(intent: Intent) {
         ServiceCompat.startForeground(
             this,
             SERVICE_NOTIFICATION_ID,
             createServiceNotification(),
             getForegroundServiceTypeConstant()
         )
-        return binder
+        isInForeground = true
+    }
+
+    fun stopForeground() {
+        if (isInForeground) {
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+            isInForeground = false
+        }
+    }
+
+    private fun initPlayer(intent: Intent?) {
+        songUrl = intent?.getStringExtra(SONG_URL_KEY) ?: ""
+        songName = intent?.getStringExtra(SONG_NAME_KEY) ?: ""
+        songArtist = intent?.getStringExtra(SONG_ARTIST_KEY) ?: ""
+
+        playerState = TrackState.Init(songUrl)
+        preparePlayer(songUrl)
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -137,6 +159,24 @@ class MusicService(): Service() {
         return super.onUnbind(intent)
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (!isInForeground) {
+            val notification = createServiceNotification()
+            if (notification != null) {
+                startForeground(SERVICE_NOTIFICATION_ID, notification)
+                isInForeground = true
+            } else {
+                Log.e(LOG_TAG, "Notification is null, cannot start foreground in onStartCommand")
+            }
+        }
+        initPlayer(intent)
+
+        return START_STICKY
+    }
+
+    override fun stopService(name: Intent?): Boolean {
+        return super.stopService(name)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -150,26 +190,34 @@ class MusicService(): Service() {
        releasePlayer()
     }
 
-    private fun getForegroundServiceTypeConstant(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-        } else {
-            0
-        }
-    }
-
     fun reset() {
         mediaPlayer.reset()
     }
 
-    private fun releasePlayer() {
-        mediaPlayer.stop()
+    fun releasePlayer() {
+        if (playerReleased) return
         timerJob?.cancel()
+        try {
+            mediaPlayer.stop()
+        } catch (e: IllegalStateException) {
+            Log.w(LOG_TAG, "releasePlayer: stop skipped (${e.message})")
+        }
         playerState = TrackState.Init(songUrl)
         playerStateListener?.onStateChanged(playerState)
         mediaPlayer.setOnPreparedListener(null)
         mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.release()
+        playerReleased = true
+    }
+
+    fun createServiceNotification(): Notification {
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText("$songArtist - $songName")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .build()
     }
 
     private fun createNotificationChannel() {
@@ -188,14 +236,12 @@ class MusicService(): Service() {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun createServiceNotification(): Notification {
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Music foreground service")
-            .setContentText("Our service is working right now!")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .build()
+    private fun getForegroundServiceTypeConstant(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        } else {
+            0
+        }
     }
 
     inner class MusicServiceBinder : Binder() {

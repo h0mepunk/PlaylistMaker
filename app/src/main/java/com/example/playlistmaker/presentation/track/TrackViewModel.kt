@@ -1,5 +1,6 @@
 package com.example.playlistmaker.presentation.track
 
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +17,6 @@ import kotlinx.coroutines.launch
 class TrackViewModel(
     private val currentTrackInteractor: CurrentTrackInteractor,
     private val libraryInteractor: LibraryInteractor,
-    private val musicService: MusicService,
     private var playlistInteractor: PlaylistInteractor,
 ): ViewModel() {
 
@@ -29,6 +29,12 @@ class TrackViewModel(
     private val trackAdded = MutableLiveData<Boolean>()
     val trackAddedToPlaylist: LiveData<Boolean> = trackAdded
     lateinit var currentTrack: Track
+
+    private var musicService: MusicService? = null
+
+    fun setMusicService(service: MusicService) {
+        musicService = service
+    }
 
     fun addTrackToPlaylist(playlist: Playlist) {
         viewModelScope.launch {
@@ -75,36 +81,6 @@ class TrackViewModel(
         }
     }
 
-    private fun startPlayer() {
-        musicService.startPlayer()
-    }
-
-    fun pausePlayer() {
-        musicService.pausePlayer()
-    }
-
-//    fun stopPlayer() {
-//        musicService.stopPlayer(
-//            onStop = {
-//                renderState(TrackState.Stopped)
-//                timerJob?.cancel()
-//            }
-//        )
-//        switchPlayerButtonState()
-//    }
-
-    fun onPlayButtonClicked(playerState: TrackState) {
-        when(playerState) {
-            is TrackState.Playing -> {
-                pausePlayer()
-            }
-            is TrackState.Prepared, is TrackState.Paused -> {
-                startPlayer()
-            }
-            else -> { }
-        }
-    }
-
     fun onLikeButtonClicked() {
         val currentlyFavorite = isFavorite.value ?: false
         viewModelScope.launch {
@@ -119,17 +95,37 @@ class TrackViewModel(
         }
     }
 
+    fun play() {
+        musicService?.startPlayer()
+    }
+
+    fun pause() {
+        musicService?.pausePlayer()
+    }
+
+    fun updateTimer() {
+        musicService?.updateTimer()
+    }
+
+    fun showNotification() {
+        musicService?.createServiceNotification()
+    }
+
     fun onCreate() {
         currentTrack = currentTrackInteractor.getCurrentTrack()
-
         getIsTrackFavorite()
     }
 
-
-    override fun onCleared() {
-        super.onCleared()
-        musicService.reset()
+    fun startForegroundMusicService(intent: Intent) {
+        musicService?.startForeground(intent)
     }
+
+
+    fun stopForegroundMusicService() {
+        musicService?.stopForeground()
+    }
+
+
     companion object {
         private const val LOG_TAG = "TrackViewModel"
     }

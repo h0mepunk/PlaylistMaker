@@ -54,7 +54,7 @@ internal class ButtonPlay @JvmOverloads constructor(
         ).apply {
             try {
                 imageResIdPlay = getDrawable(R.styleable.ButtonPlay_imageResIdPlay)?.toBitmap()
-                imageResIdPause = getDrawable( R.styleable.ButtonPlay_imageResIdPause)?.toBitmap()
+                imageResIdPause = getDrawable(R.styleable.ButtonPlay_imageResIdPause)?.toBitmap()
             } finally {
                 recycle()
             }
@@ -89,6 +89,7 @@ internal class ButtonPlay @JvmOverloads constructor(
                 isClicked = true
                 return true
             }
+
             MotionEvent.ACTION_UP -> {
                 if (isClicked) {
                     isClicked = false
@@ -123,5 +124,4 @@ internal class ButtonPlay @JvmOverloads constructor(
         imageBitmap = if (state) imageResIdPlay else imageResIdPause
         invalidate()
     }
-
 }

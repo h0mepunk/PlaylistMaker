@@ -23,6 +23,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.Const.SONG_ARTIST_KEY
+import com.example.playlistmaker.Const.SONG_NAME_KEY
+import com.example.playlistmaker.Const.SONG_URL_KEY
 import com.example.playlistmaker.R
 import com.example.playlistmaker.services.track.MusicService
 import com.example.playlistmaker.databinding.FragmentMediaBinding
@@ -33,7 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
-class TrackFragment : Fragment() {
+class TrackFragment() : Fragment() {
 
     private val viewModel by viewModel<TrackViewModel>()
 
@@ -45,20 +48,21 @@ class TrackFragment : Fragment() {
 
     private lateinit var playlistsList: List<Playlist>
 
+    private var musicService: MusicService? = null
+
     private var lastClickedPlaylistName: String? = null
+
+    private var isServiceBound = false
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            startMusicService()
+            viewModel.play()
         } else {
             showToast("Permission on foreground service denied")
         }
     }
-
-
-    private var musicService: MusicService? = null
 
     private var playerState: TrackState = TrackState.Init("")
 
@@ -67,12 +71,12 @@ class TrackFragment : Fragment() {
             val binder = service as MusicService.MusicServiceBinder
             musicService = binder.getService()
             musicService?.setPlayerStateListener(object : MusicService.PlayerStateListener {
-
                 override fun onStateChanged(state: TrackState) {
                     playerState = state
-                    updateButtonAndProgress()
+                    render(state)
                 }
             })
+            viewModel.setMusicService(musicService!!)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -93,15 +97,13 @@ class TrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        viewModel.observeState().observe(viewLifecycleOwner) {
-//                render(it)
-//        }
-
         viewModel.isFavorite.observe(viewLifecycleOwner) { liked ->
             setLikeButton(liked)
         }
 
         bindMusicService()
+
+        showCover(artworkUrlForDisplay(viewModel.currentTrack.artworkUrl100))
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -118,9 +120,18 @@ class TrackFragment : Fragment() {
         binding.playlistBottomSheetListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         binding.mediaButtonPlay.setOnClickListener {
-            Log.i(LOG_TAG,"play/stop button clicked")
-
-            viewModel.onPlayButtonClicked(playerState)
+            requireActivity().runOnUiThread {
+                when(playerState) {
+                    is TrackState.Playing -> {
+                        viewModel.pause()
+                    }
+                    is TrackState.Prepared, is TrackState.Paused -> {
+                        checkAndRequestPermission()
+                        //viewModel.startForegroundMusicService(intent)
+                    }
+                    else -> { }
+                }
+            }
         }
 
         binding.mediaButtonLike.setOnClickListener {
@@ -128,6 +139,7 @@ class TrackFragment : Fragment() {
         }
 
         binding.mediaToolbar.setNavigationOnClickListener {
+            unbindMusicService()
             findNavController().popBackStack()
         }
 
@@ -162,10 +174,10 @@ class TrackFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
-                        viewModel.pausePlayer()
+                        viewModel.pause()
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        viewModel.pausePlayer()
+                        viewModel.play()
                     }
                     BottomSheetBehavior.STATE_HIDDEN -> {
                     }
@@ -182,19 +194,35 @@ class TrackFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        unbindMusicService()
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
+        if (playerState is TrackState.Playing && isServiceBound) {
+            viewModel.startForegroundMusicService(intent)
+            viewModel.showNotification()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.getPlaylists()
+        viewModel.stopForegroundMusicService()
+        render(playerState)
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pausePlayer()
+    override fun onDestroyView() {
+        requireActivity().runOnUiThread {
+            when(playerState) {
+                is TrackState.Playing -> {
+                    viewModel.startForegroundMusicService(intent)
+                    viewModel.showNotification()
+                }
+                else -> {
+                    unbindMusicService()
+                    isMusicServiceStarted = false
+                }
+            }
+        }
+        super.onDestroyView()
     }
 
 
@@ -222,53 +250,39 @@ class TrackFragment : Fragment() {
         }
     }
 
+
     fun render(state: TrackState) {
         when (state) {
             is TrackState.Paused -> {
-                stopMusicService()
             }
             is TrackState.Playing -> {
                 binding.mediaTrackTime.text = state.trackTime?: getString(R.string.start_time_zero)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    when {
-                        requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                            startMusicService()
-                        }
-                        shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        }
-                        else -> {
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                            intent.data = Uri.parse("package:" + requireContext().packageName)
-                            startActivity(intent)
-                            showToast("Включите разрешение на уведомления в настройках приложения")
-                        }
-                    }
-                } else {
-                    startMusicService()
-                }
-
                 Log.i(LOG_TAG, "time = " + state.trackTime.toString())
             }
             is TrackState.Stopped -> {
-                binding.mediaTrackTime.text = getString(R.string.start_time_zero)
                 binding.mediaButtonPlay.switchState()
-                stopMusicService()
+                binding.mediaTrackTime.text = TrackState.Stopped.timerText
             }
             is TrackState.Init -> {
-                showCover(viewModel.currentTrack.artworkUrl100)
+                showCover(artworkUrlForDisplay(viewModel.currentTrack.artworkUrl100))
                 binding.mediaTrackTime.text = getString(R.string.start_time_zero)
             }
-            is TrackState.Prepared -> { binding.mediaButtonPlay.isEnabled = true }
+            is TrackState.Prepared -> {
+                binding.mediaButtonPlay.isEnabled = true
+            }
+        }
+        binding.mediaButtonPlay.apply {
+            setBackgroundResource(state.buttonImage)
+            isEnabled = state.isPlayButtonEnabled
         }
     }
 
-    private fun startMusicService() {
-        requireActivity().startForegroundService(intent)
-    }
-
-    private fun stopMusicService() {
-        requireActivity().stopService(intent)
+    private fun startMusicService(foreground: Boolean) {
+        if (foreground) {
+            requireActivity().startForegroundService(intent)
+        } else {
+            requireActivity().startService(intent)
+        }
     }
 
     fun showToast(message: String?) {
@@ -289,25 +303,41 @@ class TrackFragment : Fragment() {
 
 
     private fun bindMusicService() {
-        val intent = Intent(requireActivity(), MusicService::class.java).apply {
-            putExtra("song_url", viewModel.currentTrack.previewUrl)
+        intent = Intent(requireActivity(), MusicService::class.java).apply {
+            putExtra(SONG_URL_KEY, viewModel.currentTrack.previewUrl)
+            putExtra(SONG_NAME_KEY, viewModel.currentTrack.trackName)
+            putExtra(SONG_ARTIST_KEY, viewModel.currentTrack.artistName)
         }
+        musicService?.startForeground(intent)
         requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        isServiceBound = true
     }
 
     private fun unbindMusicService() {
-        requireActivity().unbindService(serviceConnection)
+        if (isServiceBound) {
+            requireActivity().unbindService(serviceConnection)
+            isServiceBound = false
+        }
     }
 
-    private fun updateButtonAndProgress() {
-        binding.mediaButtonPlay.apply {
-            setBackgroundResource(playerState.buttonImage)
-            isEnabled = playerState.isPlayButtonEnabled
+    private fun artworkUrlForDisplay(url: String): String =
+        url.replace("100x100bb", "600x600bb", ignoreCase = false)
+            .replace("100x100", "600x600")
+
+    private fun checkAndRequestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (requireContext().checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.FOREGROUND_SERVICE)
+            } else {
+                viewModel.play()
+            }
+        } else {
+            viewModel.play()
         }
-        binding.mediaTrackTime.text = playerState.timerText
     }
 
     companion object {
+        var isMusicServiceStarted = false
         private const val LOG_TAG = "TrackFragment"
     }
 }

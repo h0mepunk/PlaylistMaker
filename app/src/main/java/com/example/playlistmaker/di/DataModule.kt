@@ -80,7 +80,7 @@ val dataModule = module {
     }
 
     single <MediaPlayerRepository> {
-        MediaPlayerRepositoryImpl(get(), get())
+        MediaPlayerRepositoryImpl()
     }
 
     single < CurrentTrackRepository> {
