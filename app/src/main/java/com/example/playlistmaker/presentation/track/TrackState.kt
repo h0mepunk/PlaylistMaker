@@ -4,7 +4,7 @@ import com.example.playlistmaker.R
 
 sealed class TrackState(
     val isPlayButtonEnabled: Boolean,
-    val buttonText: Int,
+    val buttonImage: Int,
     val timerText: String,
 ) {
 

@@ -52,4 +52,5 @@
     <string name="no_tracks_to_share_text">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="wanna_delete_this_track_text">Хотите удалить трек?</string>
     <string name="no_tracks_in_playlist_text">В плейлисте нет ни одного трека</string>
+    <string name="notification_title">Playlist Maker</string>
 </resources>

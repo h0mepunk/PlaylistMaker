@@ -4,8 +4,10 @@ import android.app.Application
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.serviceModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.api.ThemeInteractor
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -18,10 +20,11 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule, serviceModule)
         }
         val theme = themeInteractor.getTheme()
         switchTheme(theme)
+        PermissionRequester.initialize(applicationContext)
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
