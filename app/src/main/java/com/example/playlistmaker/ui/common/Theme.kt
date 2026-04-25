@@ -27,25 +27,13 @@ val grey_medium = Color(0xFFE6E8EB)
     val LightColors = lightColorScheme(
         background = white,
         onBackground = dark,
-        primary = black,
-        onSecondaryContainer = dark,
-        onError = yellow,
-        onSecondary = blue,
-        onTertiary = grey_dark,
-        onSurface = grey_medium,
-        onPrimaryContainer = red
+        onSecondary = grey_dark,
 
     )
     val DarkColors = darkColorScheme(
         background = dark,
         onBackground = white,
-        primary = black,
-        onSecondaryContainer = dark,
-        onError = yellow,
-        onSecondary = blue,
-        onTertiary = grey_dark,
-        onSurface = grey_medium,
-        onPrimaryContainer = red
+        onSecondary = white,
     )
 
 @Composable

@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -19,12 +21,16 @@ import com.example.playlistmaker.Const.EMPTY_STRING
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.api.CurrentTrackInteractor
+import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.domain.api.TracksHistoryInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.track.TrackAdapter
 import com.example.playlistmaker.presentation.search.TracksState
+import com.example.playlistmaker.ui.common.PlaylistMakerTheme
 import com.example.playlistmaker.ui.main.MainActivity
+import com.example.playlistmaker.ui.settings.SettingsItem
+import com.example.playlistmaker.ui.settings.SettingsScaffold
 import com.example.playlistmaker.util.debounce
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -41,6 +47,7 @@ class SearchFragment : Fragment() {
 
     private val trackHistoryInteractor: TracksHistoryInteractor by inject()
     private var textWatcher: TextWatcher? = null
+    private val themeInteractor: ThemeInteractor by inject()
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
@@ -48,9 +55,17 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSearchBinding.inflate(layoutInflater)
-        return binding.root
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            PlaylistMakerTheme(
+                darkTheme = themeInteractor.getTheme()
+            ) {
+//                SearchScaffold(
+//
+//                )
+            }
+        }
     }
 
     override fun onDestroyView() {
