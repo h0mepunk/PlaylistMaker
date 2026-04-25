@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,20 +27,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.ui.common.TopBar
+import com.example.playlistmaker.ui.common.blue
+import com.example.playlistmaker.ui.common.grey_dark
+import com.example.playlistmaker.ui.common.grey_medium
 
-val style = TextStyle(
-        color = Color.DarkGray,
-       fontFamily = FontFamily(
-           fonts = listOf(Font(R.font.ys_display_medium))
-       ),
-        fontSize = 18.sp,
-        fontWeight = FontWeight(400)
-    )
 
-    @Composable
+@Composable
     fun SettingsScaffold(
         items: List<SettingsItem>,
-        onItemClick: (SettingsItem) -> Unit
+        onItemClick: (SettingsItem) -> Unit,
+        switchChecked: Boolean = false
     ) {
         Scaffold(
             topBar = {
@@ -54,7 +51,7 @@ val style = TextStyle(
                     .padding(top = 16.dp)
             ) {
                 items.forEach { item ->
-                    SettingCell(item.textId, item.iconId) { onItemClick(item) }
+                    SettingCell(item.textId, item.iconId,  switchChecked) { onItemClick(item) }
                 }
             }
         }
@@ -64,6 +61,7 @@ val style = TextStyle(
     fun SettingCell(
         textId: Int,
         iconId: Int?,
+        switchChecked: Boolean? = null,
         onClick: () -> Unit
     ) {
             Row(
@@ -73,7 +71,14 @@ val style = TextStyle(
             ) {
                 Text(
                     modifier = Modifier.padding(start = 16.dp, top = 20.dp, bottom = 20.dp),
-                    style = style,
+                    style = TextStyle(
+                        color = colorResource(R.color.tabs_text_color),
+                        fontFamily = FontFamily(
+                            fonts = listOf(Font(R.font.ys_display_medium))
+                        ),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(400)
+                    ),
                     text = stringResource(textId)
                 )
                 Column(
@@ -85,14 +90,14 @@ val style = TextStyle(
                 ) {
                     if (iconId == null) {
                         Switch(
-                            checked = false,
+                            checked = switchChecked == true,
                             onCheckedChange = { onClick() },
                             modifier = Modifier.scale(0.75f),
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.DarkGray,
-                                uncheckedThumbColor = Color.DarkGray,
-                                checkedTrackColor = Color.LightGray,
-                                uncheckedTrackColor = Color.LightGray
+                                checkedThumbColor = blue,
+                                uncheckedThumbColor = grey_dark,
+                                checkedTrackColor = Color(0xFF9FBBF3),
+                                uncheckedTrackColor = grey_medium
                             )
                         )
                     } else {

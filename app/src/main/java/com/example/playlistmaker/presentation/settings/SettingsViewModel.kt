@@ -1,7 +1,6 @@
 package com.example.playlistmaker.presentation.settings
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.presentation.search.SingleLiveEvent
 
@@ -9,10 +8,6 @@ class SettingsViewModel(): ViewModel() {
 
     private val stateLiveData = SingleLiveEvent<SettingsState>()
     fun observeState(): LiveData<SettingsState> = stateLiveData
-    fun switchTheme(isDarkTheme: Boolean) {
-            renderState(SettingsState.Theme(isDarkTheme))
-        }
-
     fun clickShareApp() {
            renderState(SettingsState.Share)
         }
