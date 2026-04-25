@@ -1,12 +1,46 @@
 package com.example.playlistmaker.ui.common
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.playlistmaker.R
 
-class TopBar {
 
-    @Composable
-    fun TopBar() {
-        Text("Playlist Maker")
+val style = TextStyle(
+    color = Color.DarkGray,
+    fontFamily = FontFamily(
+        fonts = listOf(Font(R.font.ys_display_bold))
+    ),
+    fontSize = 22.sp,
+    fontWeight = FontWeight(500)
+)
+
+@Composable
+    fun TopBar(
+        text: String,
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(top = 10.dp, start = 12.dp)
+                .windowInsetsPadding(WindowInsets.statusBars)
+        ) {
+            Text(
+                text = text,
+                style = style,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
     }
-}

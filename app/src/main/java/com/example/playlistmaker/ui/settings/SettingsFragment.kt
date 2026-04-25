@@ -57,7 +57,7 @@ class SettingsFragment : Fragment() {
                 darkTheme = themeInteractor.getTheme()
             ) {
                 SettingsScaffold(
-                    items = SettingsItem.entries,
+                    items = SettingsItem.entries.toList(),
                 ) { item ->
                     when (item) {
                         SettingsItem.SHARE -> viewModel.clickShareApp()
@@ -123,12 +123,5 @@ class SettingsFragment : Fragment() {
                 clickUserAgreement()
             }
         }
-    }
-
-    enum class SettingsItem(val textId: Int, val iconId: Int?) {
-        THEME(R.string.dark_theme_menu, null),
-        SUPPORT(R.string.support_menu, R.drawable.share),
-        SHARE(R.string.share_menu, R.drawable.support),
-        USER_AGREEMENT(R.string.user_agreement_menu, R.drawable.arrow_forward),
     }
 }
