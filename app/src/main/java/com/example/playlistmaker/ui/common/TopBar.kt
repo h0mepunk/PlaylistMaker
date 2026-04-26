@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.common
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -24,7 +25,7 @@ import com.example.playlistmaker.R
     ) {
         Row(
             modifier = Modifier
-                .padding(top = 10.dp, start = 12.dp)
+                .height(56.dp)
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
             Text(
@@ -37,7 +38,7 @@ import com.example.playlistmaker.R
                     fontSize = 22.sp,
                     fontWeight = FontWeight(500)
                 ),
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically).padding(start = 12.dp),
             )
         }
     }
