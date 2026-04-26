@@ -28,12 +28,14 @@ val grey_medium = Color(0xFFE6E8EB)
         background = white,
         onBackground = dark,
         onSecondary = grey_dark,
+        onTertiary = grey_dark
 
     )
     val DarkColors = darkColorScheme(
         background = dark,
         onBackground = white,
         onSecondary = white,
+        onTertiary = grey_medium
     )
 
 @Composable
