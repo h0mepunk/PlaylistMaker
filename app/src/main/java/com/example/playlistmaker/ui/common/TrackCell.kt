@@ -24,7 +24,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 
 @Composable
-fun TrackCell(track: Track) {
+fun TrackCell(
+    track: Track,
+    onClick: () -> Unit
+) {
 
     Row(
         modifier = Modifier
@@ -112,5 +115,5 @@ fun TrackCellPreview() = TrackCell(
         collectionName  = "",
         previewUrl = "",
         artworkUrl100 = ""
-    )
+    ), {}
 )
