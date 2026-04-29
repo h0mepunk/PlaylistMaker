@@ -1,6 +1,8 @@
 package com.example.playlistmaker.ui.search
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -36,20 +40,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.TracksHistoryInteractor
+import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.common.ErrorChip
 import com.example.playlistmaker.ui.common.RoundButton
 import com.example.playlistmaker.ui.common.TopBar
 import com.example.playlistmaker.ui.common.TrackCell
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SearchScaffold(
+    viewModel: TracksSearchViewModel,
     items: List<Track>,
-    searchText: String,
     onSearchTextChange: (String) -> Unit,
-    onItemClick: () -> Unit,
+    onItemClick: (track: Track) -> Unit,
     onClearHistoryClick: () -> Unit,
-    onErrorButtonClick: () -> Unit
+    onErrorButtonClick: () -> Unit,
+    onClearSearchClick: () -> Unit
 ) {
     val searchFieldStyle = TextStyle(
         color = colorResource(R.color.black),
@@ -64,14 +73,20 @@ fun SearchScaffold(
     Scaffold(
         topBar = { TopBar(text = stringResource(R.string.search_title)) }
     ) { paddingValues ->
+
+        val text = viewModel.text.collectAsState().value
+        val historyVisible = viewModel.historyTitleVisible.collectAsState()
+        val errorVisible = viewModel.errorVisible.collectAsState()
+        val keyboardController = LocalSoftwareKeyboardController.current
+
         Column(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
             TextField(
-                value = searchText,
-                onValueChange = { newValue ->
-                    if (newValue.length <= 100) onSearchTextChange(newValue)
+                value = text,
+                onValueChange = { newText ->
+                    viewModel.onTextChanged(newText)
                 },
                 singleLine = true,
                 maxLines = 1,
@@ -105,14 +120,19 @@ fun SearchScaffold(
                     )
                 },
                 trailingIcon = {
-                    if (searchText.isNotEmpty()) {
+                    if (text.isNotEmpty()) {
                         IconButton(
-                            onClick = { onSearchTextChange("") },
+                            onClick = {
+                                onSearchTextChange(text)
+                                keyboardController?.hide()
+                                      },
                             modifier = Modifier
-                                .padding(end = 8.dp)
+                                .padding(end = 16.dp, top = 14.dp)
                         ) {
                             Icon(
-                                modifier = Modifier.align(Alignment.End),
+                                modifier = Modifier.align(Alignment.End).clickable(true) {
+                                    onClearSearchClick()
+                                },
                                 painter = painterResource(R.drawable.cross_icon),
                                 contentDescription = null
                             )
@@ -151,18 +171,20 @@ fun SearchScaffold(
                 items(items.size) { index ->
                     TrackCell(
                         track = items[index],
-                        onClick = onItemClick
+                        onClick = { onItemClick(items[index]) }
                     )
                 }
             }
-            RoundButton(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .align(Alignment.CenterHorizontally),
-                text = stringResource(R.string.clear_history_button),
-                onClick = { onClearHistoryClick() }
+            HistoryButton(
+                historyVisible.value,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    keyboardController?.hide()
+                    onClearHistoryClick()
+                }
             )
             ErrorChip(
+                errorVisible.value,
                 modifier = Modifier.padding(top = 210.dp),
                 text = stringResource(R.string.network_error_text),
                 onClick = { onErrorButtonClick() }
@@ -171,9 +193,47 @@ fun SearchScaffold(
     }
 }
 
+@Composable
+fun HistoryButton(
+    visible: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier
+) {
+    if (visible) {
+        RoundButton(
+            modifier.padding(top = 16.dp),
+            text = stringResource(R.string.clear_history_button),
+            onClick = { onClick() }
+        )
+    }
+}
+
+
+class FakeTracksInteractor : TracksInteractor {
+
+    override fun searchTracks(text: String): Flow<Pair<List<Track>?, String?>> {
+        TODO("Not yet implemented")
+    }
+}
+
+class FakeTrackHistoryInteractor : TracksHistoryInteractor {
+    override fun getTracksHistory(): ArrayList<Track> {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveTracksHistory(tracks: ArrayList<Track>) {
+        TODO("Not yet implemented")
+    }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview
 @Composable
 fun SearchScaffoldPreview() = SearchScaffold(
+    viewModel = TracksSearchViewModel(
+        tracksInteractor = FakeTracksInteractor(),
+        trackHistoryInteractor = FakeTrackHistoryInteractor()
+    ),
     items = listOf(
         Track(
             trackName = "Track name",
@@ -188,9 +248,9 @@ fun SearchScaffoldPreview() = SearchScaffold(
             artworkUrl100 = ""
         )
     ),
-    searchText = "Sunny day",
     onSearchTextChange = {},
     onItemClick = {},
     onClearHistoryClick = {},
-    onErrorButtonClick = {}
+    onErrorButtonClick = {},
+    {}
 )
