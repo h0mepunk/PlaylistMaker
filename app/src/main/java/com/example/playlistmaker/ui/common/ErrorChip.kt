@@ -14,7 +14,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -25,6 +24,8 @@ fun ErrorChip (
     visible: Boolean,
     modifier: Modifier = Modifier,
     text: String,
+    iconId: Int = R.drawable.empty_results_error,
+    buttonVisible: Boolean = false,
     onClick: () -> Unit
 ) {
     if (visible) {
@@ -35,7 +36,7 @@ fun ErrorChip (
         {
             Image(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                painter = painterResource(R.drawable.empty_results_error),
+                painter = painterResource(iconId),
                 contentDescription = null
             )
             Text(
@@ -53,11 +54,13 @@ fun ErrorChip (
                     .padding()
                     .align(Alignment.CenterHorizontally)
             )
-            RoundButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = "Refresh",
-                onClick = onClick
-            )
+            if(buttonVisible) {
+                RoundButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "Refresh",
+                    onClick = onClick
+                )
+            }
         }
     }
 }

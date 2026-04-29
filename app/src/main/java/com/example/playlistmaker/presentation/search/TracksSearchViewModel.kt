@@ -99,6 +99,7 @@ class TracksSearchViewModel(
 
     fun setText(text: String) {
         _text.value = text
+        setClearIconVisibility(text.isNotEmpty())
     }
 
     fun setErrorMessageText(text: String) {
@@ -198,7 +199,7 @@ class TracksSearchViewModel(
         try {
             val tracks = mutableListOf<Track>()
             if (foundTracks != null) {
-                Log.i(LOG_TAG, tracks.toString())
+                Log.i(LOG_TAG, foundTracks.toString())
                 tracks.addAll(foundTracks)
             }
             when {
@@ -213,7 +214,7 @@ class TracksSearchViewModel(
                 }
                 else -> {
                     Log.i(LOG_TAG, tracks.toString())
-                    renderState(TracksState.Content(tracks?: emptyList()))
+                    renderState(TracksState.Content(tracks))
                 }
             }
         } catch (t: Throwable) {

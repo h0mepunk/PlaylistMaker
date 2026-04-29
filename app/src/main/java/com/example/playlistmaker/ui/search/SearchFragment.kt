@@ -30,7 +30,7 @@ class SearchFragment : Fragment() {
 
     private val viewModel by viewModel<TracksSearchViewModel>()
 
-    private val currentTrackInteractor: CurrentTrackInteractor by inject()
+    // private val currentTrackInteractor: CurrentTrackInteractor by inject()
 
     private val trackHistoryInteractor: TracksHistoryInteractor by inject()
     private val themeInteractor: ThemeInteractor by inject()
@@ -49,7 +49,6 @@ class SearchFragment : Fragment() {
             ) {
                 SearchScaffold(
                     viewModel = viewModel,
-                    items = emptyList(),
                     onSearchTextChange = { onSearchTextChange(it) },
                     onItemClick = { onTrackClick(it) },
                     onClearHistoryClick = { onClearClick() },
@@ -61,6 +60,7 @@ class SearchFragment : Fragment() {
     }
 
     fun onSearchTextChange(text: String) {
+        viewModel.setText(text)
         if(text.isEmpty()) {
             showHistory(trackHistoryInteractor.getTracksHistory())
         } else {
@@ -78,7 +78,6 @@ class SearchFragment : Fragment() {
         with(viewModel) {
             setText(EMPTY_SEARCH_TEXT)
             showHistory()
-            hideKeyboard()
         }
     }
 

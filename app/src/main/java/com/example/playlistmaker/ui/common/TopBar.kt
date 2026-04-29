@@ -20,25 +20,25 @@ import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 
 @Composable
-    fun TopBar(
-        text: String,
+fun TopBar(
+    text: String,
+) {
+    Row(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .height(56.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .height(56.dp)
-                .windowInsetsPadding(WindowInsets.statusBars)
-        ) {
-            Text(
-                text = text,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = FontFamily(
-                        fonts = listOf(Font(R.font.ys_display_bold))
-                    ),
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight(500)
+        Text(
+            text = text,
+            style = TextStyle(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = FontFamily(
+                    fonts = listOf(Font(R.font.ys_display_bold))
                 ),
-                modifier = Modifier.align(Alignment.CenterVertically).padding(start = 12.dp),
-            )
-        }
+                fontSize = 22.sp,
+                fontWeight = FontWeight(500)
+            ),
+            modifier = Modifier.align(Alignment.CenterVertically).padding(start = 12.dp),
+        )
     }
+}

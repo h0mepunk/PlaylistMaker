@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+// ...existing imports...
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -20,10 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -48,12 +52,12 @@ import com.example.playlistmaker.ui.common.ErrorChip
 import com.example.playlistmaker.ui.common.RoundButton
 import com.example.playlistmaker.ui.common.TopBar
 import com.example.playlistmaker.ui.common.TrackCell
+import com.example.playlistmaker.ui.common.dark
 import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SearchScaffold(
     viewModel: TracksSearchViewModel,
-    items: List<Track>,
     onSearchTextChange: (String) -> Unit,
     onItemClick: (track: Track) -> Unit,
     onClearHistoryClick: () -> Unit,
@@ -69,16 +73,28 @@ fun SearchScaffold(
     val hintColor = colorResource(R.color.grey)
     val fieldBackground = colorResource(R.color.search_text_edit_color)
     val interactionSource = remember { MutableInteractionSource() }
+    val tracks = viewModel.trackList.collectAsState().value
+    val text = viewModel.text.collectAsState().value
+    val historyVisible = viewModel.historyTitleVisible.collectAsState().value
+    val errorVisible = viewModel.errorVisible.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val recyclerVisible = viewModel.recyclerVisible.collectAsState().value
+    val progressBarVisible = viewModel.progressBarVisible.collectAsState().value
+    val clearHistoryVisible = viewModel.clearHistoryVisible.collectAsState().value
+    val refreshButtonVisible = viewModel.refreshButtonVisible.collectAsState().value
+    val clearIconVisibility = viewModel.clearIconVisibility.collectAsState().value
+  //  val hideKeyboard = viewModel.hideKeyboard.collectAsState().value
+    val errorText = viewModel.errorText.collectAsState().value
+    val errorIcon= viewModel.errorIcon.collectAsState().value
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     Scaffold(
-        topBar = { TopBar(text = stringResource(R.string.search_title)) }
+        topBar = { TopBar(text = stringResource(R.string.search_title)) },
     ) { paddingValues ->
-
-        val text = viewModel.text.collectAsState().value
-        val historyVisible = viewModel.historyTitleVisible.collectAsState()
-        val errorVisible = viewModel.errorVisible.collectAsState()
-        val keyboardController = LocalSoftwareKeyboardController.current
-
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -86,7 +102,7 @@ fun SearchScaffold(
             TextField(
                 value = text,
                 onValueChange = { newText ->
-                    viewModel.onTextChanged(newText)
+                    onSearchTextChange(newText)
                 },
                 singleLine = true,
                 maxLines = 1,
@@ -100,7 +116,7 @@ fun SearchScaffold(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    cursorColor = colorResource(R.color.blue),
+                    cursorColor = dark,
                     focusedPlaceholderColor = hintColor,
                     unfocusedPlaceholderColor = hintColor
                 ),
@@ -123,19 +139,21 @@ fun SearchScaffold(
                     if (text.isNotEmpty()) {
                         IconButton(
                             onClick = {
-                                onSearchTextChange(text)
+                                onSearchTextChange("")
                                 keyboardController?.hide()
                                       },
                             modifier = Modifier
                                 .padding(end = 16.dp, top = 14.dp)
                         ) {
-                            Icon(
-                                modifier = Modifier.align(Alignment.End).clickable(true) {
-                                    onClearSearchClick()
-                                },
-                                painter = painterResource(R.drawable.cross_icon),
-                                contentDescription = null
-                            )
+                            if (clearIconVisibility) {
+                                Icon(
+                                    modifier = Modifier.align(Alignment.End).clickable(true) {
+                                        onClearSearchClick()
+                                    },
+                                    painter = painterResource(R.drawable.cross_icon),
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
                 },
@@ -144,49 +162,61 @@ fun SearchScaffold(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { }
+                    onDone = { keyboardController?.hide() }
                 ),
                 modifier = Modifier
+                    .focusRequester(focusRequester)
                     .fillMaxWidth()
                     .height(dimensionResource(R.dimen.text_input_height))
                     .padding(start = 16.dp, top = 8.dp, end = 16.dp)
             )
-            Text(
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = FontFamily(
-                        fonts = listOf(Font(R.font.ys_display_medium))
+            if(historyVisible) {
+                Text(
+                    style = TextStyle(
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontFamily = FontFamily(
+                            fonts = listOf(Font(R.font.ys_display_medium))
+                        ),
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight(400)
                     ),
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(400)
-                ),
-                modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .align(Alignment.CenterHorizontally),
-                text = stringResource(R.string.search_history_title)
-            )
-            LazyColumn(
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                items(items.size) { index ->
-                    TrackCell(
-                        track = items[index],
-                        onClick = { onItemClick(items[index]) }
-                    )
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = stringResource(R.string.search_history_title)
+                )
+            }
+            if (progressBarVisible) {
+                //TODO дописать прогресс бар
+            }
+            if (recyclerVisible) {
+                LazyColumn(
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    items(tracks.size) { index ->
+                        TrackCell(
+                            track = tracks[index],
+                            onClick = { onItemClick(tracks[index]) }
+                        )
+                    }
                 }
             }
-            HistoryButton(
-                historyVisible.value,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    keyboardController?.hide()
-                    onClearHistoryClick()
-                }
-            )
+            if (clearHistoryVisible) {
+                HistoryButton(
+                    historyVisible,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = {
+                        keyboardController?.hide()
+                        onClearHistoryClick()
+                    }
+                )
+            }
             ErrorChip(
-                errorVisible.value,
+                buttonVisible = refreshButtonVisible,
+                iconId = errorIcon,
+                visible = errorVisible.value,
                 modifier = Modifier.padding(top = 210.dp),
-                text = stringResource(R.string.network_error_text),
+                text = errorText,
                 onClick = { onErrorButtonClick() }
             )
         }
@@ -233,20 +263,6 @@ fun SearchScaffoldPreview() = SearchScaffold(
     viewModel = TracksSearchViewModel(
         tracksInteractor = FakeTracksInteractor(),
         trackHistoryInteractor = FakeTrackHistoryInteractor()
-    ),
-    items = listOf(
-        Track(
-            trackName = "Track name",
-            artistName = "Artist name",
-            trackId = 1,
-            releaseDate = null,
-            country = "USA",
-            primaryGenreName = "",
-            trackTime = "00:30",
-            collectionName = "",
-            previewUrl = "",
-            artworkUrl100 = ""
-        )
     ),
     onSearchTextChange = {},
     onItemClick = {},
