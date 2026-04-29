@@ -136,23 +136,23 @@ fun SearchScaffold(
                     )
                 },
                 trailingIcon = {
-                    if (text.isNotEmpty()) {
-                        IconButton(
-                            onClick = {
-                                onSearchTextChange("")
-                                keyboardController?.hide()
-                                      },
-                            modifier = Modifier
-                                .padding(end = 16.dp, top = 14.dp)
-                        ) {
-                            if (clearIconVisibility) {
-                                Icon(
-                                    modifier = Modifier.align(Alignment.End).clickable(true) {
-                                        onClearSearchClick()
-                                    },
-                                    painter = painterResource(R.drawable.cross_icon),
-                                    contentDescription = null
-                                )
+                    if (clearIconVisibility) {
+                        if (text.isNotEmpty()) {
+                            IconButton(
+                                onClick = {
+                                    onSearchTextChange("")
+                                    keyboardController?.hide()
+                                },
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                            ) {
+                                    Icon(
+                                        modifier = Modifier.align(Alignment.End).clickable(true) {
+                                            onClearSearchClick()
+                                        },
+                                        painter = painterResource(R.drawable.cross_icon),
+                                        contentDescription = null
+                                    )
                             }
                         }
                     }

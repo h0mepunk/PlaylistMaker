@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.ui)
     // implementation(libs.androidx.room.compiler)
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     kapt(libs.androidx.room.compiler)
     implementation(libs.glide)
