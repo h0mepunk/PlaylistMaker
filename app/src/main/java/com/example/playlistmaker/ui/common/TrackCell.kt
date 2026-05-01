@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.common
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,7 @@ fun TrackCell(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 13.dp)
+            .clickable { onClick() }
     ) {
         AsyncImage(
             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),

@@ -30,7 +30,7 @@ class SearchFragment : Fragment() {
 
     private val viewModel by viewModel<TracksSearchViewModel>()
 
-    // private val currentTrackInteractor: CurrentTrackInteractor by inject()
+    private val currentTrackInteractor: CurrentTrackInteractor by inject()
 
     private val trackHistoryInteractor: TracksHistoryInteractor by inject()
     private val themeInteractor: ThemeInteractor by inject()
@@ -125,6 +125,8 @@ class SearchFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope,
             false
         ) { track ->
+            Log.i(LOG_TAG, "Track $track clicked")
+            currentTrackInteractor.saveCurrentTrack(track)
             findNavController().navigate(R.id.action_search_fragment_to_track_fragment,
                 Bundle().apply {
                     putString("track", track.toString())
