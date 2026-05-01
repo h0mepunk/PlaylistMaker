@@ -51,9 +51,8 @@ class SearchFragment : Fragment() {
                     viewModel = viewModel,
                     onSearchTextChange = { onSearchTextChange(it) },
                     onItemClick = { onTrackClick(it) },
-                    onClearHistoryClick = { onClearClick() },
+                    onClearHistoryClick = { onClearHistoryClick() },
                     onErrorButtonClick = { onRefreshClick() },
-                    onClearSearchClick = { onClearHistoryClick() },
                 )
             }
         }
@@ -61,7 +60,7 @@ class SearchFragment : Fragment() {
 
     fun onSearchTextChange(text: String) {
         viewModel.setText(text)
-        if(text.isEmpty()) {
+        if (text.isEmpty()) {
             showHistory(trackHistoryInteractor.getTracksHistory())
         } else {
             viewModel.lastSearchText = text
@@ -72,6 +71,21 @@ class SearchFragment : Fragment() {
     fun onTrackClick(track: Track) {
         (activity as MainActivity).animateBottomNavigationView(View.GONE)
         onTrackClickDebounce(track)
+    }
+
+    private fun addTrackToHistoryFromSearch(track: Track) {
+        val trackHistory = trackHistoryInteractor.getTracksHistory()
+        if (trackHistory.size == 10) {
+            trackHistory.removeAt(9)
+            trackHistory.add(0, track)
+        }
+        if (trackHistory.contains(track)) {
+            trackHistory.remove(track)
+            trackHistory.add(0, track)
+        } else {
+            trackHistory.add(0, track)
+        }
+        trackHistoryInteractor.saveTracksHistory(trackHistory)
     }
 
     fun onClearClick() {
@@ -126,6 +140,7 @@ class SearchFragment : Fragment() {
             false
         ) { track ->
             Log.i(LOG_TAG, "Track $track clicked")
+            addTrackToHistoryFromSearch(track)
             currentTrackInteractor.saveCurrentTrack(track)
             findNavController().navigate(R.id.action_search_fragment_to_track_fragment,
                 Bundle().apply {
@@ -133,13 +148,6 @@ class SearchFragment : Fragment() {
                 }
             )
         }
-
-//        adapter = TrackAdapter(currentTrackInteractor,trackHistoryInteractor) { track ->
-//            (activity as MainActivity).animateBottomNavigationView(View.GONE)
-//            onTrackClickDebounce(track)
-//        }
-//        binding.trackListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-//        binding.trackListRecycler.adapter = adapter
 
         with(viewModel) {
             setErrorVisibility(false)
@@ -161,8 +169,6 @@ class SearchFragment : Fragment() {
 //            )
 //            viewModel.searchRequest(viewModel.lastSearchText.toString())
 //        }
-
-  //      val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
 //        binding.clearIcon.setOnClickListener {
 //            binding.searchText.setText(EMPTY_SEARCH_TEXT)

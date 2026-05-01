@@ -2,33 +2,39 @@ package com.example.playlistmaker.ui.search
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-// ...existing imports...
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -52,7 +58,6 @@ import com.example.playlistmaker.ui.common.ErrorChip
 import com.example.playlistmaker.ui.common.RoundButton
 import com.example.playlistmaker.ui.common.TopBar
 import com.example.playlistmaker.ui.common.TrackCell
-import com.example.playlistmaker.ui.common.dark
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -61,8 +66,7 @@ fun SearchScaffold(
     onSearchTextChange: (String) -> Unit,
     onItemClick: (track: Track) -> Unit,
     onClearHistoryClick: () -> Unit,
-    onErrorButtonClick: () -> Unit,
-    onClearSearchClick: () -> Unit
+    onErrorButtonClick: () -> Unit
 ) {
     val searchFieldStyle = TextStyle(
         color = colorResource(R.color.black),
@@ -83,7 +87,6 @@ fun SearchScaffold(
     val clearHistoryVisible = viewModel.clearHistoryVisible.collectAsState().value
     val refreshButtonVisible = viewModel.refreshButtonVisible.collectAsState().value
     val clearIconVisibility = viewModel.clearIconVisibility.collectAsState().value
-  //  val hideKeyboard = viewModel.hideKeyboard.collectAsState().value
     val errorText = viewModel.errorText.collectAsState().value
     val errorIcon= viewModel.errorIcon.collectAsState().value
     val focusRequester = remember { FocusRequester() }
@@ -99,77 +102,73 @@ fun SearchScaffold(
             modifier = Modifier
                 .padding(paddingValues)
         ) {
-            TextField(
-                value = text,
-                onValueChange = { newText ->
-                    onSearchTextChange(newText)
-                },
-                singleLine = true,
-                maxLines = 1,
-                interactionSource = interactionSource,
-                shape = RoundedCornerShape(dimensionResource(R.dimen.search_text_edit_corner_radius)),
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = colorResource(R.color.black),
-                    unfocusedTextColor = colorResource(R.color.black),
-                    focusedContainerColor = fieldBackground,
-                    unfocusedContainerColor = fieldBackground,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    cursorColor = dark,
-                    focusedPlaceholderColor = hintColor,
-                    unfocusedPlaceholderColor = hintColor
-                ),
-                textStyle = searchFieldStyle,
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.input_hint),
-                        style = searchFieldStyle.copy(color = hintColor)
-                    )
-                },
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(R.drawable.search_mini),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = 14.dp, end = 8.dp)
-                    )
-                },
-                trailingIcon = {
-                    if (clearIconVisibility) {
-                        if (text.isNotEmpty()) {
-                            IconButton(
-                                onClick = {
-                                    onSearchTextChange("")
-                                    keyboardController?.hide()
-                                },
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                            ) {
-                                    Icon(
-                                        modifier = Modifier.align(Alignment.End).clickable(true) {
-                                            onClearSearchClick()
-                                        },
-                                        painter = painterResource(R.drawable.cross_icon),
-                                        contentDescription = null
-                                    )
+            val corner = dimensionResource(R.dimen.search_text_edit_corner_radius)
+            val fieldShape = RoundedCornerShape(corner)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                    .height(dimensionResource(R.dimen.text_input_height))
+                    .clip(fieldShape)
+                    .background(fieldBackground),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.search_mini),
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 14.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                BasicTextField(
+                    value = text,
+                    onValueChange = { newText ->
+                        if (newText.length <= 100) onSearchTextChange(newText)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .focusRequester(focusRequester),
+                    singleLine = true,
+                    textStyle = searchFieldStyle,
+                    cursorBrush = SolidColor(colorResource(R.color.blue)),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() }
+                    ),
+                    interactionSource = interactionSource,
+                    decorationBox = { innerTextField ->
+                        Box(
+                            Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            if (text.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.input_hint),
+                                    style = searchFieldStyle.copy(color = hintColor),
+                                    maxLines = 1
+                                )
                             }
+                            innerTextField()
                         }
                     }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() }
-                ),
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .fillMaxWidth()
-                    .height(dimensionResource(R.dimen.text_input_height))
-                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-            )
+                )
+                if (clearIconVisibility && text.isNotEmpty()) {
+                    Image(
+                        painter = painterResource(R.drawable.cross_icon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 4.dp, end = 12.dp)
+                            .size(12.dp)
+                            .clickable {
+                                onSearchTextChange("")
+                                keyboardController?.hide()
+                            }
+                    )
+                }
+            }
             if(historyVisible) {
                 Text(
                     style = TextStyle(
@@ -268,5 +267,4 @@ fun SearchScaffoldPreview() = SearchScaffold(
     onItemClick = {},
     onClearHistoryClick = {},
     onErrorButtonClick = {},
-    {}
 )
