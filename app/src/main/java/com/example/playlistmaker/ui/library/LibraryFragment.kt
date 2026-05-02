@@ -38,8 +38,14 @@ class LibraryFragment: Fragment() {
                 darkTheme = themeInteractor.getTheme()
             ) {
                 LibraryScreen(
-                    onTrackClick = { onTrackClickDebounce(it)},
-                    onPlaylistClick = {},
+                    onTrackClick = { onTrackClickDebounce(it) },
+                    onPlaylistClick = { playlist ->
+                        playlistCreateInteractor.saveCurrentPlaylist(playlist)
+                        onPlaylistClickDebounce(playlist)
+                    },
+                    onCreatePlaylistClick = {
+                        findNavController().navigate(R.id.action_library_fragment_to_playlistCreateFragment)
+                    },
                     tracksViewModel,
                     playlistViewModel
                 )
@@ -108,18 +114,6 @@ class LibraryFragment: Fragment() {
         tracksViewModel.getTrackList()
 
         playlistViewModel.getPlaylists()
-
-//        binding.newPlaylistButton.setOnClickListener {
-//            findNavController().navigate(
-//                R.id.action_library_fragment_to_playlistCreateFragment
-//            )
-//        }
-//        adapter = PlaylistsAdapter(playlistCreateInteractor) { playlist ->
-//            onPlaylistClickDebounce(playlist)
-//        }
-//        binding.playlistListRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-//        binding.playlistListRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
-//        binding.playlistListRecycler.adapter = adapter
     }
 
     private lateinit var playlistsList: List<Playlist>
@@ -130,11 +124,6 @@ class LibraryFragment: Fragment() {
 
     private val playlistCreateInteractor: PlaylistCreateInteractor by inject()
 
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString(PLAYLISTS_LIST, playlistsList.toString()) // add to json convertation
-//    }
 
     fun renderTracksState(state: TrackListState) {
         when(state) {

@@ -16,26 +16,32 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 
 @Composable
-fun ErrorChip (
+fun ErrorChip(
     visible: Boolean,
     modifier: Modifier = Modifier,
     text: String,
     iconId: Int = R.drawable.empty_results_error,
     buttonVisible: Boolean = false,
-    onClick: () -> Unit
+    buttonText: String = "",
+    imageTopPadding: Dp = 0.dp,
+    textTopPadding: Dp = 16.dp,
+    onClick: () -> Unit,
 ) {
     if (visible) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-        )
-        {
+        ) {
             Image(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = imageTopPadding),
                 painter = painterResource(iconId),
                 contentDescription = null
             )
@@ -45,19 +51,19 @@ fun ErrorChip (
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = FontFamily(
-                        fonts = listOf(Font(R.font.ys_display_medium))
+                        fonts = listOf(Font(R.font.ys_text_medium))
                     ),
                     fontSize = 19.sp,
                     fontWeight = FontWeight(400)
                 ),
                 modifier = Modifier
-                    .padding()
+                    .padding(top = textTopPadding)
                     .align(Alignment.CenterHorizontally)
             )
-            if(buttonVisible) {
+            if (buttonVisible && buttonText.isNotEmpty()) {
                 RoundButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = "Refresh",
+                    text = buttonText,
                     onClick = onClick
                 )
             }
@@ -70,5 +76,7 @@ fun ErrorChip (
 fun ErrorChipPreview() = ErrorChip(
     visible = true,
     text = "Network error",
-    onClick = {}
+    onClick = {},
+    buttonVisible = true,
+    buttonText = "Обновить"
 )

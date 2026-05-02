@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -186,7 +187,18 @@ fun SearchScaffold(
                 )
             }
             if (progressBarVisible) {
-                //TODO дописать прогресс бар
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = dimensionResource(R.dimen.searchPreloaderMarginTop)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(dimensionResource(R.dimen.progressBarSize)),
+                        color = colorResource(R.color.blue),
+                        strokeWidth = 3.dp,
+                    )
+                }
             }
             if (recyclerVisible) {
                 LazyColumn(
@@ -216,6 +228,7 @@ fun SearchScaffold(
                 visible = errorVisible.value,
                 modifier = Modifier.padding(top = 210.dp),
                 text = errorText,
+                buttonText = stringResource(R.string.refresh),
                 onClick = { onErrorButtonClick() }
             )
         }
