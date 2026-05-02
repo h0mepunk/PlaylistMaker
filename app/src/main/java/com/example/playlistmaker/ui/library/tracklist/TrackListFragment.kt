@@ -26,8 +26,6 @@ class TrackListFragment : Fragment() {
 
     private lateinit var trackList: List<Track>
 
-    private var adapter: TrackListAdapter? = null
-
     private val currentTrackInteractor: CurrentTrackInteractor by inject()
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
@@ -54,8 +52,8 @@ class TrackListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLibraryContentBinding.inflate(layoutInflater)
-        return binding.root
+//        binding = FragmentLibraryContentBinding.inflate(layoutInflater)
+//        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -49,7 +49,7 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    val playlistViewModel by activityViewModel<PlaylistViewModel>()
+    //val playlistViewModel by activityViewModel<PlaylistViewModel>()
 
     private val playlistCreateInteractor: PlaylistCreateInteractor by inject()
 

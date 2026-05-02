@@ -112,6 +112,7 @@ class TracksSearchViewModel(
     fun setTrackList(tracks: List<Track>) {
         _trackList.value = tracks
     }
+
     fun onTextChanged(newText: String) {
         _text.value = newText
         searchDebounce(newText)
@@ -153,10 +154,6 @@ class TracksSearchViewModel(
     fun onSaveInstanceState(outState: Bundle) {
         tracksHistory = trackHistoryInteractor.getTracksHistory()
         outState.putCharSequence(SEARCH_TEXT, lastSearchText)
-    }
-
-    fun hideKeyboard(){
-        _hideKeyboard.value = true
     }
 
     fun showHistory() {

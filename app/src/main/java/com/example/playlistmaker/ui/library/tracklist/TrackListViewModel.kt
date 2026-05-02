@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.LibraryRepository
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.library.TrackListState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class TrackListViewModel(private val libraryRepository: LibraryRepository): ViewModel() {
@@ -15,6 +18,21 @@ class TrackListViewModel(private val libraryRepository: LibraryRepository): View
     private val tracksStateLiveData = MutableLiveData<TrackListState>()
 
     fun observeTracksState(): LiveData<TrackListState> = tracksStateLiveData
+
+    private val _trackList = MutableStateFlow<List<Track>>(emptyList())
+    val trackList: StateFlow<List<Track>> = _trackList.asStateFlow()
+
+    fun setTrackList(tracks: List<Track>) {
+        _trackList.value = tracks
+    }
+
+    private val _errorVisible = MutableStateFlow(false)
+    val errorVisible: StateFlow<Boolean> = _errorVisible.asStateFlow()
+
+    fun setErrorVisibility(visible: Boolean) {
+        _errorVisible.value = visible
+    }
+
 
     fun getTrackList() {
         viewModelScope.launch {

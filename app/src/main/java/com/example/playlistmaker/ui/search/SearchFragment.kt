@@ -117,13 +117,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-////        adapter = null
-////        binding.trackListRecycler.adapter = null
-////        textWatcher?.let { binding.searchText.removeTextChangedListener(it) }
-//    }
-
     override fun onResume() {
         super.onResume()
         if (viewModel.text.value.isNotEmpty())
