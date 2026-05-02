@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -160,6 +161,7 @@ fun SearchScaffold(
                     Image(
                         painter = painterResource(R.drawable.cross_icon),
                         contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorResource(R.color.dark)),
                         modifier = Modifier
                             .padding(start = 4.dp, end = 12.dp)
                             .size(12.dp)
