@@ -14,56 +14,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TracksSearchViewModel(
     private val tracksInteractor: TracksInteractor,
     private val trackHistoryInteractor: TracksHistoryInteractor,
-): ViewModel() {
+) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<TracksState>()
     fun observeState(): LiveData<TracksState> = stateLiveData
     private val showToast = SingleLiveEvent<String?>()
     fun observeShowToast(): LiveData<String?> = showToast
 
-    private val _trackList = MutableStateFlow<List<Track>>(emptyList())
-    val trackList: StateFlow<List<Track>> = _trackList.asStateFlow()
-
-    private val _text = MutableStateFlow("")
-    val text: StateFlow<String> = _text.asStateFlow()
-
-    private val _track = MutableStateFlow<Track?>(null)
-    val track: StateFlow<Track?> = _track.asStateFlow()
-
-    private val _historyTitleVisible = MutableStateFlow(false)
-    val historyTitleVisible: StateFlow<Boolean> = _historyTitleVisible.asStateFlow()
-
-    private val _errorVisible = MutableStateFlow(false)
-    val errorVisible: StateFlow<Boolean> = _errorVisible.asStateFlow()
-
-    private val _recyclerVisible = MutableStateFlow(false)
-    val recyclerVisible: StateFlow<Boolean> = _recyclerVisible.asStateFlow()
-
-    private val _progressBarVisible = MutableStateFlow(false)
-    val progressBarVisible: StateFlow<Boolean> = _progressBarVisible.asStateFlow()
-
-    private val _clearHistoryVisible = MutableStateFlow(false)
-    val clearHistoryVisible: StateFlow<Boolean> = _clearHistoryVisible.asStateFlow()
-
-    private val _refreshButtonVisible = MutableStateFlow(false)
-    val refreshButtonVisible: StateFlow<Boolean> = _refreshButtonVisible.asStateFlow()
-
-    private val _clearIconVisibility = MutableStateFlow(false)
-    val clearIconVisibility: StateFlow<Boolean> = _clearIconVisibility.asStateFlow()
-
-    private val _hideKeyboard = MutableStateFlow(false)
-    val hideKeyboard: StateFlow<Boolean> = _hideKeyboard.asStateFlow()
-
-    private val _errorText = MutableStateFlow("")
-    val errorText: StateFlow<String> = _errorText.asStateFlow()
-
-    private val _errorIcon = MutableStateFlow(0)
-    val errorIcon: StateFlow<Int> = _errorIcon.asStateFlow()
+    private val _uiState = MutableStateFlow(SearchState())
+    val uiState: StateFlow<SearchState> = _uiState.asStateFlow()
 
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
@@ -79,47 +44,55 @@ class TracksSearchViewModel(
 
     private var searchJob: Job? = null
 
-
     fun setClearIconVisibility(visible: Boolean) {
-        _clearIconVisibility.value = visible
+        _uiState.update { it.copy(clearIconVisibility = visible) }
     }
 
     fun setErrorVisibility(visible: Boolean) {
-        _errorVisible.value = visible
+        _uiState.update { it.copy(errorVisible = visible) }
     }
 
-
     fun setHistoryTitleVisibility(visible: Boolean) {
-        _historyTitleVisible.value = visible
+        _uiState.update { it.copy(historyTitleVisible = visible) }
     }
 
     fun setClearHistoryButtonVisibility(visible: Boolean) {
-        _clearHistoryVisible.value = visible
+        _uiState.update { it.copy(clearHistoryVisible = visible) }
     }
 
     fun setText(text: String) {
-        _text.value = text
-        setClearIconVisibility(text.isNotEmpty())
+        _uiState.update {
+            it.copy(
+                text = text,
+                clearIconVisibility = text.isNotEmpty(),
+            )
+        }
     }
 
     fun setErrorMessageText(text: String) {
-        _errorText.value = text
+        _uiState.update { it.copy(errorText = text) }
     }
 
     fun setErrorIconResource(icon: Int) {
-        _errorIcon.value = icon
+        _uiState.update { it.copy(errorIcon = icon) }
     }
+
     fun setTrackList(tracks: List<Track>) {
-        _trackList.value = tracks
+        _uiState.update { it.copy(trackList = tracks) }
     }
 
     fun onTextChanged(newText: String) {
-        _text.value = newText
+        _uiState.update {
+            it.copy(
+                text = newText,
+                clearIconVisibility = newText.isNotEmpty(),
+            )
+        }
         searchDebounce(newText)
     }
 
     fun onItemClick(track: Track) {
-        _track.value = track
+        _uiState.update { it.copy(selectedTrack = track) }
     }
 
     fun applyVisibility(
@@ -130,12 +103,16 @@ class TracksSearchViewModel(
         clearHistoryVisible: Boolean,
         refreshButtonVisible: Boolean = false
     ) {
-        _errorVisible.value = placeholderVisible
-        _historyTitleVisible.value = historyTitleVisible
-        _recyclerVisible.value = recyclerVisible
-        _progressBarVisible.value = progressBarVisible
-        _clearHistoryVisible.value = clearHistoryVisible
-        _refreshButtonVisible.value = refreshButtonVisible
+        _uiState.update {
+            it.copy(
+                errorVisible = placeholderVisible,
+                historyTitleVisible = historyTitleVisible,
+                recyclerVisible = recyclerVisible,
+                progressBarVisible = progressBarVisible,
+                clearHistoryVisible = clearHistoryVisible,
+                refreshButtonVisible = refreshButtonVisible,
+            )
+        }
     }
 
     fun onRestoreInstanceState(savedInstanceState: Bundle?): String? {
@@ -147,8 +124,13 @@ class TracksSearchViewModel(
             renderState(TracksState.Initial)
         }
         lastSearchText = restored?.toString() ?: EMPTY_SEARCH_TEXT
-        _text.value = lastSearchText ?: EMPTY_SEARCH_TEXT
-        setClearIconVisibility(_text.value.isNotEmpty())
+        val restoredText = lastSearchText ?: EMPTY_SEARCH_TEXT
+        _uiState.update {
+            it.copy(
+                text = restoredText,
+                clearIconVisibility = restoredText.isNotEmpty(),
+            )
+        }
         return lastSearchText
     }
 
@@ -225,4 +207,19 @@ class TracksSearchViewModel(
     private fun renderState(state: TracksState) {
         stateLiveData.postValue(state)
     }
+
+    data class SearchState(
+        val trackList: List<Track> = emptyList(),
+        val text: String = "",
+        val selectedTrack: Track? = null,
+        val historyTitleVisible: Boolean = false,
+        val errorVisible: Boolean = false,
+        val recyclerVisible: Boolean = false,
+        val progressBarVisible: Boolean = false,
+        val clearHistoryVisible: Boolean = false,
+        val refreshButtonVisible: Boolean = false,
+        val clearIconVisibility: Boolean = false,
+        val errorText: String = "",
+        val errorIcon: Int = 0,
+    )
 }

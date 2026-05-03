@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,18 +82,8 @@ fun SearchScaffold(
     val hintColor = colorResource(R.color.search_field_hint)
     val fieldBackground = colorResource(R.color.search_text_edit_color)
     val interactionSource = remember { MutableInteractionSource() }
-    val tracks = viewModel.trackList.collectAsState().value
-    val text = viewModel.text.collectAsState().value
-    val historyVisible = viewModel.historyTitleVisible.collectAsState().value
-    val errorVisible = viewModel.errorVisible.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val recyclerVisible = viewModel.recyclerVisible.collectAsState().value
-    val progressBarVisible = viewModel.progressBarVisible.collectAsState().value
-    val clearHistoryVisible = viewModel.clearHistoryVisible.collectAsState().value
-    val refreshButtonVisible = viewModel.refreshButtonVisible.collectAsState().value
-    val clearIconVisibility = viewModel.clearIconVisibility.collectAsState().value
-    val errorText = viewModel.errorText.collectAsState().value
-    val errorIcon = viewModel.errorIcon.collectAsState().value
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -124,7 +115,7 @@ fun SearchScaffold(
                 )
                 Spacer(Modifier.width(8.dp))
                 BasicTextField(
-                    value = text,
+                    value = uiState.text,
                     onValueChange = { newText ->
                         if (newText.length <= 100) onSearchTextChange(newText)
                     },
@@ -148,7 +139,7 @@ fun SearchScaffold(
                             Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (text.isEmpty()) {
+                            if (uiState.text.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.input_hint),
                                     style = searchFieldStyle.copy(color = hintColor),
@@ -159,7 +150,7 @@ fun SearchScaffold(
                         }
                     }
                 )
-                if (clearIconVisibility && text.isNotEmpty()) {
+                if (uiState.clearIconVisibility && uiState.text.isNotEmpty()) {
                     Image(
                         painter = painterResource(R.drawable.cross_icon),
                         contentDescription = null,
@@ -176,7 +167,7 @@ fun SearchScaffold(
                     )
                 }
             }
-            if (historyVisible) {
+            if (uiState.historyTitleVisible) {
                 Text(
                     style = TextStyle(
                         color = MaterialTheme.colorScheme.onBackground,
@@ -192,7 +183,7 @@ fun SearchScaffold(
                     text = stringResource(R.string.search_history_title)
                 )
             }
-            if (progressBarVisible) {
+            if (uiState.progressBarVisible) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -206,21 +197,21 @@ fun SearchScaffold(
                     )
                 }
             }
-            if (recyclerVisible) {
+            if (uiState.recyclerVisible) {
                 LazyColumn(
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
-                    items(tracks.size) { index ->
+                    items(uiState.trackList.size) { index ->
                         TrackCell(
-                            track = tracks[index],
-                            onClick = { onItemClick(tracks[index]) }
+                            track = uiState.trackList[index],
+                            onClick = { onItemClick(uiState.trackList[index]) }
                         )
                     }
                 }
             }
-            if (clearHistoryVisible) {
+            if (uiState.clearHistoryVisible) {
                 HistoryButton(
-                    historyVisible = historyVisible,
+                    historyVisible = uiState.historyTitleVisible,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = {
                         keyboardController?.hide()
@@ -229,11 +220,11 @@ fun SearchScaffold(
                 )
             }
             ErrorChip(
-                buttonVisible = refreshButtonVisible,
-                iconId = errorIcon,
-                visible = errorVisible.value,
+                buttonVisible = uiState.refreshButtonVisible,
+                iconId = uiState.errorIcon,
+                visible = uiState.errorVisible,
                 modifier = Modifier.padding(top = 210.dp),
-                text = errorText,
+                text = uiState.errorText,
                 buttonText = stringResource(R.string.refresh),
                 onClick = { onErrorButtonClick() }
             )

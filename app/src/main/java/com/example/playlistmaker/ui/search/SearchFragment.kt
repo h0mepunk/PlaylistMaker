@@ -119,9 +119,8 @@ class SearchFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.text.value.isNotEmpty())
-        {
-           viewModel.searchRequest(viewModel.text.value)
+        if (viewModel.uiState.value.text.isNotEmpty()) {
+            viewModel.searchRequest(viewModel.uiState.value.text)
         }
     }
 
