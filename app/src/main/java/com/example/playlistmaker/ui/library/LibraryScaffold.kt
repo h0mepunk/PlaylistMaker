@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.CurrentTrackInteractor
 import com.example.playlistmaker.domain.db.LibraryRepository
 import com.example.playlistmaker.domain.db.PlaylistInteractor
 import com.example.playlistmaker.domain.models.Playlist
@@ -350,8 +351,18 @@ class PlaylistInteractorMock(): PlaylistInteractor {
     }
 }
 
+class CurrentTrackIntercatorMock: CurrentTrackInteractor {
+    override fun saveCurrentTrack(track: Track) {}
+
+     override fun getCurrentTrack(): Track {
+        return track
+    }
+
+}
+
 val trackListViewModelMock = TrackListViewModel(
-    libraryRepository = LibraryRepositoryMock()
+    libraryRepository = LibraryRepositoryMock(),
+    currentTrackInteractor = CurrentTrackIntercatorMock()
 )
 
 val playlistViewModelMock = PlaylistViewModel(

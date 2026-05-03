@@ -54,10 +54,6 @@ class LibraryFragment: Fragment() {
     }
 
 
-    private lateinit var trackList: List<Track>
-
-    private val currentTrackInteractor: CurrentTrackInteractor by inject()
-
     private lateinit var onTrackClickDebounce: (Track) -> Unit
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 300L
@@ -91,7 +87,7 @@ class LibraryFragment: Fragment() {
             viewLifecycleOwner.lifecycleScope,
             false
         ) { track ->
-            currentTrackInteractor.saveCurrentTrack(track)
+            tracksViewModel.saveCurrentTrack(track)
             findNavController().navigate(R.id.action_library_fragment_to_track_fragment,
                 Bundle().apply {
                     putString("track", track.toString())
@@ -112,7 +108,6 @@ class LibraryFragment: Fragment() {
         }
 
         tracksViewModel.getTrackList()
-
         playlistViewModel.getPlaylists()
     }
 
@@ -129,14 +124,12 @@ class LibraryFragment: Fragment() {
         when(state) {
             is TrackListState.TracksEmpty -> {
                 Log.i(LOG_TAG,"TracksEmpty state")
-                trackList = emptyList()
-                tracksViewModel.setTrackList(trackList)
+                tracksViewModel.setTrackList(emptyList())
                 tracksViewModel.setErrorVisibility(true)
             }
             is TrackListState.TracksContent -> {
                 Log.i(LOG_TAG,"trackList ${state.trackList}")
-                trackList = state.trackList
-                tracksViewModel.setTrackList(trackList)
+                tracksViewModel.setTrackList(state.trackList)
                 tracksViewModel.setErrorVisibility(false)
             }
         }
