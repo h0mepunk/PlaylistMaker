@@ -4,13 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dark">#1A1B22</color>
     <color name="grey">#AEAFB4</color>
-    <color name="light_grey">#E6E8EB</color>
     <color name="blue">#3772E7</color>
     <color name="yellow">#FCD452</color>
     <color name="red">#F56B6C</color>
     <color name="grey_dark">#AEAFB4</color>
     <color name="darker_grey">#E6E8EB</color>
-    <color name="settings_background_color">#FFFFFFFF</color>
+    <color name="settings_background_color">@color/white</color>
     <color name="background_color">@color/blue</color>
     <color name="tabs_background_color">@color/white</color>
     <color name="tabs_text_color">@color/dark</color>
@@ -26,6 +25,8 @@
     <color name="arrow_forward_icon">@color/grey</color>
     <color name="arrow_back_icon">@color/dark</color>
     <color name="search_text_edit_color">@color/darker_grey</color>
+    <color name="search_field_hint">@color/grey</color>
+    <color name="search_field_text">@color/dark</color>
     <color name="search_background">@color/white</color>
     <color name="placeholder_background_color">@color/white</color>
     <color name="media_round_button_color">@color/dark</color>

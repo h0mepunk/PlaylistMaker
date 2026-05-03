@@ -5,14 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.api.ThemeInteractor
 import com.example.playlistmaker.presentation.settings.SettingsState
 import com.example.playlistmaker.presentation.settings.SettingsViewModel
+import com.example.playlistmaker.ui.common.PlaylistMakerTheme
 import org.koin.android.ext.android.inject
 import kotlin.getValue
 
@@ -21,33 +24,41 @@ class SettingsFragment : Fragment() {
     private val viewModel by viewModels<SettingsViewModel>()
     private val themeInteractor: ThemeInteractor by inject()
 
-    private lateinit var binding: FragmentSettingsBinding
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        binding.settingItemContactSupport.setOnClickListener { viewModel.clickContactSupport() }
-        binding.settingItemShare.setOnClickListener { viewModel.clickShareApp() }
-        binding.settingItemUserAgreement.setOnClickListener { viewModel.clickUserAgreement() }
-        binding.settingItemDarkTheme.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.switchTheme(isChecked)
-        }
-
-        binding.settingItemDarkTheme.isChecked = themeInteractor.getTheme()
 
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
     }
 
+    @ExperimentalMaterial3Api
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            PlaylistMakerTheme(
+                darkTheme = themeInteractor.getTheme()
+            ) {
+                    SettingsScaffold(
+                        items = SettingsItem.entries.toList(),
+                        switchChecked = themeInteractor.getTheme(),
+                        onItemClick = { item ->
+                            when (item) {
+                                SettingsItem.SHARE -> viewModel.clickShareApp()
+                                SettingsItem.SUPPORT -> viewModel.clickContactSupport()
+                                SettingsItem.USER_AGREEMENT -> viewModel.clickUserAgreement()
+                                SettingsItem.THEME -> {
+                                    clickTheme(!themeInteractor.getTheme())
+                                }
+                            }
+                        }
+                    )
+            }
+        }
     }
 
     fun clickContactSupport() {

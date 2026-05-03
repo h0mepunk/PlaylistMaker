@@ -53,4 +53,5 @@
     <string name="wanna_delete_this_track_text">Хотите удалить трек?</string>
     <string name="no_tracks_in_playlist_text">В плейлисте нет ни одного трека</string>
     <string name="notification_title">Playlist Maker</string>
+    <string name="tracks_several">" треков"</string>
 </resources>

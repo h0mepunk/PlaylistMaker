@@ -2,15 +2,15 @@ package com.example.playlistmaker.ui.main
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import androidx.transition.Visibility
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.databinding.FragmentLibraryBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
+//ComponantActivity()
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
