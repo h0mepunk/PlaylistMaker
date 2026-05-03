@@ -73,7 +73,7 @@ fun ErrorChip(
 
 @Composable
 @Preview
-fun ErrorChipPreview() = ErrorChip(
+private fun ErrorChipPreview() = ErrorChip(
     visible = true,
     text = "Network error",
     onClick = {},

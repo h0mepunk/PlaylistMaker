@@ -258,8 +258,13 @@ fun PlaylistsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 16.dp),
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        top = 0.dp,
+                        end = 16.dp,
+                        bottom = 16.dp,
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(

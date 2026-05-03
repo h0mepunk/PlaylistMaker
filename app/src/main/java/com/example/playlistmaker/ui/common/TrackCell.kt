@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.common
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.playlistmaker.R
@@ -46,7 +48,7 @@ fun TrackCell(
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp)
                 .size(45.dp)
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.song_cover_corner_radius))),
+                .clip(RoundedCornerShape(2.dp)),
             model = track.artworkUrl100,
             contentDescription = null,
             contentScale = ContentScale.Crop,
@@ -62,7 +64,7 @@ fun TrackCell(
                 style = TextStyle(
                     color = colorResource(R.color.tabs_text_color),
                     fontFamily = FontFamily(
-                        fonts = listOf(Font(R.font.ys_display_medium))
+                        fonts = listOf(Font(R.font.ys_display_regular))
                     ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight(400)
@@ -73,6 +75,7 @@ fun TrackCell(
             )
             Row() {
                 Text(
+                    maxLines = 1,
                     style = TextStyle(
                         color = MaterialTheme.colorScheme.onSecondary,
                         fontFamily = FontFamily(
@@ -87,10 +90,11 @@ fun TrackCell(
                 )
                 Image(
                     painter = painterResource(R.drawable.ellipse),
-                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp, start = 10.dp),
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 5.dp, start = 5.dp),
                     contentDescription = null
                 )
                 Text(
+                    maxLines = 1,
                     style = TextStyle(
                         color = MaterialTheme.colorScheme.onSecondary,
                         fontFamily = FontFamily(
@@ -109,13 +113,13 @@ fun TrackCell(
                 painter = painterResource(R.drawable.arrow_forward),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(end = 12.dp),
+                    .padding(end = 20.dp),
                 contentDescription = null
             )
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 fun TrackCellPreview() = TrackCell(
     track = Track(
