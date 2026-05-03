@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -30,11 +31,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -61,6 +61,7 @@ import com.example.playlistmaker.ui.common.RoundButton
 import com.example.playlistmaker.ui.common.TopBar
 import com.example.playlistmaker.ui.common.TrackCell
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SearchScaffold(
@@ -70,13 +71,14 @@ fun SearchScaffold(
     onClearHistoryClick: () -> Unit,
     onErrorButtonClick: () -> Unit
 ) {
+    val searchFieldTextColor = colorResource(R.color.search_field_text)
     val searchFieldStyle = TextStyle(
-        color = colorResource(R.color.black),
+        color = searchFieldTextColor,
         fontFamily = FontFamily(Font(R.font.ys_display_medium)),
         fontSize = 19.sp,
         fontWeight = FontWeight(400)
     )
-    val hintColor = colorResource(R.color.grey)
+    val hintColor = colorResource(R.color.search_field_hint)
     val fieldBackground = colorResource(R.color.search_text_edit_color)
     val interactionSource = remember { MutableInteractionSource() }
     val tracks = viewModel.trackList.collectAsState().value
@@ -90,7 +92,7 @@ fun SearchScaffold(
     val refreshButtonVisible = viewModel.refreshButtonVisible.collectAsState().value
     val clearIconVisibility = viewModel.clearIconVisibility.collectAsState().value
     val errorText = viewModel.errorText.collectAsState().value
-    val errorIcon= viewModel.errorIcon.collectAsState().value
+    val errorIcon = viewModel.errorIcon.collectAsState().value
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -98,7 +100,7 @@ fun SearchScaffold(
     }
 
     Scaffold(
-        topBar = { TopBar(text = stringResource(R.string.search_title)) },
+        topBar = { TopBar(text = stringResource(R.string.search_title)) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -161,18 +163,20 @@ fun SearchScaffold(
                     Image(
                         painter = painterResource(R.drawable.cross_icon),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorResource(R.color.dark)),
+                        colorFilter = ColorFilter.tint(colorResource(R.color.search_icon_mini)),
                         modifier = Modifier
                             .padding(start = 4.dp, end = 12.dp)
                             .size(12.dp)
                             .clickable {
                                 onSearchTextChange("")
+                                viewModel.setText("")
+                                viewModel.lastSearchText = ""
                                 keyboardController?.hide()
                             }
                     )
                 }
             }
-            if(historyVisible) {
+            if (historyVisible) {
                 Text(
                     style = TextStyle(
                         color = MaterialTheme.colorScheme.onBackground,
@@ -216,7 +220,7 @@ fun SearchScaffold(
             }
             if (clearHistoryVisible) {
                 HistoryButton(
-                    historyVisible,
+                    historyVisible = historyVisible,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = {
                         keyboardController?.hide()
@@ -239,11 +243,11 @@ fun SearchScaffold(
 
 @Composable
 fun HistoryButton(
-    visible: Boolean,
+    historyVisible: Boolean,
     onClick: () -> Unit,
     modifier: Modifier
 ) {
-    if (visible) {
+    if (historyVisible) {
         RoundButton(
             modifier.padding(top = 16.dp),
             text = stringResource(R.string.clear_history_button),
@@ -252,22 +256,14 @@ fun HistoryButton(
     }
 }
 
-
-class FakeTracksInteractor : TracksInteractor {
-
-    override fun searchTracks(text: String): Flow<Pair<List<Track>?, String?>> {
-        TODO("Not yet implemented")
-    }
+private class FakeTracksInteractor : TracksInteractor {
+    override fun searchTracks(text: String): Flow<Pair<List<Track>?, String?>> = emptyFlow()
 }
 
-class FakeTrackHistoryInteractor : TracksHistoryInteractor {
-    override fun getTracksHistory(): ArrayList<Track> {
-        TODO("Not yet implemented")
-    }
+private class FakeTracksHistoryInteractor : TracksHistoryInteractor {
+    override fun getTracksHistory(): ArrayList<Track> = ArrayList()
 
-    override fun saveTracksHistory(tracks: ArrayList<Track>) {
-        TODO("Not yet implemented")
-    }
+    override fun saveTracksHistory(tracks: ArrayList<Track>) = Unit
 }
 
 @SuppressLint("ViewModelConstructorInComposable")
@@ -276,7 +272,7 @@ class FakeTrackHistoryInteractor : TracksHistoryInteractor {
 fun SearchScaffoldPreview() = SearchScaffold(
     viewModel = TracksSearchViewModel(
         tracksInteractor = FakeTracksInteractor(),
-        trackHistoryInteractor = FakeTrackHistoryInteractor()
+        trackHistoryInteractor = FakeTracksHistoryInteractor()
     ),
     onSearchTextChange = {},
     onItemClick = {},

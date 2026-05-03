@@ -24,19 +24,28 @@ val blue = Color(0xFF3772E7)
 val grey_dark = Color(0xFFAEAFB4)
 val grey_medium = Color(0xFFE6E8EB)
 
-    val LightColors = lightColorScheme(
-        background = white,
-        onBackground = dark,
-        onSecondary = grey_dark,
-        onTertiary = grey_dark
-
-    )
-    val DarkColors = darkColorScheme(
-        background = dark,
-        onBackground = white,
-        onSecondary = white,
-        onTertiary = grey_medium
-    )
+val LightColors = lightColorScheme(
+    primary = blue,
+    onPrimary = white,
+    background = white,
+    onBackground = dark,
+    surface = white,
+    onSurface = dark,
+    onSurfaceVariant = grey_dark,
+    onSecondary = grey_dark,
+    onTertiary = grey_dark
+)
+val DarkColors = darkColorScheme(
+    primary = blue,
+    onPrimary = white,
+    background = dark,
+    onBackground = white,
+    surface = dark,
+    onSurface = white,
+    onSurfaceVariant = grey_medium,
+    onSecondary = white,
+    onTertiary = grey_medium
+)
 
 @Composable
 fun PlaylistMakerTheme(

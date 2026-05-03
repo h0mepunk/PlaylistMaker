@@ -144,76 +144,12 @@ class SearchFragment : Fragment() {
 
         with(viewModel) {
             setErrorVisibility(false)
-            setClearIconVisibility(false)
 
             observeState().observe(viewLifecycleOwner) { render(it) }
             observeShowToast().observe(viewLifecycleOwner) { showToast(it) }
 
             onRestoreInstanceState(savedInstanceState)?:EMPTY_STRING
         }
-
-//        binding.refreshButton.setOnClickListener {
-//            applyVisibility(
-//                placeholderVisible = View.GONE,
-//                recyclerVisible = View.GONE,
-//                progressBarVisible = View.VISIBLE,
-//                historyTitleVisible = View.GONE,
-//                clearHistoryVisible = View.GONE
-//            )
-//            viewModel.searchRequest(viewModel.lastSearchText.toString())
-//        }
-
-//        binding.clearIcon.setOnClickListener {
-//            binding.searchText.setText(EMPTY_SEARCH_TEXT)
-//            viewModel.showHistory()
-//            inputMethodManager?.hideSoftInputFromWindow(binding.searchText.windowToken, 0)
-//        }
-
-//        binding.clearHistoryButton.setOnClickListener {
-//            trackHistoryInteractor.saveTracksHistory(ArrayList())
-//            adapter?.items = emptyList()
-//            adapter?.notifyDataSetChanged()
-//            binding.searchHistoryTitle.visibility = View.GONE
-//            binding.clearHistoryButton.visibility = View.GONE
-//        }
-
-//        binding.searchText.setOnFocusChangeListener() { _, hasFocus -> }
-//        binding.searchText.setOnEditorActionListener { _, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                if (binding.searchText.text.isNotEmpty()) {
-//                 //   inputMethodManager?.hideSoftInputFromWindow(binding.searchText.windowToken, 0)
-//                    viewModel.lastSearchText = binding.searchText.text.toString()
-//                    viewModel.searchRequest(binding.searchText.text.toString())
-//                }
-//            }
-//            false
-//        }
-
-//        textWatcher =    object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                viewModel.searchDebounce(
-//                    changedText = s?.toString() ?: ""
-//                )
-//                if (!s.isNullOrEmpty()) {
-//                    binding.clearIcon.visibility = View.VISIBLE
-//                } else {
-//                    binding.clearIcon.visibility = View.GONE
-//                }
-//            }
-
-//            override fun afterTextChanged(s: Editable?) {
-//                if((binding.searchText.hasFocus()) && s.isNullOrEmpty()) {
-//                    viewModel.showHistory()
-//                }
-//            }
-
- //       }
-
-   //     binding.searchText.setText(viewModel.onRestoreInstanceState(savedInstanceState)?:EMPTY_STRING)
-   //     textWatcher?.let { binding.searchText.addTextChangedListener(it) }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

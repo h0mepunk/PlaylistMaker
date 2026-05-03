@@ -147,7 +147,8 @@ class TracksSearchViewModel(
             renderState(TracksState.Initial)
         }
         lastSearchText = restored?.toString() ?: EMPTY_SEARCH_TEXT
-        _text.value = lastSearchText ?: EMPTY_SEARCH_TEXT//?
+        _text.value = lastSearchText ?: EMPTY_SEARCH_TEXT
+        setClearIconVisibility(_text.value.isNotEmpty())
         return lastSearchText
     }
 

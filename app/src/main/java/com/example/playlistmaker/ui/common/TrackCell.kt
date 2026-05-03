@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -39,9 +43,13 @@ fun TrackCell(
             .clickable { onClick() }
     ) {
         AsyncImage(
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 8.dp)
+                .size(45.dp)
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.song_cover_corner_radius))),
             model = track.artworkUrl100,
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.placeholder),
             error = painterResource(R.drawable.placeholder),
         )
